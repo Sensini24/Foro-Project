@@ -1,0 +1,16 @@
+import { Router } from "express";
+import { changeVisible, deleteComments, getComments, postComments } from "../Controllers/commentsControllers.js";
+import { verificarToken, verificarTokenObligatorio } from "../Controllers/utils.js";
+
+const commentRouter = Router()
+
+commentRouter.use("/comments", verificarToken)
+
+commentRouter.get("/comments/:id",verificarToken, getComments)
+commentRouter.put("/comment/put/:id", changeVisible)
+
+// commentRouter.post("/user/comment", verificarTokenObligatorio, postComments)
+commentRouter.post("/user/comment", verificarToken, postComments)
+commentRouter.delete("/user/deleteComments/:id", verificarTokenObligatorio, deleteComments)
+
+export default commentRouter;

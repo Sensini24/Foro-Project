@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle del Blog</title>
+    <link rel="stylesheet" href="../css/contentblog.css">
+
+    <!-- Uso de google fonts -->
+</head>
+<body>
+        <div class="container" id="cuerpo-post-blog">
+            <div class="blog-title sr-only" aria-hidden="true" id="id-post"><%= post.id %></div>
+            <div class="blog-title"><%= post.title %></div>
+            <div class="blog-author"><%= post.author %></div>
+            <div class="blog-date"><%= post.date %></div><br>
+            <!-- <div class="blog-tags">Tags:  <%=  post.tags.length>0? post.tags : "No existen tags"%></div> -->
+            <div class="blog-tags">Tags:  
+                <% if(post.tags.length>0){%>
+                    <% post.tags.forEach(tag=>{%>
+                        <span id="tags-elements"><%= tag %></span>
+                    <% }) %>
+                <% }else{%>
+                    <h3>No existen tags</h3>
+                <%} %>
+                <!-- <%=  post.tags.length>0? post.tags : "No existen tags"%> -->
+            </div>
+            <div class="blog-content">
+                <p><%= post.content %></p>
+            </div>
+
+            <!--Parte de los comentarios-->
+            <h3 style="margin-top: 30px;">Comentarios</h3>
+            
+            <form id="formComment" style="display: flex; align-items: center;">
+                <textarea type="text" name="comment" id="comment-id" placeholder="Comenta algo..."></textarea>
+                <!-- <input type="hidden" name="post_id" value=""> -->
+                <button id="btn-comment">
+                    <i class="material-icons add-comment">add_comment</i>
+                </button>
+            </form>
+            <span id="aviso-comment"></span>
+
+            <div id="partial-container">
+                
+            </div>
+            
+        </div>
+
+        <!-- Modal de registro -->
+        <div id="modal-register" class="modal" style="display:none;">
+            <div class="modal-content">
+                <span id="close-modal" class="close">&times;</span>
+                <h2>Regístrate para comentar</h2>
+                <p>Debes iniciar sesión o registrarte para poder dejar un comentario.</p>
+                <a href="/auth/sign-up">Regístrate aquí</a>
+                <a href="/auth/login">Iniciar sesión</a>
+            </div>
+        </div>
+
+        <!-- <script src="../client/getComments"></script> -->
+        <script>
+            document.body.classList.remove("view-addpost");
+            document.body.classList.add("view-posts");
+        </script>
+        
+</body>
+</html>

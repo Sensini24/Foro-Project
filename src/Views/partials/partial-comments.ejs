@@ -1,0 +1,58 @@
+<div class="comments-section">
+    
+    <div id="comment-container">
+        <% commentsAll.forEach(comm =>{%>
+            <div class="comment">
+                <%if(author == comm.user_name){%>
+                    <div class="comment-author" id="comment-user-name">
+                        <%= comm.user_name%>(autor)
+                    </div>
+                <%}else{%>
+                    <div class="comment-author" ><%= comm.user_name %></div>
+                <%}%>
+                
+                <div class="comment-date"><%= comm.date %></div>
+                <div class="comment-text">
+                        <%= comm.comment  %>
+                </div>
+                <div class="comment-id sr-only" id="id-comment">
+                        <%= comm._id %>
+                </div>
+                <div class="postid-id sr-only" id="id-postid">
+                        <%= comm.post_id %>
+                </div>
+                <div class="comment-status sr-only" id="id-status">
+                    <%= comm.visible %>
+                </div>
+                <div class="comment-ocultar-delete">
+                    <div class="btn-container" id="btn-container-hide">
+                        <% if(propietario){ %>
+                        
+                            <button id="button-hide" class="btn-comments">
+                                <%= comm.visible ? "Ocultar" : "Mostrar" %>
+                            </button>
+                            <span id="status-comment-user">
+                                <%= comm.visible ? "" : "Este comentario solo es visible para tí" %>
+                            </span>
+                        
+                        <% }else{%>
+                            <%= console.log("Sin boton de ocultar")%>
+                        <%} %>
+                    </div>
+                    <div class="btn-container" id="btn-container-delete">
+                        <!--Si el usuario actual es el propietario del post o si es author del comentario-->
+                        <% if(username == comm.user_name || propietario){ %>
+                            <%= console.log("Hay boton")%>
+                                <button id="button-delete" class="btn-comments">
+                                    Eliminar
+                                </button>
+                        <% }else{%>
+                            <%= console.log("No eres")%>
+                        <%} %>
+                    </div>
+                    
+                </div>
+            </div>
+        <%}) %>
+    </div>
+</div>

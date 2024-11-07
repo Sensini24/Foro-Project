@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Header con Estilo</title>
+
+    <!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
+    <!-- <link rel="stylesheet" href="header.css"> -->
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <h1>Literatura perenne</h1>
+            </div>
+            <nav class="navbar">
+                <ul class="menu">
+                    <!-- <li><a href="#">Artículos</a></li>
+                    <li><a href="#">Contacto</a></li> -->
+                    
+                    
+                    <li id="post-id-header" ><a href="/post/postlist">Todos los posts</a></li>
+                    <% if (usuario) { %> <!-- Aquí cambias req.locals.usuario por usuario -->
+                        <li id="user-posts"><a href="/user/posts">Mis posts</a></li>
+                        <li><a href="/post/addpostget">Nuevo post</a></li>
+                    <% } %>
+                </ul>
+            </nav>
+
+            <div class="user-options">
+                <div class="user-photo">
+                    <img id="img-user" alt="Foto de usuario" />
+                </div>
+                <div class="user-settings">
+                    <a href="#"><i class="fas fa-cog"></i></a>
+                </div>
+                <% if (usuario) { %> <!-- Aquí cambias req.locals.usuario por usuario -->
+                    <form action="/auth/logout" method="get">
+                        <button type="submit">
+                            <div class="user-logout" id="logout-button" style="cursor: pointer;">
+                                <i class="material-icons">logout</i>
+                                
+                            </div>
+                        </button>
+                    </form>
+                <% } %>
+                <% if (usuario) { %>
+                <form enctype="multipart/form-data" id="formImage">
+                    <input type="file" name="profilePic" id="id-foto" />
+                    <button type="submit">Subir Foto</button>
+                </form>
+                <% } %>
+                <% if (!usuario) { %>
+                    <div>
+                            <a href="/auth/login" style="display: flex; flex-direction: column; align-items: center;">
+                                <span class="material-icons">
+                                    login
+                                    </span>Ingresar
+                            </a>
+                    </div>
+                <% } %>
+                  
+            </div>
+        </div>
+    </header>
+
+    <!-- Tu contenido debajo del header -->
+</body>
+</html>
+<script>
+    // const inputFile = document.getElementById("id-foto")
+    // inputFile.addEventListener("change", ()=>{
+    //     console.log("Archivo: ", inputFile.value)
+    // })
+
+    const formImage = document.getElementById("formImage")
+    const fileImage = document.getElementById("id-foto")
+    formImage.addEventListener("submit", (event)=>{
+        event.preventDefault()
+
+        
+        const files = fileImage.files[0];
+        const formData = new FormData();
+        formData.append("profilePic", files);
+
+        fetch("/user/uploadImage",{
+        method:"POST",
+        body: formData
+    }).then(response => response.json()) // Procesa la respuesta del servidor
+    .then(data => {
+      console.log("Imagen subida con éxito:", data.file);
+      console.log(data.message)
+    })
+    .catch(error => {
+      console.error("Error al subir la imagen:", error);
+    });
+    })
+
+    const img_user = document.getElementById("img-user")
+    fetch("/user/getUser")
+    .then(response => response.json())
+    .then(data => {
+        if(data.usuario == null){
+            console.log("NO hay usuario")
+            img_user.src = "/Images/avatar/user.png"
+            console.log(data.message)
+            console.log(data.usuario)
+        }else{
+            console.log("usuario obtenido")
+            console.log(data.message)
+            console.log(data.usuario)
+            // const pathAdecuado = data.usuario.substring(6,data.usuario.lenght)
+            // console.log("Path adecuado: ", ".." + pathAdecuado)
+            img_user.src = data.usuario
+            console.log("Imagen cargada: ", img_user.src)
+        }
+
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+    
+    const postsidheader = document.getElementById("post-id-header")
+
+    postsidheader.addEventListener("click", ()=>{
+        console.log("BOTON DE POST EN HEADER CLICKADO")
+    })
+</script>

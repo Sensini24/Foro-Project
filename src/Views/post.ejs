@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/post.css">
+    
+
+    <title>User Posts</title>
+
+</head>
+<body>
+    <div class="container" id="cuerpoPost">
+
+        <div class="post-container">
+            <form id="formPost">
+                <div class="input-group">
+                    <label for="title">Título</label>
+                    <input type="text" id="titlecontent" class="input-title" placeholder="Ingresa el título de tu publicación...">
+                </div>
+
+                <div class="input-group">
+                    <div id="editor-container"></div>
+                    <label for="content">Contenido</label>
+                    <textarea id="content" class="post-content" placeholder="Comparte tus pensamientos sobre literatura..."></textarea>
+                </div>
+
+                <div class="decorative-line"></div>
+
+                <div class="input-group">
+                    <label for="tags">Tags</label>
+                    <input type="text" name="tags" id="tags" class="tags-input" placeholder="Añade tags relacionados...">
+                    <div class="tags-suggestions">
+                        <span class="tag-suggestion">Literatura</span>
+                        <span class="tag-suggestion">Novela</span>
+                        <span class="tag-suggestion">Poesía</span>
+                        <span class="tag-suggestion">Ensayo</span>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button type="button" class="btn btn-tags">Añadir Tags</button>
+                    <button type="submit" id="btn-submit">GUARDAR</button>
+                </div>
+            </form>
+            <button id="btn-texto">
+                Texto
+            </button>
+        </div>
+    </div>
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span id="closeModal" class="close">&times;</span>
+            <p id="modalMessage"></p>
+        </div>
+    </div>
+    <script>
+        document.body.classList.remove("view-posts");
+        document.body.classList.add("view-addpost");
+    </script>
+</body>
+
+</html>

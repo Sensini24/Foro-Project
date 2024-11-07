@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/postList.css">
+    <title>User Posts</title>
+</head>
+<body>
+    <div class="posts-container">
+        <% userposts.forEach(post =>{ %>
+        <div class="post">
+            <div style="display: flex; justify-content: space-between;">
+                <div id="idpost" class="post-content"><%= post.id %></div>
+                <span class="material-icons" id="puntos" style="cursor: pointer;">
+                    more_vert
+                </span>
+            </div>
+            <div class="post-content"><%= post.title %></div>
+            <div class="post-content"><%= post.content %></div>
+            <div class="post-content"><%= post.author %></div>
+            <div class="post-interactions">❤️ 2 🔖</div>
+            <a id="verMas" class="ver-mas">ver más</a>
+        </div>
+        
+        <% }) %>
+        
+    </div>
+
+    <div class="container-more" id="menu-post">
+        <div class="more-option" id="delete">
+            <span class="material-icons">
+                delete
+            </span> Eliminar
+        </div>
+        <div class="more-option" id="save">
+            <span class="material-icons">
+                bookmark
+            </span> Guardar
+        </div>
+    </div>
+
+    <!-- <script src="../client/userPost.js"></script> -->
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Posts</title>
+    <link rel="stylesheet" href="../css/postList.css">
+    
+</head>
+<body>
+    <% if(username){ %>
+        <h1>Hola <%= username %></h1>
+    <% } %>
+    <h1>Entradas de blogs</h1>
+    <div class="blog-list">
+        <!-- Tarjeta de ejemplo -->
+         <% userposts.forEach(post =>{ %>
+
+            <div class="blog-card">
+                <div class="blog-title"><%= post.title %></div>
+                <div class="blog-author" id="author-id"><%= post.content %></div><hr>
+                <div class="blog-date"><%= post.author %></div>
+                <div class="blog-date">Tags:  <%=  post.tags.length>0? post.tags : "No existen tags"%></div>
+                    <form action="/post/<%= post.id %>" method="get">
+                        <button>Leer más</button>
+                    </form>
+            </div>
+        <% }) %>
+    </div>
+
+    <div>
+        <a href="/post/addpostget">
+            click
+        </a>
+        
+    </div>
+</body>
+</html>

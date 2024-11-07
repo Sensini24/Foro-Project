@@ -1,0 +1,35 @@
+.tags-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    border: 1px solid #e2e8f0;
+}
+
+.tag {
+    background-color: #f0f5ff;
+    color: #2c5282;
+    padding: 8px 15px;
+    border-radius: 4px;
+    margin: 8px 0;
+    display: block;
+    font-size: 15px;
+    border: 1px solid #e1effe;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    padding-left: 25px;
+}
+
+.tag:hover {
+    background-color: #e1effe;
+    transform: translateX(5px);
+}
+
+.tag::before {
+    content: '§';
+    position: absolute;
+    left: 10px;
+    color: #3182ce;
+    font-family: 'Playfair Display', serif;
+}

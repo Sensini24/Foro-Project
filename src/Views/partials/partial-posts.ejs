@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/postList.css">
+    <title>Document</title>
+</head>
+<body>
+    <div class="posts-container" id="pposts">
+        <% posts.forEach(post =>{ %>
+        <div class="post">
+            <div id="idpost" class="post-content"><%= post.id %></div>
+            <div class="post-content"><%= post.title %></div>
+            <div class="post-content"><%= post.content %></div>
+            <div class="post-content"><%= post.author %></div>
+            <div class="post-interactions">❤️ 2 🔖</div>
+            <a id="verMas" href="/post/<%= post.id %>" class="ver-mas">ver más</a>
+        </div>
+        
+        <% }) %>
+    
+    </div>
+</body>
+</html>
+<script>
+
+</script>
