@@ -111,6 +111,10 @@ div{
     color: #1a365d;
 }
 
+#idpost{
+    display: none;
+}
+
 /* Title styling */
 .post-content:first-child {
     font-size: 24px;

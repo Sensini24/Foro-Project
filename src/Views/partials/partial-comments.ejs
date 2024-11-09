@@ -2,7 +2,7 @@
     
     <div id="comment-container">
         <% commentsAll.forEach(comm =>{%>
-            <div class="comment">
+            <div class="comment" id="commentsTotales">
                 <%if(author == comm.user_name){%>
                     <div class="comment-author" id="comment-user-name">
                         <%= comm.user_name%>(autor)
@@ -25,9 +25,13 @@
                     <%= comm.visible %>
                 </div>
                 <div class="comment-ocultar-delete">
+                    <div class="btn-container" id="btn-container-request">
+                        <button id="button-request" class="btn-comments">
+                            Comentar
+                        </button>
+                    </div>
                     <div class="btn-container" id="btn-container-hide">
                         <% if(propietario){ %>
-                        
                             <button id="button-hide" class="btn-comments">
                                 <%= comm.visible ? "Ocultar" : "Mostrar" %>
                             </button>
@@ -40,6 +44,7 @@
                         <%} %>
                     </div>
                     <div class="btn-container" id="btn-container-delete">
+                        
                         <!--Si el usuario actual es el propietario del post o si es author del comentario-->
                         <% if(username == comm.user_name || propietario){ %>
                             <%= console.log("Hay boton")%>

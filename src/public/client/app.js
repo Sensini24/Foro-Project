@@ -1,5 +1,6 @@
 import { initAddPost } from './addPost.js';
 import { mostrarComentarios, guardarComentarios } from './getComments.js';
+import { initUserPosts } from './userPosts.js';
 
 document.addEventListener("DOMContentLoaded", () => {
     
@@ -14,7 +15,10 @@ document.addEventListener("DOMContentLoaded", () => {
     } else if (currentPath.startsWith('/post/') && idPost !== 'addpostget') {
         console.log("Iniciando módulo de comentarios");
         mostrarComentarios(); // Sin pasar el ID como argumento
-        guardarComentarios()
+        guardarComentarios();
+    }else if(currentPath.includes('/user/posts')){
+        console.log("Iniciando módulo de posts de usuario registrado");
+        initUserPosts();
     }
         
 });

@@ -10,17 +10,18 @@
     <div class="posts-container">
         <% userposts.forEach(post =>{ %>
         <div class="post">
+            <div id="idpost" class="post-content"><%= post.id %></div>
             <div style="display: flex; justify-content: space-between;">
-                <div id="idpost" class="post-content"><%= post.id %></div>
+                <div class="post-content"><%= post.title %></div>
                 <span class="material-icons" id="puntos" style="cursor: pointer;">
                     more_vert
                 </span>
             </div>
-            <div class="post-content"><%= post.title %></div>
+            
             <div class="post-content"><%= post.content %></div>
             <div class="post-content"><%= post.author %></div>
             <div class="post-interactions">❤️ 2 🔖</div>
-            <a id="verMas" class="ver-mas">ver más</a>
+            <a id="verMas" href="/post/<%= post.id %>" class="ver-mas">ver más</a>
         </div>
         
         <% }) %>

@@ -57,6 +57,7 @@
             partialContainer.innerHTML = comments
             definirEstadoComentario()
             EliminarComentario()
+            responderComentarios()
         } catch (error) {
             console.error("Error al cargar los comentarios: ", error);
         }
@@ -192,5 +193,19 @@
             }
 
             
+        })
+    }
+
+    export function responderComentarios(){
+        console.log("Funcionando responder comentario")
+        // let commentContainer = document.closest("#commentsTotales")
+        // console.log(commentContainer)
+        const btnrequest = document.querySelectorAll("#button-request")
+        btnrequest.forEach(btn=>{
+            btn.addEventListener("click",()=>{
+                const comment = btn.closest(".comment")
+                const idComment = comment.querySelector(".comment-id").textContent.trim()
+                console.log("Id comentario : ",  idComment)
+            })
         })
     }

@@ -11,7 +11,12 @@
         <% posts.forEach(post =>{ %>
         <div class="post">
             <div id="idpost" class="post-content"><%= post.id %></div>
-            <div class="post-content"><%= post.title %></div>
+            <div style="display: flex; justify-content: space-between;">
+                <div class="post-content"><%= post.title %></div>
+                <span class="material-icons" id="puntos" style="cursor: pointer;">
+                    more_vert
+                </span>
+            </div>
             <div class="post-content"><%= post.content %></div>
             <div class="post-content"><%= post.author %></div>
             <div class="post-interactions">❤️ 2 🔖</div>

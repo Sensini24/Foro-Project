@@ -124,3 +124,33 @@ export const changeVisible = async (req, res) =>{
         return res.status(500).json({ message: 'Error en el servidor' });
     }
 }
+
+export const requestComment = async (req, res)=>{
+    try{
+        const userpayload = req.usuariodatospayload
+
+        if(!userpayload){
+            res.status(401).json({error:"No estás autorizado a comentar"})
+        }
+        const idCommentParent = req.params.id
+        const user_name = userpayload.user_name
+        const {comment} = req.body
+
+        const newComment = new modelComment(
+            {
+                "idpostparent":idCommentParent,
+                "user_name": user_name,
+                "comment": comment,
+                "date": new Date(),
+                "visible": true
+            }
+        )
+
+        newComment.save
+        .then(doc => console.log("Comentario guardado exitosamente", doc))
+        .catch(error=> console.log("Error al guardar el comentario", error))
+    }catch(err){
+        res.status(500).json({error:"No se pudo guardar el comentario"})
+    }
+    
+}

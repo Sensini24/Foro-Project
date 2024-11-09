@@ -44,7 +44,6 @@ export const userlogin = async(req, res)=>{
     return res.json({success: true, message: "Inicio de sesión exitoso" });
     
 }
-
 export const userRegister = async(req, res)=>{
     const {username, email, password } = req.body
     console.log(username, email, password)
