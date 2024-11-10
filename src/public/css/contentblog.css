@@ -322,6 +322,8 @@ h3 {
 .btn-comments:active {
     transform: translateY(1px);
 }
+
+
 /*MODAL DE REGISTRO DE USUARIO EN COMENTARIOS*/
 .modal {
     display: none; /* Ocultar el modal por defecto */
@@ -357,3 +359,13 @@ h3 {
         text-decoration: none;
         cursor: pointer;
     }
+
+/* Parte de respuestas a comentarios */
+.container-form-commentrequest{
+    display: none;
+}
+#button-cancel {
+    background-color: #fff5f5;
+    color: #c53030;
+    border-color: #fed7d7;
+}

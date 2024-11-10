@@ -143,7 +143,7 @@ export const requestComment = async (req, res)=>{
                 "comment": comment,
                 "date": new Date(),
                 "visible": true
-            }
+            }   
         )
 
         newComment.save

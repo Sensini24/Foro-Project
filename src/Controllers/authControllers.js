@@ -116,7 +116,6 @@ export const uploadImageProfile = async (req, res)=>{
       } catch (error) {
         res.status(400).json({message:'Error al subir la imagen'});
       }
-      
 }
 
 //! Aqui se puede colocar un servicio o un repositorio para obtener el usuario por id.

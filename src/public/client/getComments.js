@@ -1,4 +1,5 @@
 
+
     // ESTA PARTE LO LLAMO EN MOSTRAR COMENTARIOS EL CUAL ES LA FUNCION DONDE SE LLAMA AL DOM Y TODO EL CONTENIDO DE LOS COMENTARIOS: ETIQUETAS, ETC; LO QUE PERMITE QUE PODAMOS SELECCIONARLOS PARA PODER ELIMINARLOS
     async function EliminarComentario(){
 
@@ -205,7 +206,45 @@
             btn.addEventListener("click",()=>{
                 const comment = btn.closest(".comment")
                 const idComment = comment.querySelector(".comment-id").textContent.trim()
+                const containerRequest = comment.querySelector(".container-form-commentrequest")
+                const contbtncomments = comment.querySelector(".comment-ocultar-delete")
+                const btnCancel = comment.querySelector("#button-cancel")
+                const textArea = comment.querySelector("#comment-id")
+                const commentAuthor = comment.querySelector(".comment-author").textContent.trim()
+                const nameComplete = commentAuthor.replace(/\s+/g, "") + " ";
+
                 console.log("Id comentario : ",  idComment)
+                containerRequest.style.display = "block"
+                textArea.value = nameComplete
+                textArea.setSelectionRange(textArea.value.length, textArea.value.length);
+
+
+                // Detectar cuando el usuario intenta borrar el nombre completo
+                textArea.addEventListener('input', function() {
+                    if (!textArea.value.startsWith(nameComplete)) {
+                        textArea.value = `${nameComplete}\n\n`; // Restaurar si el usuario intenta borrar el nombre
+                        textArea.setSelectionRange(textArea.value.length, textArea.value.length);
+                    }else{
+                        const nombre = textArea.value.split(" ")
+                        const extraer = nombre[0]
+                        extraer.style.color = "red"
+
+                        console.log(extraer)
+                    }
+                });
+                contbtncomments.style.display = "none"
+
+                CancelComment(btnCancel, containerRequest, contbtncomments)
+
             })
+        })
+    }
+
+    // function GuardarCommentario
+
+    function CancelComment(btnCancel, containerRequest, contbtncomments){
+        btnCancel.addEventListener("click", ()=>{
+            containerRequest.style.display = "none"
+            contbtncomments.style.display = "flex"
         })
     }
