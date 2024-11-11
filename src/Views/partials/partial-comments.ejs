@@ -59,10 +59,13 @@
                 </div>
                 <!--LA PARTE DE CARGA DEL FORM DE LAS RESPUESTAS A COMENTARIOS.-->
                 <div class="container-form-commentrequest">
+                    <div id="request-name-header">
+                        <p>Respuesta para: <span id="request-name"></span> </p>
+                    </div>
                     <form id="formCommentRequest" style="display: flex; align-items: center; margin-top: 5px;">
-                        <textarea type="text" name="comment" id="comment-id" placeholder="Comenta algo..."></textarea>
+                        <textarea type="text" name="comment" id="comment-content-request"></textarea>
                         <!-- <input type="hidden" name="post_id" value=""> -->
-                            <button id="btn-comment" style="margin-left: 5px;">
+                            <button id="btn-comment-request" style="margin-left: 5px;">
                                 <i class="material-icons add-comment">add_comment</i>
                             </button>
                     </form>

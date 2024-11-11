@@ -6,7 +6,8 @@ const CommentSchema = new mongoose.Schema({
         ref: 'Post',
         required: true
     },
-    "idpostparent":String,
+    "idmessageparent":String,
+    "requestname": String,
     "user_name": String,
     "comment": String,
     "date": Date,

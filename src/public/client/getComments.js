@@ -1,5 +1,4 @@
 
-
     // ESTA PARTE LO LLAMO EN MOSTRAR COMENTARIOS EL CUAL ES LA FUNCION DONDE SE LLAMA AL DOM Y TODO EL CONTENIDO DE LOS COMENTARIOS: ETIQUETAS, ETC; LO QUE PERMITE QUE PODAMOS SELECCIONARLOS PARA PODER ELIMINARLOS
     async function EliminarComentario(){
 
@@ -202,6 +201,7 @@
         // let commentContainer = document.closest("#commentsTotales")
         // console.log(commentContainer)
         const btnrequest = document.querySelectorAll("#button-request")
+        
         btnrequest.forEach(btn=>{
             btn.addEventListener("click",()=>{
                 const comment = btn.closest(".comment")
@@ -209,42 +209,94 @@
                 const containerRequest = comment.querySelector(".container-form-commentrequest")
                 const contbtncomments = comment.querySelector(".comment-ocultar-delete")
                 const btnCancel = comment.querySelector("#button-cancel")
-                const textArea = comment.querySelector("#comment-id")
                 const commentAuthor = comment.querySelector(".comment-author").textContent.trim()
                 const nameComplete = commentAuthor.replace(/\s+/g, "") + " ";
+                const requestName = comment.querySelector("#request-name")
 
                 console.log("Id comentario : ",  idComment)
                 containerRequest.style.display = "block"
-                textArea.value = nameComplete
-                textArea.setSelectionRange(textArea.value.length, textArea.value.length);
 
-
-                // Detectar cuando el usuario intenta borrar el nombre completo
-                textArea.addEventListener('input', function() {
-                    if (!textArea.value.startsWith(nameComplete)) {
-                        textArea.value = `${nameComplete}\n\n`; // Restaurar si el usuario intenta borrar el nombre
-                        textArea.setSelectionRange(textArea.value.length, textArea.value.length);
-                    }else{
-                        const nombre = textArea.value.split(" ")
-                        const extraer = nombre[0]
-                        extraer.style.color = "red"
-
-                        console.log(extraer)
-                    }
-                });
+                // Aquie estoy cargando el nombre a quien responderé
+                requestName.innerHTML = commentAuthor
                 contbtncomments.style.display = "none"
-
                 CancelComment(btnCancel, containerRequest, contbtncomments)
+                //Id del Post entero
+                const id_post = document.getElementById("id-post").textContent.trim().toString()
+                //Id del comentario Padre
+                const idmessageparent = idComment.toString()
+                const commentRequest = comment.querySelector("#comment-content-request")
+                const informacion = [id_post,idmessageparent,commentAuthor.toString(), commentRequest]
+                const btnSave = comment.querySelector("#btn-comment-request")
+                SaveRequest(btnSave, informacion)
 
             })
         })
     }
 
-    // function GuardarCommentario
-
+    // Funcion para ocultar comenta(rio y mostrar la cinta de botones como comentar, ocultar, eliminar.
     function CancelComment(btnCancel, containerRequest, contbtncomments){
         btnCancel.addEventListener("click", ()=>{
             containerRequest.style.display = "none"
             contbtncomments.style.display = "flex"
         })
     }
+
+    function SaveRequest(btnSave, information){
+        
+        
+        btnSave.addEventListener("click", (e)=>{
+            e.preventDefault()
+            const post_id = information[0]
+            const idmessageparent = information[1]
+            const requestName = information[2]
+            const comment = information[3].value.trim().toString()
+            // const id_post = document.getElementById("id-post").textContent.toString()
+            console.log( post_id, idmessageparent, requestName, comment)
+
+            fetch("/comment/request",
+                {
+                    method:'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(
+                        {
+                            post_id:post_id,
+                            idmessageparent:idmessageparent,
+                            requestname:requestName, 
+                            comment :comment
+                        }
+                    )
+                }
+            )
+            .then(response => response.json())
+            .then(data=>{
+                if(data.ok){
+                    return console.log(data.success)
+                }
+                console.log(data.error) 
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+        })
+
+        
+    }
+
+
+    // textArea.value = nameComplete
+                    // textArea.setSelectionRange(textArea.value.length, textArea.value.length);
+
+
+                    // // Detectar cuando el usuario intenta borrar el nombre completo
+                    // textArea.addEventListener('input', function() {
+                    //     if (!textArea.value.startsWith(nameComplete)) {
+                    //         textArea.value = `${nameComplete}\n\n`; // Restaurar si el usuario intenta borrar el nombre
+                    //         textArea.setSelectionRange(textArea.value.length, textArea.value.length);
+                    //     }else{
+                    //         const nombre = textArea.value.split(" ")
+                    //         let extraer = nombre[0]
+                    //         extraer.style.color = "red"
+
+                    //         console.log(extraer)
+                    //     }
+                    // });

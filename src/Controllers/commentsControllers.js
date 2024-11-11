@@ -130,15 +130,18 @@ export const requestComment = async (req, res)=>{
         const userpayload = req.usuariodatospayload
 
         if(!userpayload){
-            res.status(401).json({error:"No estás autorizado a comentar"})
+            return res.status(401).json({error:"No estás autorizado a comentar"})
         }
-        const idCommentParent = req.params.id
-        const user_name = userpayload.user_name
-        const {comment} = req.body
 
+        const user_name = userpayload.user_name
+        const {post_id,idmessageparent,requestname, comment} = req.body
+        console.log("DATOS: ",post_id,idmessageparent,requestname, comment)
+        const postid = new mongoose.Types.ObjectId(post_id)
         const newComment = new modelComment(
             {
-                "idpostparent":idCommentParent,
+                "post_id": postid,
+                "idmessageparent":idmessageparent,
+                "requestname": requestname,
                 "user_name": user_name,
                 "comment": comment,
                 "date": new Date(),
@@ -146,9 +149,11 @@ export const requestComment = async (req, res)=>{
             }   
         )
 
-        newComment.save
+        newComment.save()
         .then(doc => console.log("Comentario guardado exitosamente", doc))
         .catch(error=> console.log("Error al guardar el comentario", error))
+
+        res.status(200).json({success: "Tu respuesta se guardó exitosamente"})
     }catch(err){
         res.status(500).json({error:"No se pudo guardar el comentario"})
     }
