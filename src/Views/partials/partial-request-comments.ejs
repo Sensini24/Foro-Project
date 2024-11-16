@@ -1,16 +1,23 @@
 <div class="comments-section">
     
     <div id="comment-container">
-        <% commentariosPrincipales.forEach(comm =>{%>
+        <% commentsAll.forEach(comm =>{%>
             <div class="comment" id="commentsTotales">
                 <%if(author == comm.user_name){%>
                     <div class="comment-author" id="comment-user-name">
-                        <%= comm.user_name%>
+                        <% const usernameauthor = comm.user_name == comm.requestname ? comm.user_name + "(author)" : comm.user_name%>
+                        <% const userrequestname = comm.user_name == comm.requestname ? comm.requestname+ "(author)" : comm.requestname%>
+                        <%= usernameauthor%>
+                    </div>
+                    <div>
+                        <%= " >> " + userrequestname%>
                     </div>
                 <%}else{%>
                     <div class="comment-author" ><%= comm.user_name %></div>
+                    <div> <%= " >> " +  comm.requestname%> </div>
                 <%}%>
                 
+
                 <div class="comment-date"><%= comm.date %></div>
                 <div class="comment-text">
                         <%= comm.comment  %>
@@ -28,20 +35,20 @@
                     <%= comm.visible %>
                 </div>
                 <div class="comment-ocultar-delete">
-                    <!--Button de Muestra de comentarios-->
                     <%if(comm.idmessageparent == null){%>
                     <div class="btn-container" id="btn-morecomments">
-                        <span style="font-size: 15px;" id="Cargar">Cargar Comentarios</span>
-                        <i class="material-icons add-comment" id="arrow-requests"> arrow_drop_down</i>
+                        
+                            <span style="font-size: 15px;" id="Cargar">Cargar Comentarios</span>
+                            <i class="material-icons add-comment" id="arrow-requests"> arrow_drop_down</i>
+                        
                     </div>
                     <%}%>
-                    <!--Button de comentario-->
+
                     <div class="btn-container" id="btn-container-request">
                         <button id="button-request" class="btn-comments">
                             Comentar
                         </button>
                     </div>
-                    <!--Button de Ocultamiento-->
                     <div class="btn-container" id="btn-container-hide">
                         <% if(propietario){ %>
                             <button id="button-hide" class="btn-comments">
@@ -55,7 +62,6 @@
                             <%= console.log("Sin boton de ocultar")%>
                         <%} %>
                     </div>
-                    <!--Button de Eliminacion-->
                     <div class="btn-container" id="btn-container-delete">
                         
                         <!--Si el usuario actual es el propietario del post o si es author del comentario-->
@@ -79,17 +85,14 @@
                     <form id="formCommentRequest" style="display: flex; align-items: center; margin-top: 5px;">
                         <textarea type="text" name="comment" id="comment-content-request"></textarea>
                         <!-- <input type="hidden" name="post_id" value=""> -->
-                        <button id="btn-comment-request" style="margin-left: 5px;">
-                            <i class="material-icons add-comment" id="icon-addcomment">add_comment</i>
-                        </button> 
+                            <button id="btn-comment-request" style="margin-left: 5px;">
+                                <i class="material-icons add-comment">add_comment</i>
+                            </button>
                     </form>
                     <button id="button-cancel" class="btn-comments" style="margin-top: 3px;">
                         Cancelar
                     </button>
                     <span id="aviso-comment"></span>
-                </div>
-                <div id="partial-request-cont">
-
                 </div>
             </div>
         <%}) %>

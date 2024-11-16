@@ -1,72 +1,10 @@
 
-    // ESTA PARTE LO LLAMO EN MOSTRAR COMENTARIOS EL CUAL ES LA FUNCION DONDE SE LLAMA AL DOM Y TODO EL CONTENIDO DE LOS COMENTARIOS: ETIQUETAS, ETC; LO QUE PERMITE QUE PODAMOS SELECCIONARLOS PARA PODER ELIMINARLOS
-    async function EliminarComentario(){
-
-        const comentarioContenedor = Array.from(document.querySelectorAll(".comment"))
-        // const idComentario = Array.from(document.querySelectorAll(".comment-id"))
-        const authorComentario = Array.from(document.querySelectorAll(".comment-author"))
-        const btndelete = document.querySelectorAll("#button-delete")
-
-        btndelete.forEach(btn=>{
-            btn.addEventListener("click",()=>{
-                const comment = btn.closest(".comment")
-                const idComment = comment.querySelector(".comment-id").textContent.trim()
-                const idPost = comment.querySelector(".postid-id").textContent.trim()
-                console.log("container delete : ",  idComment)
-                fetchEliminar(idComment, idPost, comment)
-            })
-        })
-        
-    }
-    // funcion que alberga un fetch para eliminar y que pide dos parametros
-    function fetchEliminar(id, idPost, commentContainer){
-        const partialContainer = document.getElementById("partial-container")
-        fetch(`/user/deleteComments/${id}`,{
-            method:"DELETE",
-            headers: {
-                    'Content-Type': 'application/json'
-                },
-            body:JSON.stringify({id:id.toString(), idPost:idPost.toString()})
-        }
-        )
-        .then(response =>{
-            if(response.ok){
-                console.log("Comentario eliminado")
-                // partialContainer.innerHTML = ""
-                // mostrarComentarios()
-                commentContainer.remove()
-            }
-        }).catch(error => {
-                console.error("Error:", error);
-        });
-    }
     
-
-
-    export async function mostrarComentarios(){
-        // const cuerpoPostBlog = document.querySelector('.container2');
-        // console.log("cuerpo post: ", cuerpoPostBlog)
-
-        const id_post = document.getElementById("id-post").textContent;  // Usa textContent para obtener el texto del div
-        const partialContainer = document.getElementById("partial-container")
-        console.log("ID del Post: ", id_post);
-        
-        try {
-            const response = await fetch(`/comments/${id_post}`);
-            const comments = await response.text(); 
-            partialContainer.innerHTML = comments
-            definirEstadoComentario()
-            EliminarComentario()
-            responderComentarios()
-        } catch (error) {
-            console.error("Error al cargar los comentarios: ", error);
-        }
-    }
-
+    
     //------ ACTUALIZAR EL ESTADO DE UN COMENTARIO A VISIBLE O NO Y NOTIFICARLO EN INTERFAZ SI ESTA OCULTO O NO----
     
     // ESTA ES LA FORMA PARA OBTENER EL RESULTADO DE CLICKAR BOTONES INDIVIDUALES Y TAMBIEN LOS ID COMMENTS DE CADA COMENTARIO. SE DEBE USAR EL EVENT TARGET PARA OBTENER EL BUTTON QUE SE ESTA PRESIONANDO
-     async function definirEstadoComentario(){
+    async function definirEstadoComentario(){
         const hideButton = document.querySelectorAll('#button-hide');
         
         
@@ -137,7 +75,7 @@
 
     export function guardarComentarios(){
         // ------------------------GUARDADO DE COMENTARIO ----------------------------- //
-
+        
         // AQUI SE CLICA EN GUARDAR COMENTARIO Y SE DESENCADENA LA OPERACION CON EL FETCH
         // Fetch para guardar comentario
         const aviso_comment = document.getElementById("aviso-comment")
@@ -183,7 +121,6 @@
                         console.log("Comentario creado con exito");
                         partialContainer.innerHTML=''
                         mostrarComentarios()
-                        inputcomment.textContent = ""
                     } else {
                         console.error("Error al crear el comentario");
                     }
@@ -196,107 +133,299 @@
         })
     }
 
-    export function responderComentarios(){
-        console.log("Funcionando responder comentario")
-        // let commentContainer = document.closest("#commentsTotales")
-        // console.log(commentContainer)
-        const btnrequest = document.querySelectorAll("#button-request")
+    export async function mostrarComentarios(){
         
-        btnrequest.forEach(btn=>{
-            btn.addEventListener("click",()=>{
-                const comment = btn.closest(".comment")
-                const idComment = comment.querySelector(".comment-id").textContent.trim()
-                const containerRequest = comment.querySelector(".container-form-commentrequest")
-                const contbtncomments = comment.querySelector(".comment-ocultar-delete")
-                const btnCancel = comment.querySelector("#button-cancel")
-                const commentAuthor = comment.querySelector(".comment-author").textContent.trim()
-                const nameComplete = commentAuthor.replace(/\s+/g, "") + " ";
-                const requestName = comment.querySelector("#request-name")
+        // const cuerpoPostBlog = document.querySelector('.container2');
+        // console.log("cuerpo post: ", cuerpoPostBlog)
 
-                console.log("Id comentario : ",  idComment)
-                containerRequest.style.display = "block"
-
-                // Aquie estoy cargando el nombre a quien responderé
-                requestName.innerHTML = commentAuthor
-                contbtncomments.style.display = "none"
-                CancelComment(btnCancel, containerRequest, contbtncomments)
-                //Id del Post entero
-                const id_post = document.getElementById("id-post").textContent.trim().toString()
-                //Id del comentario Padre
-                const idmessageparent = idComment.toString()
-                const commentRequest = comment.querySelector("#comment-content-request")
-                const informacion = [id_post,idmessageparent,commentAuthor.toString(), commentRequest]
-                const btnSave = comment.querySelector("#btn-comment-request")
-                SaveRequest(btnSave, informacion)
-
-            })
-        })
+        const id_post = document.getElementById("id-post").textContent;  // Usa textContent para obtener el texto del div
+        const partialContainer = document.getElementById("partial-container")
+        console.log("ID del Post: ", id_post);
+        
+        try {
+            const response = await fetch(`/comments/${id_post}`);
+            const comments = await response.text(); 
+            partialContainer.innerHTML = comments
+            definirEstadoComentario()
+            // EliminarComentario()
+            responderComentariosPrincipales()
+            // GetRequestsComments()
+        } catch (error) {
+            console.error("Error al cargar los comentarios: ", error);
+        }
     }
 
-    // Funcion para ocultar comenta(rio y mostrar la cinta de botones como comentar, ocultar, eliminar.
-    function CancelComment(btnCancel, containerRequest, contbtncomments){
-        btnCancel.addEventListener("click", ()=>{
-            containerRequest.style.display = "none"
-            contbtncomments.style.display = "flex"
-        })
+    
+    function responderComentariosPrincipales() {
+        // Un solo listener para todo el contenedor de comentarios
+        const commentContainer = document.getElementById("comment-container");
+        
+        commentContainer.addEventListener("click", async (event) => {
+            // Identificar el botón o elemento clickeado
+            const clickedButton = event.target.closest("button, #btn-morecomments");
+            if(!clickedButton) return;
+            
+            // Comentar
+            switch(clickedButton.id){
+                //Mostrar cuadro comentario
+                case "button-request":
+                    event.preventDefault()
+                    const comment = clickedButton.closest(".comment")
+                    handleRequestButton(comment);
+                    break;
+                //CAncelar comentario
+                case "button-cancel":
+                    const commentRequest = clickedButton.closest(".comment")
+                    handleCancel(commentRequest);
+                    break;
+
+                //GUardar COmentario
+                case "btn-comment-request":
+                    event.preventDefault()
+                    const commentSave = clickedButton.closest(".comment")
+                    await handleSaveComment(commentSave);
+                    break;
+
+                //Desplegar respuestas
+                case "btn-morecomments":
+                    console.log("Show comments clcik")
+                    event.preventDefault()
+                    const commentShow = clickedButton.closest(".comment");
+                    await handleShowComments(commentShow)
+                    break;
+
+                //Eliminar COmentario
+                case "button-delete":
+                    event.preventDefault()
+                    const commentDelete = clickedButton.closest(".comment")
+                    await handleDeleteComment(commentDelete);
+                    break;
+                
+            }
+        });
     }
 
-    function SaveRequest(btnSave, information){
+    // ESTA PARTE LO LLAMO EN MOSTRAR COMENTARIOS EL CUAL ES LA FUNCION DONDE SE LLAMA AL DOM Y TODO EL CONTENIDO DE LOS COMENTARIOS: ETIQUETAS, ETC; LO QUE PERMITE QUE PODAMOS SELECCIONARLOS PARA PODER ELIMINARLOS
+    async function handleDeleteComment(comment){
+        const idComment = comment.querySelector(".comment-id").textContent.trim()
+        const idPost = comment.querySelector(".postid-id").textContent.trim()
+        console.log("container delete : ",  idComment)
+        await fetchEliminar(idComment, idPost, comment)
         
+    }
+    // funcion que alberga un fetch para eliminar y que pide dos parametros
+    async function fetchEliminar(id, idPost, commentContainer){
+        const partialContainer = document.getElementById("partial-container")
+        const response = await fetch(`/user/deleteComments/${id}`,{
+            method:"DELETE",
+            headers: {
+                    'Content-Type': 'application/json'
+                },
+            body:JSON.stringify({id:id.toString(), idPost:idPost.toString()})
+        }
+        )
+        const data = response.ok ? commentContainer.remove() : console.error("Error:", error);
+    }
+    
+    function handleRequestButton(comment) {
+        const containerRequest = comment.querySelector(".container-form-commentrequest");
+        const contBtnComments = comment.querySelector(".comment-ocultar-delete");
+        const commentAuthor = comment.querySelector(".comment-author").textContent.trim();
         
-        btnSave.addEventListener("click", (e)=>{
-            e.preventDefault()
-            const post_id = information[0]
-            const idmessageparent = information[1]
-            const requestName = information[2]
-            const comment = information[3].value.trim().toString()
-            // const id_post = document.getElementById("id-post").textContent.toString()
-            console.log( post_id, idmessageparent, requestName, comment)
-
-            fetch("/comment/request",
-                {
-                    method:'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(
-                        {
-                            post_id:post_id,
-                            idmessageparent:idmessageparent,
-                            requestname:requestName, 
-                            comment :comment
-                        }
-                    )
-                }
-            )
-            .then(response => response.json())
-            .then(data=>{
-                if(data.ok){
-                    return console.log(data.success)
-                }
-                console.log(data.error) 
-            })
-            .catch(error => {
-                console.error("Error:", error);
+        // Mostrar formulario de respuesta
+        containerRequest.style.display = "block";
+        contBtnComments.style.display = "none";
+        
+        // Actualizar nombre del destinatario
+        comment.querySelector("#request-name").innerHTML = commentAuthor;
+    }
+    
+    function handleCancel(comment) {
+        const containerRequest = comment.querySelector(".container-form-commentrequest");
+        const contBtnComments = comment.querySelector(".comment-ocultar-delete");
+        
+        containerRequest.style.display = "none";
+        contBtnComments.style.display = "flex";
+    }
+    
+    async function handleSaveComment(comment) {
+        const commentRequest = comment.querySelector("#comment-content-request");
+        const commentText = commentRequest.value.trim();
+        if (!commentText) return;
+        
+        const idComment = comment.querySelector(".comment-id").textContent.trim();
+        const commentAuthor = comment.querySelector(".comment-author").textContent.trim();
+        const postId = document.getElementById("id-post").textContent.trim();
+        
+        try {
+            const response = await fetch("/comment/request", {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    post_id: postId,
+                    idmessageparent: idComment,
+                    requestname: commentAuthor,
+                    comment: commentText
+                })
             });
-        })
-
-        
+    
+            const data = await response.json();
+            console.log("Respuesta del servidor:", data);
+    
+            // Actualizar vista
+            const partialRequests = comment.querySelector("#partial-request-cont");
+            partialRequests.innerHTML = "";
+            // Limpiar y cerrar el formulario
+            commentRequest.value = "";
+            handleCancel(comment);
+            await handleShowComments(comment);
+        } catch (error) {
+            console.error("Error al guardar el comentario:", error);
+        }
     }
 
+    // function responderComentariosPrincipales(){
+    //     console.log("Funcionando responder comentario")
+    //     // let commentContainer = document.closest("#commentsTotales")
+    //     // console.log(commentContainer)
+    //     const btnrequest = document.querySelectorAll("#button-request")
+        
+    //     btnrequest.forEach(btn=>{
+    //         btn.addEventListener("click",()=>{
+    //             let informacion = []
+    //             const comment = btn.closest(".comment")
+    //             const idComment = comment.querySelector(".comment-id").textContent.trim()
+    //             const containerRequest = comment.querySelector(".container-form-commentrequest")
+    //             const contbtncomments = comment.querySelector(".comment-ocultar-delete")
+    //             const btnCancel = comment.querySelector("#button-cancel")
+    //             const commentAuthor = comment.querySelector(".comment-author").textContent.trim()
+    //             const nameComplete = commentAuthor.replace(/\s+/g, "") + " ";
+    //             const requestName = comment.querySelector("#request-name")
+    //             const idmessageparent = idComment
+    //             console.log("Id comentario : ",  idComment)
+    //             console.log("Id message parent: ", idmessageparent)
+    //             containerRequest.style.display = "block"
 
-    // textArea.value = nameComplete
-                    // textArea.setSelectionRange(textArea.value.length, textArea.value.length);
+    //             // Aquie estoy cargando el nombre a quien responderé
+    //             requestName.innerHTML = commentAuthor
+    //             contbtncomments.style.display = "none"
+    //             CancelComment(btnCancel, containerRequest, contbtncomments)
+    //             //Id del Post entero
+    //             const id_post = document.getElementById("id-post").textContent.trim().toString()
+    //             //Id del comentario Padre
+    //             const idcomment = idComment.toString()
+    //             const commentRequest = comment.querySelector("#comment-content-request")
+    //             informacion = [id_post,idmessageparent,commentAuthor.toString(), commentRequest]
 
+    //             const btnSave = comment.querySelector("#btn-comment-request")
+    //             SaveRequest(btnSave, informacion)
+                
+    //         })
+    //     })
+    // }
 
-                    // // Detectar cuando el usuario intenta borrar el nombre completo
-                    // textArea.addEventListener('input', function() {
-                    //     if (!textArea.value.startsWith(nameComplete)) {
-                    //         textArea.value = `${nameComplete}\n\n`; // Restaurar si el usuario intenta borrar el nombre
-                    //         textArea.setSelectionRange(textArea.value.length, textArea.value.length);
-                    //     }else{
-                    //         const nombre = textArea.value.split(" ")
-                    //         let extraer = nombre[0]
-                    //         extraer.style.color = "red"
+// function responderComentariosHijos(idcommentparent){
+    //     console.log("Funcionando responder comentario")
+    //     // let commentContainer = document.closest("#commentsTotales")
+    //     // console.log(commentContainer)
+    //     const btnrequest = document.querySelectorAll("#button-request")
+        
+    //     btnrequest.forEach(btn=>{
+    //         btn.addEventListener("click",()=>{
+    //             let informacion = []
+    //             const comment = btn.closest(".comment")
+    //             const idComment = comment.querySelector(".comment-id").textContent.trim()
+    //             const containerRequest = comment.querySelector(".container-form-commentrequest")
+    //             const contbtncomments = comment.querySelector(".comment-ocultar-delete")
+    //             const btnCancel = comment.querySelector("#button-cancel")
+    //             const commentAuthor = comment.querySelector(".comment-author").textContent.trim()
+    //             const nameComplete = commentAuthor.replace(/\s+/g, "") + " ";
+    //             const requestName = comment.querySelector("#request-name")
+    //             // const idmessageparent = comment.querySelector(".messageparent-id").textContent.trim()
+    //             const idmessageparent = idcommentparent
+    //             console.log("Id comentario : ",  idComment)
+    //             console.log("Id message parent: ", idmessageparent)
+    //             containerRequest.style.display = "block"
 
-                    //         console.log(extraer)
-                    //     }
-                    // });
+    //             // Aquie estoy cargando el nombre a quien responderé
+    //             requestName.innerHTML = commentAuthor
+    //             contbtncomments.style.display = "none"
+    //             CancelComment(btnCancel, containerRequest, contbtncomments)
+    //             //Id del Post entero
+    //             const id_post = document.getElementById("id-post").textContent.trim().toString()
+    //             //Id del comentario Padre
+    //             const idcomment = idComment.toString()
+    //             const commentRequest = comment.querySelector("#comment-content-request")
+    //             informacion = [id_post,idmessageparent,commentAuthor.toString(), commentRequest]
+
+    //             const btnSave = comment.querySelector("#btn-comment-request")
+    //             SaveRequest(btnSave, informacion)
+                
+    //         })
+    //     })
+    // }
+
+    // Funcion para ocultar comentario y mostrar la cinta de botones como comentar, ocultar, eliminar.
+    
+// function CancelComment(btnCancel, containerRequest, contbtncomments){
+//         btnCancel.addEventListener("click", ()=>{
+//             containerRequest.style.display = "none"
+//             contbtncomments.style.display = "flex"
+//         })
+//     }
+
+    // function SaveRequest(btnSave, information){
+    //     btnSave.addEventListener("click", (e)=>{
+    //         e.preventDefault()
+    //         const post_id = information[0]
+    //         let idmessageparent = information[1]
+    //         const requestName = information[2]
+    //         const comment = information[3].value.trim().toString()
+    //         // const id_post = document.getElementById("id-post").textContent.toString()
+    //         console.log( post_id, idmessageparent, requestName, comment)
+    //         fetch("/comment/request",
+    //             {
+    //                 method:'POST',
+    //                 headers: {'Content-Type': 'application/json'},
+    //                 body: JSON.stringify(
+    //                     {
+    //                         post_id:post_id,
+    //                         idmessageparent:idmessageparent,
+    //                         requestname:requestName, 
+    //                         comment :comment
+    //                     }
+    //                 )
+    //             }
+    //         )
+    //         .then(response => response.json())
+    //         .then(data=>{
+    //             console.log(data)
+    //             const partialRequests = document.querySelector("#partial-request-cont")
+    //             partialRequests.innerHTML = ""
+    //             GetRequestsComments()
+    //         })
+    //         .catch(error => {
+    //             console.error("Error:", error);
+    //         });
+    //     })
+    // }
+
+    async function handleShowComments(comment){
+        console.log("Show comments click")
+        const idcommentparent = comment.querySelector(".comment-id").textContent.trim();
+        const id = document.getElementById("id-post").textContent.trim();
+        const partialRequests = comment.querySelector("#partial-request-cont");
+
+        const isExpanded = partialRequests.innerHTML !== "";
+    
+        if (!isExpanded) {
+            const response = await fetch(`/comments/request/${id}/${idcommentparent}`)
+            const data = await response.text()
+            partialRequests.innerHTML = data;
+            definirEstadoComentario();
+            // responderComentariosHijos(idcommentparent);
+            // EliminarComentario();
+        } else {
+            partialRequests.innerHTML = "";
+        }
+    }

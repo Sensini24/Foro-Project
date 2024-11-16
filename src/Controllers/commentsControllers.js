@@ -5,21 +5,22 @@ import { Post } from "../Models/Post.js";
 const modelComment = Comment
 const modelPost = Post
 
-export const getComments = async(req, res)=>{
+export const getCommentsRequest = async(req, res)=>{
     try{
         const id = req.params.id;
+        const idcommentparent = req.params.idcommentparent
+        console.log(id,":", idcommentparent)
         // const idObjectId = new mongoose.Types.ObjectId(id)
 
         const datapayload = req.usuariodatospayload || null
-        console.log(datapayload)
-
         /*
         comparar el user name de usuario actual con el author del post. Si coincide entonces los comentarios son del author del user actual y se crea el boton de ocultar o mostrar
         */
         const [commentsAll, post] = await Promise.all([
-            modelComment.find({ post_id: id }),
+            modelComment.find({ post_id: id, idmessageparent: idcommentparent }),
             modelPost.findById(id)
         ])
+
         if(!post){
             return res.status(404).json({message:"Post no encontrado"})
         }
@@ -31,13 +32,63 @@ export const getComments = async(req, res)=>{
 
         //* Si el author del post es el mismo que el que esta en sesion
         const propietario = username === author
+        // const commentariosPrincipales = commentsAll.filter(comment=> comment.idmessageparent == null)
+        // const commetariosSecundarios =  commentsAll.filter(comment=> comment.idmessageparent != null)
+        // const visibleComments = propietario ? commentariosPrincipales : commentariosPrincipales.filter(comment => comment.visible)
         const visibleComments = propietario ? commentsAll : commentsAll.filter(comment => comment.visible)
+        console.log("Comentarios del principal: " ,commentsAll )
+        console.log("Propietario: ", propietario)
+        console.log("Numero de comentarios cargados: ", commentsAll.length)
+        res.render("partials/partial-request-comments", 
+            {
+                //se pasa el filtrado de comments
+                commentsAll:visibleComments,
+                propietario,
+                username,
+                author,
+                layout:false 
+            })
+    }catch(err){
+        console.log("No se pudo obtener los comment", err)
+        res.status(500).json({message:"No se pudo obtener los comentarios"})
+    }
+}
 
+export const getComments = async(req, res)=>{
+    try{
+        const id = req.params.id;
+        // const idObjectId = new mongoose.Types.ObjectId(id)
+
+        const datapayload = req.usuariodatospayload || null
+        /*
+        comparar el user name de usuario actual con el author del post. Si coincide entonces los comentarios son del author del user actual y se crea el boton de ocultar o mostrar
+        */
+        const [commentsAll, post] = await Promise.all([
+            modelComment.find({ post_id: id }),
+            modelPost.findById(id)
+        ])
+
+        if(!post){
+            return res.status(404).json({message:"Post no encontrado"})
+        }
+
+        //* Autor de post abierto
+        const author = post.author;
+        //* Nombre de usuario en sesion
+        const username = datapayload ? datapayload.user_name : ""
+
+        //* Si el author del post es el mismo que el que esta en sesion
+        const propietario = username === author
+        const commentariosPrincipales = commentsAll.filter(comment=> comment.idmessageparent == null)
+        //const commetariosSecundarios =  commentsAll.filter(comment=> comment.idmessageparent != null)
+        // const visibleComments = propietario ? commentariosPrincipales : commentariosPrincipales.filter(comment => comment.visible)
+        const visibleComments = propietario ? commentariosPrincipales : commentariosPrincipales.filter(comment => comment.visible)
+        // console.log("Comentario hecho dentro de los principales: ", commetariosSecundarios.length )
         console.log("Propietario: ", propietario)
         res.render("partials/partial-comments", 
             {
                 //se pasa el filtrado de comments
-                commentsAll:visibleComments,
+                commentariosPrincipales:visibleComments,
                 propietario,
                 username,
                 author,
@@ -153,7 +204,7 @@ export const requestComment = async (req, res)=>{
         .then(doc => console.log("Comentario guardado exitosamente", doc))
         .catch(error=> console.log("Error al guardar el comentario", error))
 
-        res.status(200).json({success: "Tu respuesta se guardó exitosamente"})
+        res.status(200).json({success: `Tu respuesta se guardó exitosamente: ${newComment.comment}`})
     }catch(err){
         res.status(500).json({error:"No se pudo guardar el comentario"})
     }
