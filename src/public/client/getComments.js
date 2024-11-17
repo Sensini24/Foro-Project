@@ -138,12 +138,11 @@
         // const cuerpoPostBlog = document.querySelector('.container2');
         // console.log("cuerpo post: ", cuerpoPostBlog)
 
-        const id_post = document.getElementById("id-post").textContent;  // Usa textContent para obtener el texto del div
+        const id_post = document.getElementById("id-post").textContent.trim();
         const partialContainer = document.getElementById("partial-container")
         console.log("ID del Post: ", id_post);
-        
         try {
-            const response = await fetch(`/comments/${id_post}`);
+            const response = await fetch(`/comments/request/${id_post}`)
             const comments = await response.text(); 
             partialContainer.innerHTML = comments
             definirEstadoComentario()
@@ -157,7 +156,7 @@
 
     
     function responderComentariosPrincipales() {
-        // Un solo listener para todo el contenedor de comentarios
+        //* AQui obtengo el contenedor principal de los comentarios para agregarle un solo listener
         const commentContainer = document.getElementById("comment-container");
         
         commentContainer.addEventListener("click", async (event) => {
@@ -179,16 +178,22 @@
                     handleCancel(commentRequest);
                     break;
 
-                //GUardar COmentario
+                //GUardar COmentarios Padre
                 case "btn-comment-request":
                     event.preventDefault()
                     const commentSave = clickedButton.closest(".comment")
-                    await handleSaveComment(commentSave);
+                    await handleSaveCommentfather(commentSave);
                     break;
+
+                // //GUardar COmentario Hijos
+                // case "btn-comment-request-child":
+                //     event.preventDefault()
+                //     const commentSaveChild = clickedButton.closest(".comment")
+                //     await handleSaveCommentChildren(commentSaveChild)
+                //     break;
 
                 //Desplegar respuestas
                 case "btn-morecomments":
-                    console.log("Show comments clcik")
                     event.preventDefault()
                     const commentShow = clickedButton.closest(".comment");
                     await handleShowComments(commentShow)
@@ -200,6 +205,8 @@
                     const commentDelete = clickedButton.closest(".comment")
                     await handleDeleteComment(commentDelete);
                     break;
+
+                    
                 
             }
         });
@@ -248,15 +255,36 @@
         contBtnComments.style.display = "flex";
     }
     
-    async function handleSaveComment(comment) {
+    async function handleSaveCommentfather(comment) {
+        console.log("Desde padre")
         const commentRequest = comment.querySelector("#comment-content-request");
         const commentText = commentRequest.value.trim();
         if (!commentText) return;
         
-        const idComment = comment.querySelector(".comment-id").textContent.trim();
+        // Declaramos el ID del comentario padre
+        let idComment;
+
+        // Intentamos obtener el messageparent
+        const messageparenteElement = comment.querySelector("#id-messageparent");
+        const messageparente = messageparenteElement ? messageparenteElement.textContent.trim() : null;
+
+        console.log("Message parent:", messageparente);
+
+        // en caso de que el messageparent existe quiere decir que esstas comentando a un comentario y que tiene su idparent al id del comentario padre
+        if (messageparente) {
+            idComment = messageparente;
+        } else {
+            // Caso contrario, se le asigna el id del comentario padre
+            const idCommentElement = comment.querySelector("#id-comment");
+            idComment = idCommentElement ? idCommentElement.textContent.trim() : null;
+            console.log("Id comment:", idComment);
+        }
+
+
         const commentAuthor = comment.querySelector(".comment-author").textContent.trim();
         const postId = document.getElementById("id-post").textContent.trim();
         
+            
         try {
             const response = await fetch("/comment/request", {
                 method: 'POST',
@@ -284,131 +312,6 @@
         }
     }
 
-    // function responderComentariosPrincipales(){
-    //     console.log("Funcionando responder comentario")
-    //     // let commentContainer = document.closest("#commentsTotales")
-    //     // console.log(commentContainer)
-    //     const btnrequest = document.querySelectorAll("#button-request")
-        
-    //     btnrequest.forEach(btn=>{
-    //         btn.addEventListener("click",()=>{
-    //             let informacion = []
-    //             const comment = btn.closest(".comment")
-    //             const idComment = comment.querySelector(".comment-id").textContent.trim()
-    //             const containerRequest = comment.querySelector(".container-form-commentrequest")
-    //             const contbtncomments = comment.querySelector(".comment-ocultar-delete")
-    //             const btnCancel = comment.querySelector("#button-cancel")
-    //             const commentAuthor = comment.querySelector(".comment-author").textContent.trim()
-    //             const nameComplete = commentAuthor.replace(/\s+/g, "") + " ";
-    //             const requestName = comment.querySelector("#request-name")
-    //             const idmessageparent = idComment
-    //             console.log("Id comentario : ",  idComment)
-    //             console.log("Id message parent: ", idmessageparent)
-    //             containerRequest.style.display = "block"
-
-    //             // Aquie estoy cargando el nombre a quien responderé
-    //             requestName.innerHTML = commentAuthor
-    //             contbtncomments.style.display = "none"
-    //             CancelComment(btnCancel, containerRequest, contbtncomments)
-    //             //Id del Post entero
-    //             const id_post = document.getElementById("id-post").textContent.trim().toString()
-    //             //Id del comentario Padre
-    //             const idcomment = idComment.toString()
-    //             const commentRequest = comment.querySelector("#comment-content-request")
-    //             informacion = [id_post,idmessageparent,commentAuthor.toString(), commentRequest]
-
-    //             const btnSave = comment.querySelector("#btn-comment-request")
-    //             SaveRequest(btnSave, informacion)
-                
-    //         })
-    //     })
-    // }
-
-// function responderComentariosHijos(idcommentparent){
-    //     console.log("Funcionando responder comentario")
-    //     // let commentContainer = document.closest("#commentsTotales")
-    //     // console.log(commentContainer)
-    //     const btnrequest = document.querySelectorAll("#button-request")
-        
-    //     btnrequest.forEach(btn=>{
-    //         btn.addEventListener("click",()=>{
-    //             let informacion = []
-    //             const comment = btn.closest(".comment")
-    //             const idComment = comment.querySelector(".comment-id").textContent.trim()
-    //             const containerRequest = comment.querySelector(".container-form-commentrequest")
-    //             const contbtncomments = comment.querySelector(".comment-ocultar-delete")
-    //             const btnCancel = comment.querySelector("#button-cancel")
-    //             const commentAuthor = comment.querySelector(".comment-author").textContent.trim()
-    //             const nameComplete = commentAuthor.replace(/\s+/g, "") + " ";
-    //             const requestName = comment.querySelector("#request-name")
-    //             // const idmessageparent = comment.querySelector(".messageparent-id").textContent.trim()
-    //             const idmessageparent = idcommentparent
-    //             console.log("Id comentario : ",  idComment)
-    //             console.log("Id message parent: ", idmessageparent)
-    //             containerRequest.style.display = "block"
-
-    //             // Aquie estoy cargando el nombre a quien responderé
-    //             requestName.innerHTML = commentAuthor
-    //             contbtncomments.style.display = "none"
-    //             CancelComment(btnCancel, containerRequest, contbtncomments)
-    //             //Id del Post entero
-    //             const id_post = document.getElementById("id-post").textContent.trim().toString()
-    //             //Id del comentario Padre
-    //             const idcomment = idComment.toString()
-    //             const commentRequest = comment.querySelector("#comment-content-request")
-    //             informacion = [id_post,idmessageparent,commentAuthor.toString(), commentRequest]
-
-    //             const btnSave = comment.querySelector("#btn-comment-request")
-    //             SaveRequest(btnSave, informacion)
-                
-    //         })
-    //     })
-    // }
-
-    // Funcion para ocultar comentario y mostrar la cinta de botones como comentar, ocultar, eliminar.
-    
-// function CancelComment(btnCancel, containerRequest, contbtncomments){
-//         btnCancel.addEventListener("click", ()=>{
-//             containerRequest.style.display = "none"
-//             contbtncomments.style.display = "flex"
-//         })
-//     }
-
-    // function SaveRequest(btnSave, information){
-    //     btnSave.addEventListener("click", (e)=>{
-    //         e.preventDefault()
-    //         const post_id = information[0]
-    //         let idmessageparent = information[1]
-    //         const requestName = information[2]
-    //         const comment = information[3].value.trim().toString()
-    //         // const id_post = document.getElementById("id-post").textContent.toString()
-    //         console.log( post_id, idmessageparent, requestName, comment)
-    //         fetch("/comment/request",
-    //             {
-    //                 method:'POST',
-    //                 headers: {'Content-Type': 'application/json'},
-    //                 body: JSON.stringify(
-    //                     {
-    //                         post_id:post_id,
-    //                         idmessageparent:idmessageparent,
-    //                         requestname:requestName, 
-    //                         comment :comment
-    //                     }
-    //                 )
-    //             }
-    //         )
-    //         .then(response => response.json())
-    //         .then(data=>{
-    //             console.log(data)
-    //             const partialRequests = document.querySelector("#partial-request-cont")
-    //             partialRequests.innerHTML = ""
-    //             GetRequestsComments()
-    //         })
-    //         .catch(error => {
-    //             console.error("Error:", error);
-    //         });
-    //     })
-    // }
 
     async function handleShowComments(comment){
         console.log("Show comments click")
@@ -424,7 +327,7 @@
             partialRequests.innerHTML = data;
             definirEstadoComentario();
             // responderComentariosHijos(idcommentparent);
-            // EliminarComentario();
+            //handleDeleteComment(comment);
         } else {
             partialRequests.innerHTML = "";
         }

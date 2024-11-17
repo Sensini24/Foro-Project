@@ -178,7 +178,21 @@ h3 {
     flex-direction: column;
     gap: 25px;
 }
+#comment-content-request{
+    width: 100%;
+    height: 60px;
+    font-family: 'Cascadia Code', sans-serif;
+    display: flex;
+    align-items: start;
+    justify-content: start; 
+    text-align: start;
+    padding: 10px;
+    line-height: normal; 
+    box-sizing: border-box;
+    resize: none; /*no redimensiona el textarea*/
+    font-size: 15px;
 
+}
 .comment {
     background-color: #f8fafc;
     border: 1px solid #e2e8f0;

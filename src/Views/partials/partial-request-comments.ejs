@@ -1,7 +1,7 @@
 <div class="comments-section">
     
     <div id="comment-container">
-        <% commentsAll.forEach(comm =>{%>
+        <% commentariosPrincipales.forEach(comm =>{%>
             <div class="comment" id="commentsTotales">
                 <%if(author == comm.user_name){%>
                     <div class="comment-author" id="comment-user-name">
@@ -13,7 +13,7 @@
                         <%= " >> " + userrequestname%>
                     </div>
                 <%}else{%>
-                    <div class="comment-author" ><%= comm.user_name %></div>
+                    <div class="comment-author" ><%= comm.user_name " >> " +  comm.requestname%></div>
                     <div> <%= " >> " +  comm.requestname%> </div>
                 <%}%>
                 
@@ -26,7 +26,7 @@
                         <%= comm._id %>
                 </div>
                 <div class="messageparent-id" id="id-messageparent">
-                    <%= comm.idmessageparent %>
+                    <%= comm.idmessageparent  + "HOLA"%>
                 </div>
                 <div class="postid-id sr-only" id="id-postid">
                         <%= comm.post_id %>
@@ -37,10 +37,8 @@
                 <div class="comment-ocultar-delete">
                     <%if(comm.idmessageparent == null){%>
                     <div class="btn-container" id="btn-morecomments">
-                        
-                            <span style="font-size: 15px;" id="Cargar">Cargar Comentarios</span>
-                            <i class="material-icons add-comment" id="arrow-requests"> arrow_drop_down</i>
-                        
+                        <span style="font-size: 15px;" id="Cargar">Cargar Comentarios</span>
+                        <i class="material-icons add-comment" id="arrow-requests"> arrow_drop_down</i>
                     </div>
                     <%}%>
 
@@ -85,7 +83,7 @@
                     <form id="formCommentRequest" style="display: flex; align-items: center; margin-top: 5px;">
                         <textarea type="text" name="comment" id="comment-content-request"></textarea>
                         <!-- <input type="hidden" name="post_id" value=""> -->
-                            <button id="btn-comment-request" style="margin-left: 5px;">
+                            <button id="btn-comment-request-child" style="margin-left: 5px;">
                                 <i class="material-icons add-comment">add_comment</i>
                             </button>
                     </form>

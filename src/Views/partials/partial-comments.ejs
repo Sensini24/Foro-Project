@@ -4,11 +4,31 @@
         <% commentariosPrincipales.forEach(comm =>{%>
             <div class="comment" id="commentsTotales">
                 <%if(author == comm.user_name){%>
-                    <div class="comment-author" id="comment-user-name">
-                        <%= comm.user_name%>
-                    </div>
+                    <%if(comm.requestname == ""){%>
+                        <div class="comment-author" id="comment-user-name">
+                            <%=  comm.user_name + "(author)"%>
+                        </div>
+                    <%}else{%>
+                        <div class="comment-author" id="comment-user-name">
+                            <%=  comm.user_name + "(author)"%>
+                            
+                        </div>
+                        <div id="receptor-message"> <%= " >> " +  comm.requestname%> </div>
+                    <%}%>
                 <%}else{%>
-                    <div class="comment-author" ><%= comm.user_name %></div>
+                    <%if(comm.requestname == ""){%>
+                        <div class="comment-author" id="comment-user-name">
+                            <%=  comm.user_name + "(author)"%>
+                            
+                        </div>
+                        
+                    <%}else{%>
+                        <div class="comment-author" id="comment-user-name">
+                            <%=  comm.user_name + "(author)"%>
+                            
+                        </div>
+                        <div id="receptor-message"> <%= " >> " +  comm.requestname%> </div>
+                    <%}%>
                 <%}%>
                 
                 <div class="comment-date"><%= comm.date %></div>
@@ -18,8 +38,8 @@
                 <div class="comment-id sr-only" id="id-comment">
                         <%= comm._id %>
                 </div>
-                <div class="messageparent-id" id="id-messageparent">
-                    <%= comm.idmessageparent %>
+                <div class="messageparent-id sr-only" id="id-messageparent">
+                    <%= comm.idmessageparent%>
                 </div>
                 <div class="postid-id sr-only" id="id-postid">
                         <%= comm.post_id %>
@@ -29,7 +49,7 @@
                 </div>
                 <div class="comment-ocultar-delete">
                     <!--Button de Muestra de comentarios-->
-                    <%if(comm.idmessageparent == null){%>
+                    <%if(comm.idmessageparent == ""){%>
                     <div class="btn-container" id="btn-morecomments">
                         <span style="font-size: 15px;" id="Cargar">Cargar Comentarios</span>
                         <i class="material-icons add-comment" id="arrow-requests"> arrow_drop_down</i>
