@@ -217,8 +217,28 @@ h3 {
     height: 20px;
     line-height: 1;
 }
-
+.container-headers-comment-tag{
+    display: flex;
+}
+.container-headers{
+    display: flex;
+}
 .comment-author {
+    font-family: 'Cascadia Code', sans-serif;
+    font-size: 16px;
+    color: #1a365d;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+.comment-author-tag {
+    font-family: 'Cascadia Code', sans-serif;
+    font-size: 16px;
+    color: #1a365d;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+#receptor-message{
     font-family: 'Cascadia Code', sans-serif;
     font-size: 16px;
     color: #1a365d;

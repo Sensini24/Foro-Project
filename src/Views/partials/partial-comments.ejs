@@ -5,29 +5,57 @@
             <div class="comment" id="commentsTotales">
                 <%if(author == comm.user_name){%>
                     <%if(comm.requestname == ""){%>
-                        <div class="comment-author" id="comment-user-name">
-                            <%=  comm.user_name + "(author)"%>
+                        <!--Si el que comenta es dueño del post pero esta haciendo un comentario principal sin dirigirse a nadie entonces no se le agrea el requestname-->
+                        <div class="container-headers">
+                            <div class="comment-author" id="comment-user-name">
+                                <%=  comm.user_name%>
+                            </div>
+                            <div class="comment-author-tag" id="comment-user-name">
+                                <%= "(author)"%>
+                            </div>
                         </div>
                     <%}else{%>
-                        <div class="comment-author" id="comment-user-name">
-                            <%=  comm.user_name + "(author)"%>
-                            
+                        <!--Si el que comenta es dueño del post pero esta respondiendo otro comentario entonces se agrega el requestname-->
+                        <div class="container-headers">
+                            <div class="container-headers-comment-tag">
+                                <div class="comment-author" id="comment-user-name">
+                                    <%=  comm.user_name%>
+                                    
+                                </div>
+                                <div class="comment-author-tag" id="comment-user-name">
+                                    <%= "(author)"%>
+                                </div>
+                            </div>
+                            <!--Si el nombre a quien se responde es el autor actual de post entonces se le agrega un (author)-->
+                            <%if(comm.requestname == author){%>
+                                <div id="receptor-message"> 
+                                    <%= ">>" +  comm.requestname + "(author)"%> 
+                                </div>
+                            <%}%>
                         </div>
-                        <div id="receptor-message"> <%= " >> " +  comm.requestname%> </div>
                     <%}%>
                 <%}else{%>
+                    <!--Cuando no es author del post-->
                     <%if(comm.requestname == ""){%>
+                        <!--Si no es author del post y encima esta haciendo un comentario principal no se agrega el requestname-->
                         <div class="comment-author" id="comment-user-name">
-                            <%=  comm.user_name + "(author)"%>
+                            <%=  comm.user_name%>
                             
                         </div>
-                        
                     <%}else{%>
-                        <div class="comment-author" id="comment-user-name">
-                            <%=  comm.user_name + "(author)"%>
-                            
+                        <!--Si no es author del post y esta respondiendo otro comentario se agrega el requestname-->
+                        <div class="container-headers">
+                            <div class="comment-author" id="comment-user-name">
+                                <%=  comm.user_name%>
+                                
+                            </div>
+                            <!--Si el nombre a quien se responde es el autor actual de post entonces se le agrega un (author)-->
+                            <%if(author === comm.requestname ){%>
+                                <div id="receptor-message"> 
+                                    <%= ">>" +  comm.requestname + "(author)"%> 
+                                </div>
+                            <%}%>
                         </div>
-                        <div id="receptor-message"> <%= " >> " +  comm.requestname%> </div>
                     <%}%>
                 <%}%>
                 

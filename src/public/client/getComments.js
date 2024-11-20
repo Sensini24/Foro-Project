@@ -1,20 +1,9 @@
+    //* ------ ACTUALIZAR EL ESTADO DE UN COMENTARIO A VISIBLE O NO Y NOTIFICARLO EN INTERFAZ SI ESTA OCULTO O NO----
+    
+    //* ESTA ES LA FORMA PARA OBTENER EL RESULTADO DE CLICKAR BOTONES INDIVIDUALES Y TAMBIEN LOS ID COMMENTS DE CADA COMENTARIO. SE DEBE USAR EL EVENT TARGET PARA OBTENER EL BUTTON QUE SE ESTA PRESIONANDO
+    async function handleHideComment(commentContainer){
+        const hideButton = document.querySelectorAll('#button-hide')
 
-    
-    
-    //------ ACTUALIZAR EL ESTADO DE UN COMENTARIO A VISIBLE O NO Y NOTIFICARLO EN INTERFAZ SI ESTA OCULTO O NO----
-    
-    // ESTA ES LA FORMA PARA OBTENER EL RESULTADO DE CLICKAR BOTONES INDIVIDUALES Y TAMBIEN LOS ID COMMENTS DE CADA COMENTARIO. SE DEBE USAR EL EVENT TARGET PARA OBTENER EL BUTTON QUE SE ESTA PRESIONANDO
-    async function definirEstadoComentario(){
-        const hideButton = document.querySelectorAll('#button-hide');
-        
-        
-        hideButton.forEach(button => {
-        button.addEventListener("click", (e)=>{
-            const buttonclicked = e.target
-
-            //SE USA closest() PARA OBTENER EL CONTENEDO MAS CERCANOk
-            const commentContainer = buttonclicked.closest('.comment');
-                
             // Ahora dentro del contenedor del comentario, seleccionamos el ID del comentario
             const commentId = commentContainer.querySelector('.comment-id').textContent;
 
@@ -29,7 +18,10 @@
             
             
             // si el comentario es visible entonces se le pasa el valor de false para que lo cambie en servidor y tambien al contrario
-            const nombreButton = button.textContent.trim() == "Ocultar" ? button.textContent= "Mostrar": button.textContent= "Ocultar"
+            // const nombreButton = button.textContent.trim() == "Ocultar" ? button.textContent= "Mostrar": button.textContent= "Ocultar"
+
+            const buttonHide = commentContainer.querySelector("#button-hide")
+            const nombreButton = buttonHide.textContent.trim() == "Ocultar" ? buttonHide.textContent= "Mostrar": buttonHide.textContent= "Ocultar"
 
             
             //Cada vez que se presiona el button de ocultar o mostrar se cambia el estado actual del comentario y se le pasa a servidor para que actualice el estado.
@@ -66,13 +58,7 @@
                 console.error("Error:", error);
             });
 
-            
-            
-            })
-        });
     }
-
-
     export function guardarComentarios(){
         // ------------------------GUARDADO DE COMENTARIO ----------------------------- //
         
@@ -145,7 +131,7 @@
             const response = await fetch(`/comments/request/${id_post}`)
             const comments = await response.text(); 
             partialContainer.innerHTML = comments
-            definirEstadoComentario()
+            // definirEstadoComentario()
             // EliminarComentario()
             responderComentariosPrincipales()
             // GetRequestsComments()
@@ -161,51 +147,47 @@
         
         commentContainer.addEventListener("click", async (event) => {
             // Identificar el botón o elemento clickeado
+            // const clickedButton = event.target.closest("button, #btn-morecomments");
             const clickedButton = event.target.closest("button, #btn-morecomments");
             if(!clickedButton) return;
-            
+            const comment = clickedButton.closest(".comment")
             // Comentar
             switch(clickedButton.id){
                 //Mostrar cuadro comentario
                 case "button-request":
                     event.preventDefault()
-                    const comment = clickedButton.closest(".comment")
                     handleRequestButton(comment);
                     break;
                 //CAncelar comentario
                 case "button-cancel":
-                    const commentRequest = clickedButton.closest(".comment")
-                    handleCancel(commentRequest);
+                    handleCancel(comment);
                     break;
 
                 //GUardar COmentarios Padre
                 case "btn-comment-request":
                     event.preventDefault()
-                    const commentSave = clickedButton.closest(".comment")
-                    await handleSaveCommentfather(commentSave);
+                    await handleSaveCommentfather(comment);
                     break;
-
-                // //GUardar COmentario Hijos
-                // case "btn-comment-request-child":
-                //     event.preventDefault()
-                //     const commentSaveChild = clickedButton.closest(".comment")
-                //     await handleSaveCommentChildren(commentSaveChild)
-                //     break;
 
                 //Desplegar respuestas
                 case "btn-morecomments":
                     event.preventDefault()
-                    const commentShow = clickedButton.closest(".comment");
-                    await handleShowComments(commentShow)
+                    await handleShowComments(comment)
                     break;
 
                 //Eliminar COmentario
                 case "button-delete":
                     event.preventDefault()
-                    const commentDelete = clickedButton.closest(".comment")
-                    await handleDeleteComment(commentDelete);
+                    await handleDeleteComment(comment);
                     break;
 
+                //Ocultar Comentario
+                case "button-hide":
+                    event.preventDefault()
+                    console.log("Comment Hide: ",comment)
+                    await handleHideComment(comment);
+                    break;
+                    
                     
                 
             }
@@ -325,7 +307,7 @@
             const response = await fetch(`/comments/request/${id}/${idcommentparent}`)
             const data = await response.text()
             partialRequests.innerHTML = data;
-            definirEstadoComentario();
+            // definirEstadoComentario();
             // responderComentariosHijos(idcommentparent);
             //handleDeleteComment(comment);
         } else {
