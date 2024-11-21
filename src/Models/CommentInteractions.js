@@ -24,4 +24,4 @@ const CommentInteractionsSchema = new mongoose.Schema({
     "timestamps": Date
 })
 
-export const CommentInteractions = mongoose.model('CommentInteractions', CommentInteractionsSchema, 'comment_interactions')
+export const CommentInteractions = mongoose.model('CommentInteractions', CommentInteractionsSchema, 'comment_interactions') //nombre del modelo / nombre del schema / nombre en la base de datos mongodb

@@ -1,3 +1,4 @@
+
 .container {
     max-width: 900px;
     margin: 40px auto;
@@ -9,7 +10,7 @@
     position: relative;
 }
 p{
-    font-family: 'Cascadia Code', sans-serif;
+    font-family: "Lexend Deca", sans-serif;
 }
 .container::before {
     content: '✒️';
@@ -32,7 +33,7 @@ p{
 }
 
 .blog-title {
-    font-family: 'Cascadia Code', sans-serif;
+    font-family: "Lexend Deca", sans-serif;
     font-size: 42px;
     color: #1a365d;
     margin-bottom: 20px;
@@ -53,7 +54,7 @@ p{
 }
 
 .blog-author {
-    font-family: 'Cascadia Code', sans-serif;
+    font-family: "Lexend Deca", sans-serif;
     font-size: 18px;
     color: #4a5568;
     font-style: italic;
@@ -61,14 +62,14 @@ p{
 }
 
 .blog-date {
-    font-family: 'Cascadia Code', sans-serif;
+    font-family: "Lexend Deca", sans-serif;
     font-size: 16px;
     color: #718096;
 }
 
 .blog-tags {
     margin: 25px 0;
-    font-family: 'Cascadia Code', sans-serif;
+    font-family: "Lexend Deca", sans-serif;
     color: #2d4a77;
     display: flex;
     align-items: center;
@@ -86,7 +87,7 @@ p{
 }
 
 .blog-content {
-    font-family: 'Cascadia Code', sans-serif;
+    font-family: "Lexend Deca", sans-serif;
     font-size: 18px;
     line-height: 1.8;
     color: #2d4a77;
@@ -99,7 +100,7 @@ p{
 
 /* Comentarios section */
 h3 {
-    font-family: 'Cascadia Code', sans-serif;
+    font-family: "Lexend Deca", sans-serif;
     color: #1a365d;
     font-size: 24px;
     margin-bottom: 20px;
@@ -115,7 +116,7 @@ h3 {
     padding: 15px;
     border: 1px solid #e2e8f0;
     border-radius: 4px;
-    font-family: 'Cascadia Code', sans-serif;
+    font-family: "Lexend Deca", sans-serif;
     font-size: 16px;
     min-height: 100px;
     resize: vertical;
@@ -159,7 +160,7 @@ h3 {
     color: #e53e3e;
     font-size: 14px;
     margin-top: 5px;
-    font-family: 'Cascadia Code', sans-serif;
+    font-family: "Lexend Deca", sans-serif;
 }
 
 #partial-container {
@@ -181,7 +182,7 @@ h3 {
 #comment-content-request{
     width: 100%;
     height: 60px;
-    font-family: 'Cascadia Code', sans-serif;
+    font-family: "Lexend Deca", sans-serif;
     display: flex;
     align-items: start;
     justify-content: start; 
@@ -211,7 +212,7 @@ h3 {
     position: absolute;
     top: -15px;
     left: 20px;
-    font-family: 'Cascadia Code', sans-serif;
+    font-family: "Lexend Deca", sans-serif;
     font-size: 40px;
     color: rgba(49, 130, 206, 0.2);
     height: 20px;
@@ -224,14 +225,14 @@ h3 {
     display: flex;
 }
 .comment-author {
-    font-family: 'Cascadia Code', sans-serif;
+    font-family: "Lexend Deca", sans-serif;
     font-size: 16px;
     color: #1a365d;
     font-weight: 600;
     margin-bottom: 5px;
 }
 .comment-author-tag {
-    font-family: 'Cascadia Code', sans-serif;
+    font-family: "Lexend Deca", sans-serif;
     font-size: 16px;
     color: #1a365d;
     font-weight: 600;
@@ -239,7 +240,7 @@ h3 {
 }
 
 #receptor-message{
-    font-family: 'Cascadia Code', sans-serif;
+    font-family: "Lexend Deca", sans-serif;
     font-size: 16px;
     color: #1a365d;
     font-weight: 600;
@@ -261,14 +262,14 @@ h3 {
 }
 
 .comment-date {
-    font-family: 'Cascadia Code', sans-serif;
+    font-family: "Lexend Deca", sans-serif;
     font-size: 14px;
     color: #718096;
     margin-bottom: 12px;
 }
 
 .comment-text {
-    font-family: 'Cascadia Code', sans-serif;
+    font-family: "Lexend Deca", sans-serif;
     font-size: 16px;
     line-height: 1.6;
     color: #2d4a77;
@@ -304,7 +305,7 @@ h3 {
 .btn-comments {
     padding: 8px 16px;
     border-radius: 4px;
-    font-family: 'Cascadia Code', sans-serif;
+    font-family: "Lexend Deca", sans-serif;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
@@ -343,7 +344,7 @@ h3 {
     
 }
 #Cargar{
-    font-family: 'Cascadia Code', sans-serif;
+    font-family: "Lexend Deca", sans-serif;
 }
 
 #arrow-requests:hover{
@@ -355,7 +356,7 @@ h3 {
 }
 
 #status-comment-user {
-    font-family: 'Cascadia Code', sans-serif;
+    font-family: "Lexend Deca", sans-serif;
     font-size: 14px;
     color: #718096;
     font-style: italic;
@@ -436,3 +437,68 @@ h3 {
     color: #c53030;
     border-color: #fed7d7;
 }
+
+/* Parte de las interacciones */
+.interactions-row{
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    text-align: center;
+
+}
+.individual-interactions{
+    display: flex;
+    width: 6rem;
+    align-items: center;
+    justify-content: space-around;
+    background-color: white;    
+    border-radius: 9px;
+    padding: 8px;
+    margin-right: 13px;
+    cursor: pointer;
+    border-color: #1A365D;
+    border-style: solid;
+}
+.individual-interactions:hover{
+    border-color: #FCD639;
+    border-style: solid;
+}
+
+
+.add-like, .add-dislike, .add-share, #like-count,#dislike-count, #share-count {
+    color: #1A365D;
+}
+#add-like:hover .add-like,
+#add-dislike:hover .add-dislike,
+#add-share:hover .add-share{
+    color: #FCD639;
+}
+
+#add-like:hover #like-count,
+#add-dislike:hover #dislike-count,
+#add-share:hover #share-count{
+    color: #FCD639;
+}
+
+/*! Cuando se ha guardado la interaccion */
+/* #add-like:hover, #add-dislike:hover, #add-share:hover {
+    background-color: #1A365D;
+}
+
+#add-like:hover .add-like,
+#add-dislike:hover .add-dislike,
+#add-share:hover .add-share{
+    color: #FCD639;
+}
+
+#add-like:hover #like-count,
+#add-dislike:hover #dislike-count,
+#add-share:hover #share-count{
+    color: #FCD639;
+} */
+
+
+/* #add-like{
+    background-color: gray;
+    border-radius: 9px;
+} */

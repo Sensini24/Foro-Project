@@ -1,5 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
+@import url('https://fonts.cdnfonts.com/css/cascadia-code');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=Lexend+Deca:wght@100..900&display=swap');
+
+/* Estilos generales */
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Lexend Deca", sans-serif;
+}
+
 .contenido-total {
     height: auto; /* Asegúrate de que esté configurado para adaptarse al contenido */
     min-height: 100vh; /* Esto asegura que cubra al menos toda la pantalla */
@@ -19,7 +30,7 @@
 }
 /* Estilo base para ambos h1 */
 #titulo {
-    font-family: 'Playfair Display', serif;
+    font-family: "Lexend Deca", sans-serif;
     color: #1a365d;
     position: relative;
     padding-bottom: 15px;
@@ -61,7 +72,7 @@
 /*POSTS*/
 
 div{
-    font-family: "Roboto", sans-serif;
+    font-family: "Lexend Deca", sans-serif;
     font-weight: 600;
     font-style: normal;
 }
@@ -106,7 +117,7 @@ div{
 }
 
 .post-content {
-    font-family: 'Source Serif Pro', serif;
+    font-family: "Lexend Deca", sans-serif;
     line-height: 1.6;
     color: #1a365d;
 }
@@ -120,7 +131,7 @@ div{
     font-size: 24px;
     font-weight: 600;
     margin-bottom: 15px;
-    font-family: 'Playfair Display', serif;
+    font-family: "Lexend Deca", sans-serif;
 }
 
 /* Content styling */
@@ -150,7 +161,7 @@ div{
     display: inline-block;
     color: #3182ce;
     text-decoration: none;
-    font-family: 'Source Serif Pro', serif;
+    font-family: "Lexend Deca", sans-serif;
     font-size: 14px;
     font-weight: 600;
     transition: color 0.2s ease;

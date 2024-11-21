@@ -16,14 +16,11 @@
             </div>
             <nav class="navbar">
                 <ul class="menu">
-                    <!-- <li><a href="#">Artículos</a></li>
-                    <li><a href="#">Contacto</a></li> -->
-                    
-                    
-                    <li id="post-id-header" ><a href="/post/postlist">Todos los posts</a></li>
-                    <% if (usuario) { %> <!-- Aquí cambias req.locals.usuario por usuario -->
-                        <li id="user-posts"><a href="/user/posts">Mis posts</a></li>
-                        <li><a href="/post/addpostget">Nuevo post</a></li>
+                    <% if (usuario) { %>
+                        <h3>
+                            Hola <%= usuario.user_name %>
+                        </h3>
+                       
                     <% } %>
                 </ul>
             </nav>

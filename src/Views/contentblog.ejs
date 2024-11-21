@@ -28,7 +28,23 @@
             <div class="blog-content">
                 <p><%= post.content %></p>
             </div>
-
+            <!--Parte de las interacciones-->
+            <h3 style="margin-top: 30px;">¿Qué opinas de este post?</h3>
+            <div class="interactions-row">
+                <div id="add-like" class="individual-interactions">
+                    <i class="material-icons add-like">thumb_up</i>
+                    <span id="like-count" class="span-number">0</span>
+                </div>
+                <div id="add-dislike" class="individual-interactions">
+                    <i class="material-icons add-dislike">thumb_down</i>
+                    <span id="dislike-count" class="span-number">0</span>
+                </div>
+                <div id="add-share" class="individual-interactions">
+                    <i class="material-icons add-share">share</i>
+                    <span id="share-count" class="span-number">0</span>
+                </div>
+                
+            </div>
             <!--Parte de los comentarios-->
             <h3 style="margin-top: 30px;">Comentarios</h3>
             
@@ -57,12 +73,6 @@
                 <a href="/auth/login">Iniciar sesión</a>
             </div>
         </div>
-
         <!-- <script src="../client/getComments"></script> -->
-        <script>
-            document.body.classList.remove("view-addpost");
-            document.body.classList.add("view-posts");
-        </script>
-        
 </body>
 </html>

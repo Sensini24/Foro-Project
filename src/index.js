@@ -10,6 +10,7 @@ import cookieParser from 'cookie-parser';
 import expressLayouts from 'express-ejs-layouts';
 import { verificarToken } from './Controllers/utils.js';
 import routheTags from './Routes/tagsRoutes.js';
+import routePostInteractions from './Routes/posinteractionRoutes.js';
 import { layoutRoute } from './Routes/layoutRoutes.js';
 
 
@@ -58,6 +59,7 @@ app.get('', (req, res)=>{
 app.use(postRoute);
 app.use(commentRouter);
 app.use(routheTags)
+app.use(routePostInteractions)
 app.use(layoutRoute)
 
 const PORT = process.env.PORT
