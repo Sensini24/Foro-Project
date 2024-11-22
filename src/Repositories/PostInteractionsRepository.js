@@ -1,4 +1,6 @@
+import { populate } from "dotenv";
 import { PostInteractions } from "../Models/PostInteractions.js";
+import mongoose from "mongoose";
 
 const modelPostInteractions = PostInteractions;
 
@@ -25,18 +27,82 @@ export const deletePostInteractionR = async(data)=>{
 }
 
 
-
-
-export const getInteractionPost =async (user_id)=>{
-    try{
-        const interaction = modelPostInteractions.find({"user_id":user_id})
-        .populate("user_id", "user_name email")
-        .populate("post_id", "title author")
-    
-        return await interaction;
-    }catch(error){
-        console.error("Error al buscar la interaccion del post:", error);
+export const getInteractionsPost = async (post_id) => {
+    try {
+        const interaction = await modelPostInteractions.aggregate([
+            { $match: { post_id: new mongoose.Types.ObjectId(post_id) } },//* Aqui se filtra el post del que se extraerá todos sus interacciones
+            {
+                $group: {
+                    _id: "$post_id",
+                    sumLikes: {
+                        $sum: { $cond: [{ $eq: ["$type", "like"] }, 1, 0] }
+                    },
+                    sumDislikes: {
+                        $sum: { $cond: [{ $eq: ["$type", "dislike"] }, 1, 0] }
+                    },
+                    sumShares: {
+                        $sum: { $cond: [{ $eq: ["$type", "outstanding"] }, 1, 0] }
+                    }
+                }
+            }
+        ]);
+        return interaction; // Retornar el resultado de la agregación
+    } catch (error) {
+        console.error("Error al buscar la interacción del post:", error);
         throw error;
     }
-}
+};
+
+export const getInteractionsUserPost = async (post_id, user_id) => {
+    try {
+        const interaction = await modelPostInteractions.aggregate([
+            { 
+                $match: { 
+                    post_id: new mongoose.Types.ObjectId(post_id), 
+                    user_id: new mongoose.Types.ObjectId(user_id) 
+                } 
+            },
+            {
+                $group: {
+                    _id: { post_id: "$post_id", user_id: "$user_id" }, // Agrupar por post_id y user_id. Estos son segun los parametros que tengas y hacen alusion a los campos dentro de la collection actual
+                    sumLikes: {
+                        $sum: { $cond: [{ $eq: ["$type", "like"] }, 1, 0] }
+                    },
+                    sumDislikes: {
+                        $sum: { $cond: [{ $eq: ["$type", "dislike"] }, 1, 0] }
+                    },
+                    sumShares: {
+                        $sum: { $cond: [{ $eq: ["$type", "outstanding"] }, 1, 0] }
+                    }
+                }
+            },
+            {
+                $lookup: {
+                    from: "users", // Nombre de la colección de usuarios en la base de datos.
+                    localField: "_id.user_id", // Campo de la colección actual el cual viene de group
+                    foreignField: "_id", // id de usuarios en su collection
+                    as: "user_info" // Nombre del campo donde se guardarán los datos relacionados
+                }
+            },
+            {
+                $project: {
+                    _id: 0, // Elimina el campo _id si no lo necesitas
+                    post_id: "$_id.post_id",
+                    user_id: "$_id.user_id",
+                    user_info: { $arrayElemAt: ["$user_info", 0] }, // Si esperas un solo usuario, toma el primero
+                    sumLikes: 1,
+                    sumDislikes: 1,
+                    sumShares: 1
+                }
+            }
+        ]);
+
+        return interaction; // Retornar el resultado de la agregación
+    } catch (error) {
+        console.error("Error al buscar la interacción del post:", error);
+        throw error;
+    }
+};
+
+
 

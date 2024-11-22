@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { Post } from "../Models/Post.js";
 import { limitarTexto } from "./utils.js";
+import { getInteractionsPost, getInteractionsUserPost } from "../Repositories/PostInteractionsRepository.js";
 
 const model = Post;
 
@@ -14,16 +15,32 @@ export const getPost = async(req, res)=>{
         return res.status(400).json({message:"El id no existe o es incorrecto"})
     }
 
-    // const idObjectId = new mongoose.Types.ObjectId(id)
-    console.log("Id get param: ", typeof id)
-    console.log("PArametro value: ", id)
-    // console.log("Id post: ", id)
     const post = await model.findById(id)
     if (!post) {
         return res.status(404).json({ message: 'Post not found' });
     }
+    // // const idObjectId = new mongoose.Types.ObjectId(id)
+    // if(!datapayload){
+    //     const interactionsCount = await getInteractionsPost(id)
+    //     console.log("Cantidad de interacciones: ", interactionsCount)
+        
+    //     // console.log("Post por Id: ", post)
+    //     return res.render("contentblog", {post,interactionsCount, layout:true})
+    // }else{
+    //     const user_id = datapayload._id
+    //     const interactionsUser = await getInteractionsUserPost(id, user_id)
+    //     console.log("Cantidad de interacciones por Usuario: ", interactionsUser)
+    //     const interactionsCount = await getInteractionsPost(id)
+    //     console.log("Cantidad de interacciones: ", interactionsCount)
+        
+    //     // console.log("Post por Id: ", post)
+    //     return res.render("contentblog", {post,interactionsCount,interactionsUser, layout:true})
+    // }
+    
+        
     // console.log("Post por Id: ", post)
-    res.render("contentblog", {post, layout:true, viewClass: 'view-posts'})
+    return res.render("contentblog", {post, layout:true})
+    
 }
 
 export const getAllPost = async (req, res)=>{

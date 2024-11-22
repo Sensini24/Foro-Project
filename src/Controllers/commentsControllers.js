@@ -11,11 +11,11 @@ export const getComments = async(req, res)=>{
         // const id = "66ff7a002e65e8e8cd964033";
         console.log("ID DEL POST: ", id)
         const idcommentparent = req.params.idcommentparent || null
-        console.log("ID COMMENT PARENT: ", idcommentparent)
+        // console.log("ID COMMENT PARENT: ", idcommentparent)
         // const idObjectId = new mongoose.Types.ObjectId(id)
 
         const comentariosPrueba= await modelComment.find({ post_id: id})
-        console.log("COMENTARIO PRUEBA: ",  comentariosPrueba)
+        // console.log("COMENTARIO PRUEBA: ",  comentariosPrueba)
 
         const datapayload = req.usuariodatospayload || null
 
@@ -41,17 +41,17 @@ export const getComments = async(req, res)=>{
             
             const commentsAll= await modelComment.find({ post_id: id, idmessageparent: idcommentparent })
             visibleComments = propietario ? commentsAll : commentsAll.filter(comment => comment.visible)
-            console.log("Dwdsawdw", visibleComments)
+            // console.log("Dwdsawdw", visibleComments)
        }else{
             const commentsAll = await modelComment.find({ post_id: id })
     
             const commentariosPrincipales = commentsAll.filter(comment=> comment.idmessageparent == "" || comment.idmessageparent == null)
             visibleComments = propietario ? commentariosPrincipales : commentariosPrincipales.filter(comment => comment.visible)
-            console.log("Dwdsa", visibleComments)
+            // console.log("Dwdsa", visibleComments)
         }
 
         console.log("Propietario: ", propietario)
-        console.log("DOCUMENTOS CARGADOS POR ID DE POST: ", visibleComments)
+        // console.log("DOCUMENTOS CARGADOS POR ID DE POST: ", visibleComments)
         res.render("partials/partial-comments", 
             {
                 //se pasa el filtrado de comments
