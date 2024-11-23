@@ -416,6 +416,7 @@ h3 {
         cursor: pointer;
     }
 
+ 
 /* Parte de respuestas a comentarios */
 .container-form-commentrequest {
     display: none; /* Muestra o oculta según sea necesario */
@@ -465,14 +466,18 @@ h3 {
 }
 
 
+
 .add-like, .add-dislike, .add-share, #like-count,#dislike-count, #share-count {
     color: #1A365D;
 }
+
+
 #add-like:hover .add-like,
 #add-dislike:hover .add-dislike,
 #add-share:hover .add-share{
     color: #FCD639;
 }
+
 
 #add-like:hover #like-count,
 #add-dislike:hover #dislike-count,
@@ -480,7 +485,22 @@ h3 {
     color: #FCD639;
 }
 
-/*! Cuando se ha guardado la interaccion */
+
+   /*! Cuando se ha guardado la  interaccion */
+   .active-button {
+    background-color: #1A365D;
+}
+
+.active-text {
+    color: #FCD639;
+}
+
+#like-count.active-count,
+#dislike-count.active-count,
+#share-count.active-count {
+    color: #FCD639;
+}
+
 /* #add-like:hover, #add-dislike:hover, #add-share:hover {
     background-color: #1A365D;
 }

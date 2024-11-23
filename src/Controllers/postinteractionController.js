@@ -1,4 +1,4 @@
-import { getInteractionsPost, getInteractionsUserPost, savePostInteractionR } from "../Repositories/PostInteractionsRepository.js";
+import { deletePostInteractionR, getInteractionsPost, getInteractionsUserPost, savePostInteractionR } from "../Repositories/PostInteractionsRepository.js";
 
 export const savePostInteractionC = async (req, res)=>{
     const datapayload = req.usuariodatospayload
@@ -20,7 +20,7 @@ export const savePostInteractionC = async (req, res)=>{
         console.log("data interaction save: ", data)
         const result = await savePostInteractionR(data)
         console.log("Post Interaction: ", result)
-        return res.status(201).json({succesmessage:`La interacción ${type} al post ha sido registrada`, result}) 
+        return res.status(201).json({successmessage:`La interacción ${type} al post ha sido registrada`, result}) 
     }catch(error){
         console.error("Error en createPostInteraction:", error);
         return res.status(500).json({error:`Error al guarda la interacción ${type}`})
@@ -28,19 +28,26 @@ export const savePostInteractionC = async (req, res)=>{
 }
 
 export const deletePostInteractionC = async (req, res)=>{
-    const [post_id, user_id, type] = req.params.body
-
     try{
+        const datapayload = req.usuariodatospayload || null
+        if(!datapayload){
+            return res.status(501).json({unauthorized:"Tienes que estar registrado para poder interactuar"})
+        }
+        const user_id = datapayload._id
+
+        const {post_id, type} = req.body
+
         const data ={
             post_id,
-            user_id,
+            user_id:user_id,
             type
         }
     
-        const result = await deletePostInteractionR(data)
+        console.log("datos desde eliminar: ", data)
+        const result = await deletePostInteractionR (data)
         console.log("Post Interaction Delete: ", result)
         if (result) {
-            res.status(200).json({ message: `Interacción ${type} eliminada exitosamente`, result });
+            res.status(200).json({ successmessage: `Interacción ${type} eliminada exitosamente`, result });
         } else {
             res.status(404).json({ error: `No se encontró la interacción ${type} con los parámetros proporcionados` });
         }

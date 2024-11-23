@@ -10,27 +10,34 @@
                             <div class="comment-author" id="comment-user-name">
                                 <%=  comm.user_name%>
                             </div>
-                            <div class="comment-author-tag" id="comment-user-name">
+                            <div class="comment-author-tag" id="comment-user-name" style="color: #FCD639;">
                                 <%= "(author)"%>
                             </div>
                         </div>
                     <%}else{%>
                         <!--Si el que comenta es dueño del post pero esta respondiendo otro comentario entonces se agrega el requestname-->
                         <div class="container-headers">
-                            <div class="container-headers-comment-tag">
-                                <div class="comment-author" id="comment-user-name">
-                                    <%=  comm.user_name%>
-                                    
-                                </div>
-                                <div class="comment-author-tag" id="comment-user-name">
-                                    <%= "(author)"%>
-                                </div>
+                            <div class="comment-author" id="comment-user-name">
+                                <%=  comm.user_name%>
+                            </div>
+                            <div id="receptor-message" style="color: #FCD639;"> 
+                                <%= "(author)"%> 
                             </div>
                             <!--Si el nombre a quien se responde es el autor actual de post entonces se le agrega un (author)-->
                             <%if(comm.requestname == author){%>
+                                
                                 <div id="receptor-message"> 
-                                    <%= ">>" +  comm.requestname + "(author)"%> 
+                                    <%= ">>" +  comm.requestname%> 
                                 </div>
+                                <div id="receptor-message" style="color: #FCD639;"> 
+                                    <%= "(author)"%> 
+                                </div>
+                            <%}else{%>
+                            <!--wdqwd-->
+                            <div id="receptor-message"> 
+                                <%= ">>" +  comm.requestname%> 
+                            </div>
+                                
                             <%}%>
                         </div>
                     <%}%>
@@ -52,7 +59,10 @@
                             <!--Si el nombre a quien se responde es el autor actual de post entonces se le agrega un (author)-->
                             <%if(author === comm.requestname ){%>
                                 <div id="receptor-message"> 
-                                    <%= ">>" +  comm.requestname + "(author)"%> 
+                                    <%= ">>" +  comm.requestname%> 
+                                </div>
+                                <div id="receptor-message" style="color: #FCD639;"> 
+                                    <%="(author)"%> 
                                 </div>
                             <%}else{%>
                                 <div id="receptor-message"> 

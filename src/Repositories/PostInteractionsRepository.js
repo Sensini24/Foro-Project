@@ -46,6 +46,18 @@ export const getInteractionsPost = async (post_id) => {
                 }
             }
         ]);
+
+        //EN CASO DE QUE NO HAY NINGUNA INTERACCION PREVIA
+        if (interaction.length === 0) {
+            return [
+                {
+                    post_id,
+                    sumLikes: 0,
+                    sumDislikes: 0,
+                    sumShares: 0,
+                },
+            ];
+        }
         return interaction; // Retornar el resultado de la agregación
     } catch (error) {
         console.error("Error al buscar la interacción del post:", error);
@@ -86,7 +98,7 @@ export const getInteractionsUserPost = async (post_id, user_id) => {
             },
             {
                 $project: {
-                    _id: 0, // Elimina el campo _id si no lo necesitas
+                    _id: 0,
                     post_id: "$_id.post_id",
                     user_id: "$_id.user_id",
                     user_info: { $arrayElemAt: ["$user_info", 0] }, // Si esperas un solo usuario, toma el primero
@@ -96,6 +108,20 @@ export const getInteractionsUserPost = async (post_id, user_id) => {
                 }
             }
         ]);
+
+        //EN CASO DE QUE EL USUARIO NO HAY INTERACTUADO CON EL POST
+        if (interaction.length === 0) {
+            return [
+                {
+                    post_id,
+                    user_id,
+                    user_info: null,
+                    sumLikes: 0,
+                    sumDislikes: 0,
+                    sumShares: 0,
+                },
+            ];
+        }
 
         return interaction; // Retornar el resultado de la agregación
     } catch (error) {
