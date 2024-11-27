@@ -8,25 +8,71 @@
 </head>
 <body>
     <div class="posts-container" id="pposts">
-        <% posts.forEach(post =>{ %>
-        <div class="post">
-            <div id="idpost" class="post-content"><%= post.id %></div>
-            <div style="display: flex; justify-content: space-between;">
-                <div class="post-content"><%= post.title %></div>
-                <span class="material-icons" id="puntos" style="cursor: pointer;">
-                    more_vert
-                </span>
+        <% posts.forEach(post => { %>
+        <div class="card">
+            <!-- Encabezado del post -->
+            <div class="card-header">
+                <div class="header-left">
+                    <img src="https://via.placeholder.com/40" alt="Host" class="avatar">
+                    <div class="broadcast-info">
+                        <span class="on-air">ON AIR</span>
+                        <span class="broadcast-time">Broadcasting 0:16 min</span>
+                    </div>
+                </div>
+                <button class="join-button">Join Meetup</button>
             </div>
-            <div class="post-content"><%= post.content %></div>
-            <div class="post-content"><%= post.author %></div>
-            <div class="post-interactions">❤️ 2 🔖</div>
-            <a id="verMas" href="/post/<%= post.id %>" class="ver-mas">ver más</a>
+
+            <!-- Contenido del post -->
+            <div class="card-content">
+                <h2><%= post.title %></h2>
+                <p class="subtitle"><%= post.author %></p>
+                <p class="description"><%= post.content %></p>
+                <a id="verMas" href="/post/<%= post.id %>" class="ver-mas">ver más</a>
+            </div>
+
+            <!-- Footer del post -->
+            <div class="card-footer">
+                <div class="members">
+                    <div class="avatar-group">
+                        <img src="https://via.placeholder.com/24" alt="Member 1" class="avatar small">
+                        <img src="https://via.placeholder.com/24" alt="Member 2" class="avatar small">
+                        <img src="https://via.placeholder.com/24" alt="Member 3" class="avatar small">
+                        <img src="https://via.placeholder.com/24" alt="Member 4" class="avatar small">
+                        <img src="https://via.placeholder.com/24" alt="Member 5" class="avatar small">
+                    </div>
+                    <span class="member-count">16 Members</span>
+                </div>
+                <div class="post-interactions">
+                    ❤️ 2 🔖
+                </div>
+                <div class="actions">
+                    <button class="action-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                        89 comments
+                    </button>
+                    <button class="action-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="18" cy="5" r="3"></circle>
+                            <circle cx="6" cy="12" r="3"></circle>
+                            <circle cx="18" cy="19" r="3"></circle>
+                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                        </svg>
+                    </button>
+                    <button class="action-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
         </div>
-        
         <% }) %>
-    
     </div>
 </body>
+
 </html>
 <script>
 

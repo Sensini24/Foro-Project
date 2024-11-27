@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../css/login.css">
 </head>
 <body>
-    <div class="login-container">
+    <!-- <div class="login-container">
         <div class="login-box">
             <h2>Iniciar sesión</h2>
             <form id="form-login">
@@ -28,6 +28,27 @@
                 </div>
             </form>
         </div>
+    </div> -->
+
+    <div class="login-container v1">
+        <h2>Ingresar a Literatura Perenne</h2>
+        <form id="form-login">
+            <div class="input-group">
+                <label for="email">Email</label>
+                <input type="text" id="email" name="email" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" class="login-btn">Ingresar</button>
+            <h1 id="message"></h1>
+            <div class="additional-options">
+                <!-- <a href="#">Forgot your scroll?</a> -->
+                <a href="/auth/sign-up">Registrate si no lo estás</a>
+                <a href="/post/postlist">Solo vengo de visita</a>
+            </div>
+        </form>
     </div>
 </body>
 </html>

@@ -17,35 +17,15 @@
     </head>
     
 <body>
-    <%- include('partials/partial-header') %>
+    <header>
+        <%- include('partials/partial-header') %>
+    </header>
+    
     
     <main class="main-layout">
         <!--ATAJOS-->
         <div class="sidebar">
-            <h3>Posts</h3>
-            <div class="group-item" id="allposts-atajos-posts">
-                <a href="/post/partialAllPost" style="text-decoration: none; color: #6984A8;" ><span>📑 Todos los posts</span></a> 
-            </div>
-            <div class="group-item" id="user-atajos-posts">
-                <a href="/user/posts"><span>📑 Mis Posts</span> </a>
-            </div>
-            <div class="group-item" id="nuevopost-atajos-posts">
-                <a href="/post/addpostget"><span>📑 Nuevo Post</span></a>
-            </div>
-
-            <div class="decorative-line"></div>
-
-            <h3>Atajos de usuario</h3>
-            <div class="group-item">
-                <span>📑 Guardados</span>
-            </div>
-            
-            <div class="decorative-line"></div>
-            
-            <h3>Grupos literarios</h3>
-            <div class="group-item">
-                <span>🔒 Vida de Dostoiewski</span>
-            </div>
+            <%- include('partials/partial-sidebar') %>
         </div>
 
         <!--BODY-->
@@ -54,12 +34,9 @@
         </div>
         
         <!--TAGS-->
-        <div class="tags-container">
-            <h3>Tags más buscados</h3>
-            <div class="tag">1. Literatura</div>
-            <div class="tag">2. Mitología</div>
-            <div class="tag">3. Edgar Allan Poe</div>
-        </div>
+        <aside class="tags-container sidebar right-sidebar">
+            <%- include('partials/partial-tags') %>
+        </aside>
     </main>
     <script src="../client/app.js" type="module"></script>
     

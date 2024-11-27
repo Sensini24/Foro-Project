@@ -4,6 +4,7 @@ import { verificarToken } from "../Controllers/utils.js";
 
 const authRoute = Router()
 
+
 authRoute.post("/auth/login", userlogin)
 
 authRoute.get("/auth/login", getlogin)
@@ -13,8 +14,11 @@ authRoute.get("/auth/sign-up", getsignup)
 
 authRoute.post("/auth/sign-up", userRegister)
 
-authRoute.get("/user/getUser", verificarToken, UserCharge)
 authRoute.post("/user/uploadImage", verificarToken, upload.single('profilePic'), uploadImageProfile)
+
+authRoute.get("/user/getUser", verificarToken, UserCharge)
+
+
 
 
 export default authRoute

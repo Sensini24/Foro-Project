@@ -9,61 +9,62 @@
     <!-- <link rel="stylesheet" href="header.css"> -->
 </head>
 <body>
-    <header>
-        <div class="header-container">
-            <div class="logo">
-                <h1>Literatura perenne</h1>
-            </div>
-            <nav class="navbar">
-                <ul class="menu">
-                    <% if (usuario) { %>
-                        <h3>
-                            Hola <%= usuario.user_name %>
-                        </h3>
-                       
-                    <% } %>
-                </ul>
-            </nav>
-
-            <div class="user-options">
+    <header class="navbar">
+        <!-- Logo y nombre -->
+        <div class="navbar-logo">
+            <img src="https://via.placeholder.com/50" alt="Olympus Tech Logo" class="logo-image">
+            <span class="logo-text">Olympus Tech</span>
+        </div>
+        
+        <!-- Formulario de búsqueda -->
+        <form class="search-form">
+            <input type="search" placeholder="Search the realm of knowledge..." class="search-input">
+            <button type="submit" class="search-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+            </button>
+        </form>
+        
+        <!-- Opciones de usuario -->
+        <div class="navbar-profile">
+            <% if (usuario) { %>
+                <!-- Mostrar nombre del usuario -->
+                <h3>Hola <%= usuario.user_name %></h3>
+                
+                <!-- Foto de perfil y opciones -->
                 <div class="user-photo">
-                    <img id="img-user" alt="Foto de usuario" />
+                    <img id="img-user" src="https://via.placeholder.com/40" alt="Foto de usuario" class="profile-image" />
                 </div>
-                <div class="user-settings">
-                    <a href="#"><i class="fas fa-cog"></i></a>
-                </div>
-                <% if (usuario) { %> <!-- Aquí cambias req.locals.usuario por usuario -->
-                    <form action="/auth/logout" method="get">
-                        <button type="submit">
-                            <div class="user-logout" id="logout-button" style="cursor: pointer;">
-                                <i class="material-icons">logout</i>
-                                
-                            </div>
-                        </button>
-                    </form>
-                <% } %>
-                <% if (usuario) { %>
+                
+                <!-- Subir foto -->
                 <form enctype="multipart/form-data" id="formImage">
                     <input type="file" name="profilePic" id="id-foto" />
-                    <button type="submit">Subir Foto</button>
+                    <button type="submit" class="upload-button">Subir Foto</button>
                 </form>
-                <% } %>
-                <% if (!usuario) { %>
-                    <div>
-                            <a href="/auth/login" style="display: flex; flex-direction: column; align-items: center;">
-                                <span class="material-icons">
-                                    login
-                                    </span>Ingresar
-                            </a>
-                    </div>
-                <% } %>
-                  
-            </div>
+                
+                <!-- Botón de ajustes -->
+                <a href="#" class="settings-button"><i class="fas fa-cog"></i></a>
+                
+                <!-- Botón de logout -->
+                <form action="/auth/logout" method="get" style="display: inline;">
+                    <button type="submit" class="logout-button">
+                        <i class="material-icons">logout</i> Logout
+                    </button>
+                </form>
+            <% } else { %>
+                <!-- Botón de login si no hay usuario -->
+                <div class="login-container">
+                    <a href="/auth/login" class="login-link">
+                        <span class="material-icons">login</span> Ingresar
+                    </a>
+                </div>
+            <% } %>
         </div>
     </header>
-
-    <!-- Tu contenido debajo del header -->
 </body>
+
 </html>
 <script>
     // const inputFile = document.getElementById("id-foto")
@@ -103,6 +104,7 @@
             img_user.src = "/Images/avatar/user.png"
             console.log(data.message)
             console.log(data.usuario)
+            console.log("No tiene una imagen prevista: ", img_user.src)
         }else{
             console.log("usuario obtenido")
             console.log(data.message)
@@ -110,6 +112,7 @@
             // const pathAdecuado = data.usuario.substring(6,data.usuario.lenght)
             // console.log("Path adecuado: ", ".." + pathAdecuado)
             img_user.src = data.usuario
+            console.log("")
             console.log("Imagen cargada: ", img_user.src)
         }
 

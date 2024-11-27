@@ -3,7 +3,7 @@
 @import url('https://fonts.cdnfonts.com/css/cascadia-code');
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=Lexend+Deca:wght@100..900&display=swap');
 
-/* Estilos generales */
+/* Estilos generales
 body {
     margin: 0;
     padding: 0;
@@ -13,12 +13,12 @@ body {
 
 .contenido-total {
     height: auto; /* Asegúrate de que esté configurado para adaptarse al contenido */
-    min-height: 100vh; /* Esto asegura que cubra al menos toda la pantalla */
-    overflow: auto; /* Permite el desplazamiento si el contenido excede la altura */
-}
+    /* min-height: 100vh; Esto asegura que cubra al menos toda la pantalla */
+    /* overflow: auto; Permite el desplazamiento si el contenido excede la altura */
+/* } */
 /*SALUDO*/
 /* Container para los headers */
-.header-contain {
+/* .header-contain {
     text-align: center;
     margin: 40px auto;
     max-width: 900px;
@@ -27,34 +27,34 @@ body {
 .partial-containers {
     display: flex;
     gap: 20px;
-}
+} */
 /* Estilo base para ambos h1 */
-#titulo {
+/* #titulo {
     font-family: "Lexend Deca", sans-serif;
     color: #1a365d;
     position: relative;
     padding-bottom: 15px;
     margin-bottom: 25px;
-}
+} */
 
 /* Estilo específico para el título principal */
-#titulo:first-child {
+/* #titulo:first-child {
     font-size: 42px;
     font-weight: 700;
     letter-spacing: 0.5px;
-}
+} */
 
 /* Estilo específico para el saludo */
-#titulo:nth-child(2) {
+/* #titulo:nth-child(2) {
     font-size: 32px;
     font-weight: 400;
     font-style: italic;
     color: #2d4a77;
-}
+} */
 
 
 /* Animación sutil para el saludo */
-@keyframes fadeInSlide {
+/* @keyframes fadeInSlide {
     from {
         opacity: 0;
         transform: translateY(10px);
@@ -67,23 +67,23 @@ body {
 
 #titulo:nth-child(2) {
     animation: fadeInSlide 0.6s ease-out forwards;
-}
+} */
 
 /*POSTS*/
 
-div{
+/* div{
     font-family: "Lexend Deca", sans-serif;
     font-weight: 600;
     font-style: normal;
 }
 .read-more:hover {
     background-color: #555;
-}
+} */
 
 
 
 /*POSTS PARTIAL*/
-.posts-container {
+/* .posts-container {
     max-width: 800px;
     margin: 20px auto;
     display: flex;
@@ -124,25 +124,25 @@ div{
 
 #idpost{
     display: none;
-}
+} */
 
 /* Title styling */
-.post-content:first-child {
+/* .post-content:first-child {
     font-size: 24px;
     font-weight: 600;
     margin-bottom: 15px;
     font-family: "Lexend Deca", sans-serif;
-}
+} */
 
 /* Content styling */
-.post-content:nth-child(2) {
+/* .post-content:nth-child(2) {
     font-size: 16px;
     margin-bottom: 15px;
     color: #2d4a77;
-}
+} */
 
 /* Author styling */
-.post-content:nth-child(3) {
+/* .post-content:nth-child(3) {
     font-size: 14px;
     color: #4a5568;
     font-style: italic;
@@ -155,9 +155,9 @@ div{
     margin-bottom: 15px;
     padding-top: 10px;
     border-top: 1px solid #e2e8f0;
-}
+} */
 
-.ver-mas {
+/* .ver-mas {
     display: inline-block;
     color: #3182ce;
     text-decoration: none;
@@ -170,7 +170,7 @@ div{
 .ver-mas:hover {
     color: #2c5282;
     text-decoration: underline;
-}
+} */
 
 /* Block more options */
 /* #puntos{
@@ -179,7 +179,7 @@ div{
 } */
 
 
-.container-more {
+/* .container-more {
     display: none;
     width: 11%;
     display: flex;
@@ -189,19 +189,217 @@ div{
     border-width: 2px;
     background-color: #3B5998;
     box-shadow: 5px 2px gray;
-}
+} */
 
-.more-option {
+/* .more-option {
     display: flex;
-    align-items: center; /* Alinea verticalmente el icono y el texto */
-    justify-content: flex-start; /* Alinea los elementos a la izquierda */
+    align-items: center; /* Alinea verticalmente el icono y el texto 
+    justify-content: flex-start; /* Alinea los elementos a la izquierda 
     padding: 2px;
     cursor: pointer;
     color: white;
-}
+} */
 
 
-.more-option:hover {
+/* .more-option:hover {
     border-radius: 10px;
-    background-color: #2d4a77; /* Color de fondo al pasar el ratón, opcional */
-}
+    background-color: #2d4a77; /* Color de fondo al pasar el ratón, opcional } */
+
+
+    :root {
+        --gruvbox-bg: #282828;
+        --gruvbox-fg: #ebdbb2;
+        --gruvbox-red: #cc241d;
+        --gruvbox-green: #98971a;
+        --gruvbox-yellow: #d79921;
+        --gruvbox-blue: #458588;
+        --gruvbox-purple: #b16286;
+        --gruvbox-aqua: #689d6a;
+        --gruvbox-gray: #a89984;
+    }
+    
+    body {
+        font-family: 'Times New Roman', serif;
+        /* display: flex;
+        justify-content: center;
+        align-items: center; */
+        height: 100%;
+        margin: 0;
+        background-color: var(--gruvbox-bg);
+        color: var(--gruvbox-fg);
+    }
+    
+    .card {
+        background-color: var(--gruvbox-bg);
+        border: 2px solid var(--gruvbox-yellow);
+        border-radius: 0;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        max-width: 600px;
+        width: 100%;
+        position: relative;
+    }
+    
+    .card::before, .card::after {
+        content: '';
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        border: 2px solid var(--gruvbox-yellow);
+    }
+    
+    .card::before {
+        top: -10px;
+        left: -10px;
+        border-right: none;
+        border-bottom: none;
+    }
+    
+    .card::after {
+        bottom: -10px;
+        right: -10px;
+        border-left: none;
+        border-top: none;
+    }
+    
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px;
+        border-bottom: 1px solid var(--gruvbox-yellow);
+    }
+    
+    .header-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 2px solid var(--gruvbox-yellow);
+        overflow: hidden;
+    }
+    
+    .avatar-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .broadcast-info {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .on-air {
+        color: var(--gruvbox-red);
+        font-weight: bold;
+    }
+    
+    .broadcast-time {
+        font-size: 0.8em;
+        color: var(--gruvbox-gray);
+    }
+    
+    .join-button {
+        background-color: var(--gruvbox-green);
+        color: var(--gruvbox-bg);
+        border: none;
+        padding: 8px 16px;
+        cursor: pointer;
+        font-family: 'Times New Roman', serif;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+    
+    .card-content {
+        padding: 16px;
+    }
+    
+    .title {
+        margin-top: 0;
+        margin-bottom: 8px;
+        color: var(--gruvbox-yellow);
+        font-size: 1.5em;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .subtitle {
+        color: var(--gruvbox-blue);
+        margin-top: 0;
+        margin-bottom: 16px;
+        font-style: italic;
+    }
+    
+    .description {
+        color: var(--gruvbox-fg);
+        font-size: 0.9em;
+        line-height: 1.5;
+        margin-bottom: 16px;
+    }
+    
+    .card-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-top: 1px solid var(--gruvbox-yellow);
+        padding-top: 16px;
+    }
+    
+    .members {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .avatar-group {
+        display: flex;
+    }
+    
+    .avatar.small {
+        width: 24px;
+        height: 24px;
+        border: 2px solid var(--gruvbox-bg);
+        margin-left: -8px;
+    }
+    
+    .avatar.small:first-child {
+        margin-left: 0;
+    }
+    
+    .member-count {
+        font-size: 0.8em;
+        color: var(--gruvbox-gray);
+    }
+    
+    .actions {
+        display: flex;
+        gap: 16px;
+    }
+    
+    .action-button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        color: var(--gruvbox-gray);
+        font-size: 0.8em;
+    }
+    
+    .action-button svg {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .action-button:hover {
+        color: var(--gruvbox-yellow);
+    }
+    
+    
+
