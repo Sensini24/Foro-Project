@@ -160,6 +160,7 @@
                     break;
                 //CAncelar comentario
                 case "button-cancel":
+                    event.preventDefault()
                     handleCancel(comment);
                     break;
 
@@ -218,7 +219,7 @@
     
     function handleRequestButton(comment) {
         const containerRequest = comment.querySelector(".container-form-commentrequest");
-        const contBtnComments = comment.querySelector(".comment-ocultar-delete");
+        const contBtnComments = comment.querySelector(".comment-actions");
         const commentAuthor = comment.querySelector(".comment-author").textContent.trim();
         
         // Mostrar formulario de respuesta
@@ -230,11 +231,12 @@
     }
     
     function handleCancel(comment) {
-        const containerRequest = comment.querySelector(".container-form-commentrequest");
-        const contBtnComments = comment.querySelector(".comment-ocultar-delete");
         
+        const containerRequest = comment.querySelector(".container-form-commentrequest");
+        const contBtnComments = comment.querySelector(".comment-actions");
         containerRequest.style.display = "none";
         contBtnComments.style.display = "flex";
+        
     }
     
     async function handleSaveCommentfather(comment) {

@@ -1,210 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
-
-@import url('https://fonts.cdnfonts.com/css/cascadia-code');
-@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=Lexend+Deca:wght@100..900&display=swap');
-
-/* Estilos generales
-body {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: "Lexend Deca", sans-serif;
-}
-
-.contenido-total {
-    height: auto; /* Asegúrate de que esté configurado para adaptarse al contenido */
-    /* min-height: 100vh; Esto asegura que cubra al menos toda la pantalla */
-    /* overflow: auto; Permite el desplazamiento si el contenido excede la altura */
-/* } */
-/*SALUDO*/
-/* Container para los headers */
-/* .header-contain {
-    text-align: center;
-    margin: 40px auto;
-    max-width: 900px;
-}
-
-.partial-containers {
-    display: flex;
-    gap: 20px;
-} */
-/* Estilo base para ambos h1 */
-/* #titulo {
-    font-family: "Lexend Deca", sans-serif;
-    color: #1a365d;
-    position: relative;
-    padding-bottom: 15px;
-    margin-bottom: 25px;
-} */
-
-/* Estilo específico para el título principal */
-/* #titulo:first-child {
-    font-size: 42px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-} */
-
-/* Estilo específico para el saludo */
-/* #titulo:nth-child(2) {
-    font-size: 32px;
-    font-weight: 400;
-    font-style: italic;
-    color: #2d4a77;
-} */
-
-
-/* Animación sutil para el saludo */
-/* @keyframes fadeInSlide {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-#titulo:nth-child(2) {
-    animation: fadeInSlide 0.6s ease-out forwards;
-} */
-
-/*POSTS*/
-
-/* div{
-    font-family: "Lexend Deca", sans-serif;
-    font-weight: 600;
-    font-style: normal;
-}
-.read-more:hover {
-    background-color: #555;
-} */
-
-
-
-/*POSTS PARTIAL*/
-/* .posts-container {
-    max-width: 800px;
-    margin: 20px auto;
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
-}
-
-.post {
-    background-color: white;
-    height: max-content;
-    padding: 25px 30px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    border: 1px solid #e2e8f0;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    margin-bottom: 20px;
-}
-
-.post:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-}
-
-.post::before {
-    content: '✒️';
-    position: absolute;
-    top: -15px;
-    right: 20px;
-    font-size: 24px;
-    color: rgba(49, 130, 206, 0.2);
-}
-
-.post-content {
-    font-family: "Lexend Deca", sans-serif;
-    line-height: 1.6;
-    color: #1a365d;
-}
-
-#idpost{
-    display: none;
-} */
-
-/* Title styling */
-/* .post-content:first-child {
-    font-size: 24px;
-    font-weight: 600;
-    margin-bottom: 15px;
-    font-family: "Lexend Deca", sans-serif;
-} */
-
-/* Content styling */
-/* .post-content:nth-child(2) {
-    font-size: 16px;
-    margin-bottom: 15px;
-    color: #2d4a77;
-} */
-
-/* Author styling */
-/* .post-content:nth-child(3) {
-    font-size: 14px;
-    color: #4a5568;
-    font-style: italic;
-    margin-bottom: 20px;
-}
-
-.post-interactions {
-    font-size: 16px;
-    color: #4a5568;
-    margin-bottom: 15px;
-    padding-top: 10px;
-    border-top: 1px solid #e2e8f0;
-} */
-
-/* .ver-mas {
-    display: inline-block;
-    color: #3182ce;
-    text-decoration: none;
-    font-family: "Lexend Deca", sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    transition: color 0.2s ease;
-}
-
-.ver-mas:hover {
-    color: #2c5282;
-    text-decoration: underline;
-} */
-
-/* Block more options */
-/* #puntos{
-    display: none;
-
-} */
-
-
-/* .container-more {
-    display: none;
-    width: 11%;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    border-radius: 10px;
-    border-width: 2px;
-    background-color: #3B5998;
-    box-shadow: 5px 2px gray;
-} */
-
-/* .more-option {
-    display: flex;
-    align-items: center; /* Alinea verticalmente el icono y el texto 
-    justify-content: flex-start; /* Alinea los elementos a la izquierda 
-    padding: 2px;
-    cursor: pointer;
-    color: white;
-} */
-
-
-/* .more-option:hover {
-    border-radius: 10px;
-    background-color: #2d4a77; /* Color de fondo al pasar el ratón, opcional } */
-
 
     :root {
         --gruvbox-bg: #282828;
@@ -223,20 +16,25 @@ body {
         /* display: flex;
         justify-content: center;
         align-items: center; */
+        width: auto;
         height: 100%;
         margin: 0;
         background-color: var(--gruvbox-bg);
         color: var(--gruvbox-fg);
     }
     
+    .posts-container{
+        width: 100%;
+    }
+
     .card {
         background-color: var(--gruvbox-bg);
         border: 2px solid var(--gruvbox-yellow);
         border-radius: 0;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        max-width: 600px;
         width: 100%;
         position: relative;
+        margin-top: 2rem;
     }
     
     .card::before, .card::after {
@@ -348,6 +146,9 @@ body {
         align-items: center;
         border-top: 1px solid var(--gruvbox-yellow);
         padding-top: 16px;
+        margin-right: 10px;
+        margin-left: 10px;
+        margin-bottom: 10px;
     }
     
     .members {

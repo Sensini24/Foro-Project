@@ -90,7 +90,8 @@ export const getAllPartialPost = async (req, res)=>{
             
         });
 
-            res.render("partials/partial-posts", { posts, layout: true });
+        console.log("Posts totales: ", posts)
+        res.render("partials/partial-posts", { posts, layout: true });
        
         // res.status(200).json(blogs); // Responder con los blogs obtenidos
     }catch(error){

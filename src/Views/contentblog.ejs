@@ -9,62 +9,66 @@
     <!-- Uso de google fonts -->
 </head>
 <body>
-        <div class="container" id="cuerpo-post-blog">
-            <div class="blog-title sr-only" aria-hidden="true" id="id-post"><%= post.id %></div>
-            <div class="blog-title"><%= post.title %></div>
-            <div class="blog-author"><%= post.author %></div>
-            <div class="blog-date"><%= post.date %></div><br>
-            <!-- <div class="blog-tags">Tags:  <%=  post.tags.length>0? post.tags : "No existen tags"%></div> -->
-            <div class="blog-tags">Tags:  
-                <% if(post.tags.length>0){%>
-                    <% post.tags.forEach(tag=>{%>
-                        <span id="tags-elements"><%= tag %></span>
-                    <% }) %>
-                <% }else{%>
-                    <h3>No existen tags</h3>
-                <%} %>
-                <!-- <%=  post.tags.length>0? post.tags : "No existen tags"%> -->
+    <div class="container" id="cuerpo-post-blog">
+        <!-- Título del post -->
+        <div class="blog-title sr-only" aria-hidden="true" id="id-post"><%= post.id %></div>
+        <h1 class="blog-title"><%= post.title %></h1>
+    
+        <!-- Metadatos -->
+        <div class="post-meta">
+            <div class="blog-author">By <%= post.author %></div>
+            <div class="blog-date">Published on <%= post.date %></div>
+        </div>
+    
+        <!-- Tags -->
+        <div class="blog-tags">
+            <strong>Tags:</strong>
+            <% if (post.tags.length > 0) { %>
+                <% post.tags.forEach(tag => { %>
+                    <span id="tags-elements" class="tag-item"><%= tag %></span>
+                <% }); %>
+            <% } else { %>
+                <h3>No existen tags</h3>
+            <% } %>
+        </div>
+    
+        <!-- Contenido del post -->
+        <div class="blog-content">
+            <p><%= post.content %></p>
+        </div>
+    
+        <!-- Interacciones -->
+        <div class="post-actions">
+            <h3 style="margin-bottom: 10px;">¿Qué opinas de este post?</h3>
+            <div class="interactions-row likes-dislikes">
+                <div id="add-like" class="individual-interactions">
+                    <i class="material-icons add-like">thumb_up</i>
+                    <span id="like-count" class="span-number like-count">0</span>
+                </div>
+                <div id="add-dislike" class="individual-interactions">
+                    <i class="material-icons add-dislike">thumb_down</i>
+                    <span id="dislike-count" class="span-number dislike-count">0</span>
+                </div>
+                <div id="add-share" class="individual-interactions">
+                    <i class="material-icons add-share">share</i>
+                    <span id="share-count" class="span-number">0</span>
+                </div>
             </div>
-            <div class="blog-content">
-                <p><%= post.content %></p>
-            </div>
-            <!--Parte de las interacciones-->
-            <h3 style="margin-top: 30px;">¿Qué opinas de este post?</h3>
-
-            <div class="interactions-row">
-                    <div id="add-like" class="individual-interactions">
-                        <i class="material-icons add-like">thumb_up</i>
-                        <span id="like-count" class="span-number">
-                            0
-                        </span>
-                    </div>
-                    <div id="add-dislike" class="individual-interactions">
-                        <i class="material-icons add-dislike">thumb_down</i>
-                        <span id="dislike-count" class="span-number">0</span>
-                    </div>
-                    <div id="add-share" class="individual-interactions">
-                        <i class="material-icons add-share">share</i>
-                        <span id="share-count" class="span-number">0</span>
-                    </div>
-            </div>
-            <!--Parte de los comentarios-->
+        </div>
+    
+        <!-- Comentarios -->
+        <div class="comments">
             <h3 style="margin-top: 30px;">Comentarios</h3>
-            
-            <form id="formComment" style="display: flex; align-items: center;">
+            <form id="formComment" class="comment-form" style="display: flex; align-items: center;">
                 <textarea type="text" name="comment" id="comment-id" placeholder="Comenta algo..."></textarea>
-                <!-- <input type="hidden" name="post_id" value=""> -->
                 <button id="btn-comment">
                     <i class="material-icons add-comment">add_comment</i>
                 </button>
             </form>
             <span id="aviso-comment"></span>
-
-            <div id="partial-container">
-                
-            </div>
-            
+            <div id="partial-container"></div>
         </div>
-
+    
         <!-- Modal de registro -->
         <div id="modal-register" class="modal" style="display:none;">
             <div class="modal-content">
@@ -75,6 +79,8 @@
                 <a href="/auth/login">Iniciar sesión</a>
             </div>
         </div>
+    </div>
+    
         <!-- <script src="../client/getComments"></script> -->
 </body>
 </html>

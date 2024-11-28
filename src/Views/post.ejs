@@ -10,53 +10,76 @@
 
 </head>
 <body>
-    <div class="container" id="cuerpoPost">
+    <div class="main-container" id="cuerpoPost">
+        <div class="post-form-container">
+            <!-- Encabezado del formulario con el estado de conexión -->
+            <div class="post-header">
+                <div class="connection-status">
+                    <span class="status-indicator"></span>
+                    <span id="connection-text">CONECTADO || DESCONECTADO</span>
+                </div>
+                <button class="join-button" id="btn-meetup">JOIN MEETUP</button>
+            </div>
 
-        <div class="post-container">
+            <!-- Formulario para crear el post -->
             <form id="formPost">
-                <div class="input-group">
+                <!-- Grupo de entrada para el título -->
+                <div class="form-group input-group">
                     <label for="title">Título</label>
-                    <input type="text" id="titlecontent" class="input-title" placeholder="Ingresa el título de tu publicación...">
+                    <input 
+                        type="text" 
+                        id="titlecontent" 
+                        class="form-control input-title" 
+                        placeholder="Escribe el título de tu post...">
                 </div>
 
-                <div class="input-group">
-                    <div id="editor-container"></div>
+                <!-- Grupo de entrada para el contenido -->
+                <div class="form-group input-group">
                     <label for="content">Contenido</label>
-                    <textarea id="content" class="post-content" placeholder="Comparte tus pensamientos sobre literatura..."></textarea>
+                    <div id="editor-container"></div>
+                    <textarea 
+                        id="content" 
+                        class="form-control post-content" 
+                        placeholder="Desarrolla tu contenido aquí...">
+                    </textarea>
                 </div>
 
+                <!-- Línea decorativa -->
                 <div class="decorative-line"></div>
 
-                <div class="input-group">
+                <!-- Grupo de entrada para las tags -->
+                <div class="form-group input-group">
                     <label for="tags">Tags</label>
-                    <input type="text" name="tags" id="tags" class="tags-input" placeholder="Añade tags relacionados...">
-                    <div class="tags-suggestions">
-                        <span class="tag-suggestion">Literatura</span>
-                        <span class="tag-suggestion">Novela</span>
-                        <span class="tag-suggestion">Poesía</span>
-                        <span class="tag-suggestion">Ensayo</span>
+                    <input 
+                        type="text" 
+                        id="tags" 
+                        class="form-control tags-input" 
+                        placeholder="Añade tags separados por comas...">
+                    <div class="tags-container tags-suggestions">
+                        <span class="tag tag-suggestion">Literatura</span>
+                        <span class="tag tag-suggestion">Novela</span>
+                        <span class="tag tag-suggestion">Poesía</span>
+                        <span class="tag tag-suggestion">Ensayo</span>
                     </div>
                 </div>
+
+                <!-- Botones para guardar el post o agregar tags -->
                 <div class="button-group">
                     <button type="button" class="btn btn-tags">Añadir Tags</button>
-                    <button type="submit" id="btn-submit">GUARDAR</button>
+                    <button type="submit" id="btn-submit" class="publish-button">Publicar Post</button>
                 </div>
             </form>
-            <button id="btn-texto">
-                Texto
-            </button>
         </div>
     </div>
+
+    <!-- Modal para mostrar mensajes -->
     <div id="myModal" class="modal">
         <div class="modal-content">
             <span id="closeModal" class="close">&times;</span>
             <p id="modalMessage"></p>
         </div>
     </div>
-    <script>
-        document.body.classList.remove("view-posts");
-        document.body.classList.add("view-addpost");
-    </script>
 </body>
+
 
 </html>

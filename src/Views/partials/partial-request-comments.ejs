@@ -77,21 +77,39 @@
                 </div>
                 <!--LA PARTE DE CARGA DEL FORM DE LAS RESPUESTAS A COMENTARIOS.-->
                 <div class="container-form-commentrequest">
+                    <!-- Header con nombre al que se responde -->
                     <div id="request-name-header">
-                        <p>Respuesta para: <span id="request-name"></span> </p>
+                        <p class="reply-to">@<span id="request-name"></span></p>
                     </div>
-                    <form id="formCommentRequest" style="display: flex; align-items: center; margin-top: 5px;">
-                        <textarea type="text" name="comment" id="comment-content-request"></textarea>
-                        <!-- <input type="hidden" name="post_id" value=""> -->
-                            <button id="btn-comment-request-child" style="margin-left: 5px;">
-                                <i class="material-icons add-comment">add_comment</i>
+                
+                    <!-- Formulario para agregar comentarios -->
+                    <form id="formCommentRequest" style="display: flex; flex-direction: column; margin-top: 5px;" class="comment-field v3">
+                        <!-- Campo de texto para la respuesta -->
+                        <textarea 
+                            placeholder="Escribe tu respuesta aquí..." 
+                            id="comment-content-request" 
+                            name="comment"
+                            style="resize: none;">
+                        </textarea>
+                        
+                        <!-- Acciones de enviar y cancelar -->
+                        <div class="actions" style="display: flex; gap: 10px; justify-content: flex-end;">
+                            <!-- Botón de cancelar -->
+                            <button id="button-cancel" class="btn-comments btn-cancel" title="Cancelar">
+                                ×
                             </button>
+                
+                            <!-- Botón de enviar -->
+                            <button id="btn-comment-request-child" class="btn-submit" title="Enviar">
+                                ↵
+                            </button>
+                        </div>
                     </form>
-                    <button id="button-cancel" class="btn-comments" style="margin-top: 3px;">
-                        Cancelar
-                    </button>
-                    <span id="aviso-comment"></span>
+                
+                    <!-- Aviso para el estado del comentario -->
+                    <span id="aviso-comment" style="color: red; margin-top: 5px;"></span>
                 </div>
+                
             </div>
         <%}) %>
     </div>

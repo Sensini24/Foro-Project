@@ -2,6 +2,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=Lexend+Deca:wght@100..900&display=swap');
 
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Lexend+Deca:wght@100..900&display=swap');
+
 /* Estilos generales */
 * {
     margin: 0;
@@ -54,6 +56,15 @@ body {
     margin: 0;
     padding: 0;
     line-height: 1.6;
+}
+
+/* .main-layout{
+    display: flex;
+    justify-content: space-between;
+} */
+.contenido{
+    width: 60%;
+    
 }
 
 .navbar {
@@ -183,16 +194,98 @@ body {
 
 .sidebar {
     width: 250px;
+    height: auto;
     padding: 1rem;
     background-color: var(--dark-bg-soft);
     overflow-y: auto;
+    
+    
 }
 /*Tags*/
+
+/* Estilos para el sidebar izquierdo */
+.left-sidebar {
+    border-right: 1px solid var(--dark-bg-muted);
+    height: fit-content;
+    position: sticky; /* Activa el comportamiento sticky */
+    top: 0; /* Fija el elemento a la parte superior cuando empiezas a desplazarte */
+    border-radius: 10px;
+    background-color: var(--sidebar-bg); /* Opcional para darle un fondo fijo */
+    padding: 10px; /* Opcional para un mejor diseño */
+}
+
+
+.search-container {
+    margin-bottom: 1rem;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.5rem;
+    background-color: var(--dark-bg-muted);
+    border: 1px solid var(--dark-gray);
+    border-radius: 4px;
+    color: var(--dark-fg);
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--dark-blue);
+    box-shadow: 0 0 0 2px rgba(69, 133, 136, 0.2);
+}
+
+.left-sidebar h3 {
+    font-size: 0.75rem;
+    color: var(--dark-yellow);
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.left-sidebar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.left-sidebar li {
+    margin-bottom: 0.25rem;
+}
+
+.left-sidebar a {
+    display: flex;
+    align-items: center;
+    color: var(--dark-fg);
+    text-decoration: none;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.left-sidebar a:hover {
+    background-color: var(--dark-bg-muted);
+}
+
+.left-sidebar .icon {
+    margin-right: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.left-sidebar .favorite .icon {
+    color: var(--dark-yellow);
+}
 
 /* Estilos para el sidebar derecho */
 .right-sidebar {
     border-left: 1px solid var(--dark-bg-muted);
     background-color: var(--dark-bg-soft);
+    border-radius: 10px;
+    top: 0;
+    height: fit-content;
+    position: sticky;
+    padding: 10px;
 }
 
 .right-sidebar h2 {
@@ -387,36 +480,4 @@ main {
 .left-sidebar a:nth-child(3n+2) .icon {
     background-color: rgba(104, 157, 106, 0.2);
     color: var(--dark-aqua);
-}
-
-/*PARTIAL CONTAINER*/
-.partial-containers {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-}
-
-#partial-atajos{
-    margin-right: 75%;
-}
-#partial-tags{
-    margin-left: 75%;
-}
-/* Configuración de los elementos */
-#partial-atajos, #partial-tags {
-    width: 250px;
-    padding: 15px;
-    border-radius: 8px;
-    height: 300px; /* Ajusta el tamaño como sea necesario */
-    position: fixed;
-    top: 100px; /* Ajusta el espacio superior según lo necesites */
-}
-
-#partial-posts {
-    flex-grow: 1;
-    padding: 15px;
-    background-color: #ffffff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    max-height: 400px; /* Altura mayor para permitir desplazamiento */
 }

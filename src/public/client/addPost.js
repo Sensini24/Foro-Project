@@ -23,9 +23,6 @@ export function initAddPost(){
     const formPost = document.getElementById("formPost")
     const btnSbumit = document.getElementById("btn-submit")
 
-    btntexto.addEventListener("click", ()=>{
-        console.log("Btn texto clicado")
-    })
 
     formPost.addEventListener("submit", (event)=>{
         event.preventDefault();
