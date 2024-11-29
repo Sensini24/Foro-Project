@@ -1,4 +1,3 @@
-
 const containerPost = document.querySelectorAll(".post");
 containerPost.forEach(container => {
     const verMas = container.querySelector("#verMas");
@@ -13,7 +12,3 @@ containerPost.forEach(container => {
         });
     }
 });
-
-// export function initAllPosts(){
-    
-// }

@@ -27,6 +27,8 @@ export const interactions = async ()=>{
 
 }
 
+
+
 const handleSaveInteracction = async(cuerpopostblog, type)=>{
     let numerovalor = cuerpopostblog.querySelector("#like-count").textContent
     const postId = cuerpopostblog.querySelector("#id-post").textContent.trim()
@@ -46,9 +48,7 @@ const handleSaveInteracction = async(cuerpopostblog, type)=>{
     const totalLikesCount = whatInteracction.interactionsCount[0]?.sumLikes
     const totalDislikesCount = whatInteracction.interactionsCount[0]?.sumDislikes
 
-    if(!validationTypeLike && !validationTypeDislike){
-        fetchSaveInteraction(postId, type)
-    }
+    
 
     // Seleccionar los botones
     const addLike = document.getElementById("add-like");
@@ -59,35 +59,89 @@ const handleSaveInteracction = async(cuerpopostblog, type)=>{
     // removeCompleteStyles(addDislike, ".add-dislike", "dislike-count")
 
 
+    const likeCountElement = document.querySelector("#like-count");
+    const dislikeCountElement = document.querySelector("#dislike-count");
     if(validationTypeLike){
+        //! Si ya tiene like y da like otra vez se elimina el like.
         if(type === "like"){
             handleDeleteInteraction(postId, type)
             console.log("Ya no te gusta el post")
             removeCompleteStyles(addLike, ".add-like", "like-count");
-            console.log("Contenido actual de numerovalor:", numerovalor);
-            // let numeroLikes = totalLikesCount -1
-            let numeroLikes = parseInt(numerovalor, 10) - 1;
-            console.log("Nuevo número de likes:", numeroLikes.toString());
-            numerovalor.textContent = numeroLikes.toString() +""
+            console.log("Contenido actual de numerovalor:", numerovalor); 
+            
+            //TODO: Aqui solo quito a like
+            updateInteractionCount(likeCountElement,-1);
+
+        //! Si ya tiene like y da dislike; se elimina el like y activa el dislike.
         }else if(type ==="dislike"){
-            handleDeleteInteraction(postId, "like")
+            handleDeleteInteraction(postId, "like") 
             fetchSaveInteraction(postId, type)
             console.log("Diste dislike al post")
+            applyStyles(addDislike, ".add-dislike", "dislike-count")
+            removeCompleteStyles(addLike, ".add-like", "like-count");
+
+            //TODO: AQui quito a like y sumo a dislike
+            updateInteractionCount(likeCountElement,-1);
+            updateInteractionCount(dislikeCountElement,1);
         }
     }else if(validationTypeDislike){
+        //! Si ya tiene dislike y da dislike; se elimina el dislike.
         if(type === "dislike"){
             handleDeleteInteraction(postId, type)
+            removeCompleteStyles(addDislike, ".add-dislike", "dislike-count");
+
+            //TODO: AQui quito a dislike
+            updateInteractionCount(dislikeCountElement,-1);
             console.log("Que bueno, creo que le quieres dar otra oporotunidad al post")
+
+        //! Si ya tiene dislike y da like; se elimina el dislike y activa el like.
         }else if(type==="like"){
             handleDeleteInteraction(postId, "dislike")
             fetchSaveInteraction(postId, type)
             console.log("Parece que te lo pensaste y te gusto")
+            applyStyles(addLike, ".add-like", "like-count")
+            removeCompleteStyles(addDislike, ".add-dislike", "dislike-count");
+            //TODO: AQui quito a dislike
+            updateInteractionCount(likeCountElement,1);
+            updateInteractionCount(dislikeCountElement,-1);
         }
+    }else if(!validationTypeLike && !validationTypeDislike){
+        if(type==="like"){
+            fetchSaveInteraction(postId, type)
+            applyStyles(addLike, ".add-like", "like-count")
+            updateInteractionCount(likeCountElement,1);
+        }else if(type==="dislike"){
+            fetchSaveInteraction(postId, type)
+            applyStyles(addDislike, ".add-dislike", "dislike-count")
+            updateInteractionCount(dislikeCountElement,1);
+        }
+        
     }
     // const like = "like"
 
     
 }
+
+function updateInteractionCount(element, increment) {
+    try {
+        if (!element) {
+            console.error('Elemento no encontrado');
+            return;
+        }
+
+        const currentLikes = parseInt(element.textContent.trim(), 10) || 0;
+
+        //* Aqui se incrementa o reduce los likes
+        const newLikes = Math.max(0, currentLikes + increment);
+        
+        element.textContent = newLikes.toString();
+
+    } catch (error) {
+        console.error('Error al actualizar los likes:', error);
+    }
+}
+
+
 const fetchSaveInteraction = async(postId, type)=>{
     try {
         const response = await fetch(`/interactions/likes`, {

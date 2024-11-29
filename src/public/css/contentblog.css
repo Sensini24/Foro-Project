@@ -37,6 +37,8 @@ body {
     border-radius: 10px;
 
 }
+
+
 body.light-mode {
     background-color: var(--light-bg);
     color: var(--light-fg);
