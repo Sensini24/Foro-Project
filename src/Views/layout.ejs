@@ -38,6 +38,16 @@
             <%- include('partials/partial-tags') %>
         </aside>
     </main>
+
+    <% if (usuario) { %>
+        <div id="chat-icon" class="chat-icon">
+            <span class="material-icons">chat</span>
+        </div>
+        <div id="chat-container" class="chat-overlay">
+            <%- include('partials/chats') %>
+        </div>
+    <% }%>
+    
     <script src="../client/app.js" type="module"></script>
     
 </body>

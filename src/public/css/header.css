@@ -11,6 +11,13 @@
     box-sizing: border-box;
     font-family: "Lexend Deca", sans-serif;
 }
+#chat-container{
+    display: none;
+    height: 80%;
+    width: 50%;
+    background-color: rgba(40, 40, 40, 0.9);
+    border-radius: 15px;
+}
 
 main{
     display: flex;

@@ -1,6 +1,9 @@
     //* ------ ACTUALIZAR EL ESTADO DE UN COMENTARIO A VISIBLE O NO Y NOTIFICARLO EN INTERFAZ SI ESTA OCULTO O NO----
     
     //* ESTA ES LA FORMA PARA OBTENER EL RESULTADO DE CLICKAR BOTONES INDIVIDUALES Y TAMBIEN LOS ID COMMENTS DE CADA COMENTARIO. SE DEBE USAR EL EVENT TARGET PARA OBTENER EL BUTTON QUE SE ESTA PRESIONANDO
+    mostrarComentarios();
+    guardarComentarios();
+    
     async function handleHideComment(commentContainer){
         const hideButton = document.querySelectorAll('#button-hide')
 
@@ -59,65 +62,57 @@
             });
 
     }
-    export function guardarComentarios(){
-        // ------------------------GUARDADO DE COMENTARIO ----------------------------- //
-        
-        // AQUI SE CLICA EN GUARDAR COMENTARIO Y SE DESENCADENA LA OPERACION CON EL FETCH
-        // Fetch para guardar comentario
-        const aviso_comment = document.getElementById("aviso-comment")
-        const formComment = document.getElementById("formComment")
-        const btnComment = document.getElementById("btn-comment")
+    export function guardarComentarios() {
+        const aviso_comment = document.getElementById("aviso-comment");
+        const formComment = document.getElementById("formComment");
+        const btnComment = document.getElementById("btn-comment");
         const modal = document.getElementById("modal-register");
-        const closeModal = document.getElementById("close-modal")
-        
-        // cerrar comentario
-        closeModal.addEventListener("click", () => {
+        const closeModal = document.getElementById("close-modal");
+    
+        // Verifica si los elementos existen antes de agregar lógica
+        if (closeModal && modal) {
+            closeModal.addEventListener("click", () => {
                 modal.style.display = "none";
             });
-
-        formComment.addEventListener("submit", (event)=>{
-            event.preventDefault();
-
-            const inputcomment = document.getElementById("comment-id").value.toString()
-            const id_post = document.getElementById("id-post").textContent.toString()
-            const formData = new FormData(formComment)
-            const partialContainer = document.getElementById("partial-container")
-            
-            console.log("texto insertado: ", inputcomment)
-            
-
-            console.log("Id post para mandar a servidor: ", id_post)
-            
-            if(inputcomment == "" || inputcomment == null){
-                aviso_comment.innerHTML = "Ingrese un comentario"
-                
-            }else{
+        }
+    
+        if (formComment) {
+            formComment.addEventListener("submit", (event) => {
+                event.preventDefault();
+    
+                const inputcomment = document.getElementById("comment-id")?.value.trim();
+                const id_post = document.getElementById("id-post")?.textContent.trim();
+                const partialContainer = document.getElementById("partial-container");
+    
+                if (!inputcomment) {
+                    aviso_comment.innerHTML = "Ingrese un comentario";
+                    return;
+                }
+    
                 fetch(`/user/comment/`, {
-                    method: 'POST',
+                    method: "POST",
                     headers: {
-                        'Content-Type': 'application/json'
+                        "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({comment :inputcomment, post_id:id_post})
-                }).then(response => {
-                    if (response.status === 401) {
-                        console.log("Usuario no autenticado");
-                        // Mostrar el modal de registro
-                        modal.style.display = "block"; 
-                    } else if (response.ok) {
-                        console.log("Comentario creado con exito");
-                        partialContainer.innerHTML=''
-                        mostrarComentarios()
-                    } else {
-                        console.error("Error al crear el comentario");
-                    }
-                }).catch(error => {
-                    console.error("Error:", error);
-                });
-            }
-
-            
-        })
+                    body: JSON.stringify({ comment: inputcomment, post_id: id_post }),
+                })
+                    .then((response) => {
+                        if (response.status === 401) {
+                            console.log("Usuario no autenticado");
+                            if (modal) modal.style.display = "block";
+                        } else if (response.ok) {
+                            console.log("Comentario creado con éxito");
+                            partialContainer.innerHTML = "";
+                            mostrarComentarios();
+                        } else {
+                            console.error("Error al crear el comentario");
+                        }
+                    })
+                    .catch((error) => console.error("Error:", error));
+            });
+        }
     }
+    
 
     export async function mostrarComentarios(){
         

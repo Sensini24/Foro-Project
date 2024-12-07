@@ -1,4 +1,5 @@
 export function initAddPost(){
+    console.log("Iniciando módulo de add post");
     const cuerpoPost = document.querySelector('#cuerpoPost');
     if (!cuerpoPost) return;
     const quillEditor = document.getElementById("editor-container");
@@ -86,3 +87,5 @@ async function showModal(message) {
         modal.style.display = "none";
     })
 }
+
+initAddPost();

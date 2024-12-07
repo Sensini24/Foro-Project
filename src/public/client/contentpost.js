@@ -1,3 +1,4 @@
+
 export const interactions = async ()=>{
     const cuerpopostblog = document.querySelector("#cuerpo-post-blog")
     const idPost =document.querySelector("#id-post").textContent.trim()
@@ -26,6 +27,7 @@ export const interactions = async ()=>{
     })
 
 }
+interactions();
 
 
 

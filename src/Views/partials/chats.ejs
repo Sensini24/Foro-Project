@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hermes Messenger</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="../css/chatstyles.css">
+</head>
+<body>
+    <div class="chat-container">
+        <div class="contacts-list">
+            <h2>Contacts</h2>
+            <ul class="chat-contacts">
+                <li class="active">Socrates</li>
+                <li>Plato</li>
+                <li>Aristotle</li>
+            </ul>
+        </div>
+        <div class="chat-window">
+            <div class="chat-header">
+                <h2>Socrates</h2>
+                <div class="btn-close">X</div>
+            </div>
+            <div class="chat-messages">
+                <div class="message received">
+                    <span class="sender">Socrates:</span>
+                    <p>What is the nature of knowledge, my friend?</p>
+                </div>
+                <div class="message sent">
+                    <span class="sender">You:</span>
+                    <p>An intriguing question, Socrates. Perhaps knowledge is the understanding of one's own ignorance?</p>
+                </div>
+                <div class="message received">
+                    <span class="sender">Socrates:</span>
+                    <p>Ah, a wise observation. Let us delve deeper into this topic.</p>
+                </div>
+                <div class="message sent">
+                    <span class="sender">You:</span>
+                    <p>Indeed. How do we distinguish between true knowledge and mere opinion?</p>
+                </div>
+            </div>
+            <div class="chat-input">
+                <form id="form-chat">
+                    <input type="text" id="input-chat" placeholder="Type your message...">
+                    <button>Send</button>
+                </form>
+                
+            </div>
+        </div>
+    </div>
+  <script>
+    
+
+   </script>
+</body>
+</html>
