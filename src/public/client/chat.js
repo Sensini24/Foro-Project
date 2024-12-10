@@ -3,9 +3,6 @@ export function initChat (){
     const chatinput = document.querySelector("#input-chat")
     const formChat = document.querySelector("#form-chat")
 
-
-
-
     // // Obtener el token de la cookie
     // function getCookie(name) {
     //     const cookies = document.cookie.split("; ");
@@ -23,7 +20,8 @@ export function initChat (){
     // console.log("token cliente: ", typeof token)
     const socket = io({
         auth: {
-            serverOffset: 0
+            serverOffset: 0,
+            roomid: ""
           }
     });
 
@@ -59,22 +57,30 @@ export function initChat (){
     //     socket.auth.serverOffset = ultimoId;
     // })
 
-    socket.on("users connected", (usuariosConectados)=>{
+    socket.on("users connected", (usuariosConectados, username)=>{
         console.log("Usuarios conectados: ", usuariosConectados); //usuariosConectados[0][1].nombre)
         chatContacts.innerHTML = ""
         usuariosConectados.forEach(element => {
             
             let nombre = element[1].nombre
             let userIdRecip = element[0]
+                
             console.log("Nombre: ", nombre)
             console.log("User id: ", userIdRecip)
+            
             const userItem = document.createElement("li");
             userItem.classList.add("contacto")
             userItem.textContent = nombre;
             userItem.dataset.userId = userIdRecip;
             chatContacts.appendChild(userItem)
 
+            // ELiminar el item con nuestro nombre
+            if(userItem.textContent.trim() == username){
+                userItem.remove()
+            }
+
             userItem.addEventListener("click", () => {
+                
                 chatMessages.innerHTML = ""
                 //* Aquí envío el userid previamente insertado como dataset a cada item de conectado.
                 console.log(`Iniciando chat con ${nombre} (${userItem.dataset.userId})`);
@@ -89,53 +95,85 @@ export function initChat (){
     
 
     socket.on("privateChatStarted", (recipiente, roomName, username)=>{
-        const chatHeader = document.querySelector(".chat-header")
+        const usernameHeader = document.querySelector("#user_name")
         const contactslist = document.querySelectorAll("li.contacto");
-        const arraylist = Array.from(contactslist);
         
-        arraylist.forEach(elemento=>{
-            console.log("elementos: ",elemento.getAttribute('data-user-id'));
-            const dataId = elemento.getAttribute('data-user-id')
-            if(dataId === recipiente){
-                elemento.innerHTML += "hola" 
-            }
-        })
+        //const arraylist = Array.from(contactslist);
+        // arraylist.forEach(elemento=>{
+        //     console.log("elementos: ",elemento.getAttribute('data-user-id'));
+        //     const dataId = elemento.getAttribute('data-user-id')
+        //     if(dataId === recipiente){
+        //         elemento.innerHTML += "hola" 
+        //     }
+        // })
 
         console.log(`Chat privado iniciado etre ${recipiente} en la sala ${roomName}`)
         
-        chatHeader.textContent = username
+        usernameHeader.textContent = username
         chatMessages.innerHTML = "";
         const saludo = document.createElement("li");
         saludo.innerHTML = `El usuario ${recipiente}, se conectó`
-        chatMessages.appendChild(saludo)
+        chatMessages.appendChild(saludo);
+        chatMessages.dataset.userId = roomName;
 
         socket.roomName = roomName
 
-        formChat.addEventListener("submit", (event)=>{
+        // formChat.replaceWith(formChat.cloneNode(true)); // Clona el formulario para eliminar eventos anteriores
+        formChat.addEventListener("submit", (event) => {
             event.preventDefault();
             if (chatinput.value.trim()) {
                 socket.emit("privateMessage", { roomName: socket.roomName, message: chatinput.value });
                 chatinput.value = "";
             }
-        })
-        // // Limpia el evento de submit previo
-        // formChat.removeEventListener("submit", handleChatSubmit);
-        // handleChatSubmit = (event) => {
-        //     event.preventDefault();
-            
-        // };
-        // formChat.addEventListener("submit", handleChatSubmit);
-        
+        });
+        socket.emit("recoverMessages", roomName);
     })
 
+    // socket.off("sendMessage"); // Elimina cualquier controlador previo
     socket.on("sendMessage", (data) => {
-        const item = document.createElement("div");
-        item.innerHTML = `<div class="message received">
-                              <span class="sender">De ${data.sender}:</span>
-                              <p>${data.message}</p>
-                          </div>`;
-        chatMessages.appendChild(item);
+        if(chatMessages.dataset.userId == data.roomName){
+            const item = document.createElement("div");
+            item.innerHTML = `<div class="message received">
+                                <span class="sender">De ${data.sender}:</span>
+                                <p>${data.message}</p>
+                            </div>`;
+            chatMessages.appendChild(item);
+            item.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+            
+        
     });
+
+    socket.on("recoveredMessages", (messages) => {
+        chatMessages.innerHTML = "";
+        messages.forEach(message => {
+            const item = document.createElement("div");
+            item.innerHTML = `<div class="message received">
+                                <span class="sender">De ${message.sender}:</span>
+                                <p>${message.content}</p>
+                            </div>`;
+            chatMessages.appendChild(item);
+            
+        });
+
+        // aprendo esto nuevo: enviar el scroll hasta el ultimo item aparecido desde base de datos.
+        const lastitem = chatMessages.lastElementChild;
+        lastitem.scrollIntoView({ behavior: "instant", block: "start" });
+        
+    });
+
+
+    // socket.on("chat message", (msg, serverOffset)=>{
+    //     console.log("Server offset: ", serverOffset)
+    //     const item = document.createElement("div");
+    //     item.innerHTML = `<div class="message received">
+    //                           <span class="sender">De hola:</span>
+    //                           <p>${msg}</p>
+    //                       </div>`;
+    //     messages.appendChild(item);
+    //     window.scrollTo(0, document.body.scrollHeight)
+    //     socket.auth.serverOffset = serverOffset;
+    //   })
 
     // socket.on("sendMessage", (data)=>{
     //     console.log("Mensahe privado recibido: ", data.message)
