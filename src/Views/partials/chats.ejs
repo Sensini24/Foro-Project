@@ -10,17 +10,37 @@
 <body>
     <div class="chat-container">
         <div class="contacts-list">
-            <h2>Contacts</h2>
-            <ul class="chat-contacts">
-                <li class="active">Socrates</li>
-                <li>Plato</li>
-                <li>Aristotle</li>
-            </ul>
+            <div>
+                <h2>Connected</h2>
+                <ul class="chat-contacts">
+                    <li class="active">Socrates</li>
+                    <li>Plato</li>
+                    <li>Aristotle</li>
+                </ul>
+            </div>
+            <div>
+                <h2>Contacts</h2>
+                <ul class="chat-contacts-contacts">
+                    <li class="active">Socrates</li>
+                    <li>Plato</li>
+                    <li>Aristotle</li>
+                </ul>
+            </div>
+            <div>
+                <h2>Search</h2>
+                <form id="form-search-user">
+                    <input id="input-search-user"  class="search-input" type="text"  placeholder="Buscar un usuario...">
+                    <button type="submit">Buscar</button>
+                </form>
+                <div id="sugestionList">
+                    
+                </div>
+            </div>
         </div>
         <div class="chat-window">
             <div class="chat-header">
                 <h2 id="user_name" >Socrates</h2>
-                <div class="btn-close">X</div>
+                <i class="btn-close material-icons">close</i>
             </div>
             <div class="chat-messages">
                 <div class="message received">

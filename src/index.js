@@ -16,6 +16,7 @@ import expressLayouts from 'express-ejs-layouts';
 import { verificarToken } from './Controllers/utils.js';
 import routheTags from './Routes/tagsRoutes.js';
 import routePostInteractions from './Routes/posinteractionRoutes.js';
+import userRouter from './Routes/userRoutes.js';
 import { layoutRoute } from './Routes/layoutRoutes.js';
 import { Message } from './Models/MessageModel.js';
 import { Socket } from 'dgram';
@@ -71,6 +72,7 @@ io.use((socket, next) => {
 
 
 const usuariosConectados = new Map();
+const contactos = new Map();
 const socketRooms = new Map();
 
 // 4. Manejar eventos de conexión después de configurar el middleware
@@ -78,6 +80,11 @@ io.on("connection", async (socket)=>{
     console.log("Usuario conectado ", socket.user, " con el id: ", socket.id)
 
     usuariosConectados.set(socket.user._id, {socketid:socket.id, nombre: socket.user.user_name  })
+
+    const currentUser = {
+        id: socket.user._id,
+        nombre: socket.user.user_name
+    };
     console.log("Usuarios conectados: ", usuariosConectados)
     
     let result;
@@ -119,7 +126,10 @@ io.on("connection", async (socket)=>{
     // });
 
    // Enviar usuario conectados 
-    io.emit("users connected", Array.from(usuariosConectados), socket.user.user_name);
+   io.emit("users connected", Array.from(usuariosConectados), socket.user._id);
+
+    
+    
     //Atender peticion de chat privado
     socket.on("startprivatechat", (recipienteId)=>{
         //? EL recipiente no es mas que el id de usuario pasado previamente y luego adjudicado a un item de cliente uqe al clicar nos devuelve dicho id, el cual servira como key para obtener el socket almacenado en un map mas arribita.
@@ -139,6 +149,21 @@ io.on("connection", async (socket)=>{
             // socketRooms.set(socket.id, roomName); 
             const nombreContacto = usuariosConectados.get(recipienteId)?.nombre;
             socket.emit('privateChatStarted', socket.user._id, roomName, nombreContacto);
+        }
+    })
+
+    socket.on("startchat newcontact", (idContact, usernamecontact)=>{
+        console.log("RECIBIENDO DATOS DE CONTACTO DE CLIENTE: ", idContact, usernamecontact)
+        if(idContact){
+            console.log("Creando chat entre ", idContact, " y ", socket.user._id)
+
+            const roomName = [socket.user._id, idContact].sort().join("-");
+
+            console.log("tipo de dato de roonName: ", typeof roomName)
+
+            socket.join(roomName);
+            
+            socket.emit('privateChatStarted', socket.user._id, roomName, usernamecontact);
         }
     })
 
@@ -261,7 +286,8 @@ app.use(commentRouter);
 app.use(routheTags)
 app.use(routePostInteractions)
 app.use(layoutRoute)
-app.use(chatRoute)
+app.use(chatRoute);
+app.use(userRouter)
 
 
 const PORT = process.env.PORT

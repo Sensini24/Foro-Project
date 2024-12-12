@@ -1,3 +1,4 @@
+
 export function initChat (){
     console.log("INICIANDO MODULOS DE CHAT")
     const chatinput = document.querySelector("#input-chat")
@@ -25,6 +26,57 @@ export function initChat (){
           }
     });
 
+    // AGREGAR BUSQUEDA DE USUARIO
+    const formSearch = document.querySelector("#form-search-user");
+    let inputSearch = document.querySelector("#input-search-user")
+    const suggestionsList = document.querySelector("#sugestionList")
+    formSearch.addEventListener("submit", async (event) => {
+        event.preventDefault(); 
+        const username = inputSearch.value; 
+        if (!username) {
+            console.log("Username cannot be empty");
+            return;
+        }
+        try {
+            const response = await fetch(`/user/findUsers/${username}`);
+            
+            const data = await response.json();
+            suggestionsList.innerHTML = "";
+            
+            // Mostrar usuarios encontrados
+            data.forEach(user => {
+                const li = document.createElement('li');
+                li.textContent = user.user_name;
+                li.dataset.userId = user._id;
+                li.classList.add("new-contact")
+                suggestionsList.appendChild(li);
+
+                sendContact();
+            });
+            console.log("data: ", data)
+            } catch (error) {
+                console.error("Error fetching users:", error);
+            }
+    });
+
+    function sendContact(){
+        const listnewContacts = document.querySelectorAll("li.new-contact")
+        console.log(listnewContacts)
+        listnewContacts.forEach(contact =>{
+            contact.addEventListener("click", ()=>{
+                const idContact = contact.dataset.userId
+                const usernamecontact = contact.textContent.trim()
+                console.log(idContact, usernamecontact)
+                //Creo evento para pasar el id del contacto y quizas el nombre para crear room 
+                socket.emit("startchat newcontact", idContact, usernamecontact)
+            });
+        })
+    }
+
+
+    
+
+    
     // formChat.addEventListener("submit", (event)=>{
     //     event.preventDefault()
     //     if(chatinput.value){
@@ -45,7 +97,7 @@ export function initChat (){
 
     const chatMessages = document.querySelector(".chat-messages")
     const chatContacts = document.querySelector(".chat-contacts")
-
+    const contactos = document.querySelectorAll(".contacto")
     // socket.on("chat message", (msg, ultimoId, nombre)=>{
     //     console.log("Usuario nombnre: ", nombre)
     //     const item = `<div class="message received">
@@ -57,46 +109,44 @@ export function initChat (){
     //     socket.auth.serverOffset = ultimoId;
     // })
 
-    socket.on("users connected", (usuariosConectados, username)=>{
-        console.log("Usuarios conectados: ", usuariosConectados); //usuariosConectados[0][1].nombre)
-        chatContacts.innerHTML = ""
+
+
+    
+
+    socket.on("users connected", (usuariosConectados, currentUserId) => {
+
+        chatContacts.innerHTML = "";
+
         usuariosConectados.forEach(element => {
+            let nombre = element[1].nombre;
+            let userIdRecip = element[0];
             
-            let nombre = element[1].nombre
-            let userIdRecip = element[0]
                 
-            console.log("Nombre: ", nombre)
-            console.log("User id: ", userIdRecip)
-            
-            const userItem = document.createElement("li");
-            userItem.classList.add("contacto")
-            userItem.textContent = nombre;
-            userItem.dataset.userId = userIdRecip;
-            chatContacts.appendChild(userItem)
-
-            // ELiminar el item con nuestro nombre
-            if(userItem.textContent.trim() == username){
-                userItem.remove()
-            }
-
-            userItem.addEventListener("click", () => {
+            // if(userIdRecip !== currentUserId){
+                const userItem = document.createElement("li");
+                userItem.classList.add("contacto");
+                userItem.textContent = nombre;
+                userItem.dataset.userId = userIdRecip;
+                chatContacts.appendChild(userItem);
                 
-                chatMessages.innerHTML = ""
-                //* Aquí envío el userid previamente insertado como dataset a cada item de conectado.
-                console.log(`Iniciando chat con ${nombre} (${userItem.dataset.userId})`);
-                socket.emit("startprivatechat", userItem.dataset.userId); 
-              });
-              
+                
+                userItem.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    console.log(`Iniciando chat con ${nombre} (${userIdRecip})`);
+                    socket.emit("startprivatechat", userIdRecip);
+                });
+            // }
+                
         });
-        
-    })
+    });
     
 
     
 
-    socket.on("privateChatStarted", (recipiente, roomName, username)=>{
+    socket.on("privateChatStarted", (recipiente, roomName, usernameContact)=>{
         const usernameHeader = document.querySelector("#user_name")
         const contactslist = document.querySelectorAll("li.contacto");
+            // console.log("ELEMENTO CONTACTOS PRIVATE: ", chatContacts);
         
         //const arraylist = Array.from(contactslist);
         // arraylist.forEach(elemento=>{
@@ -106,10 +156,16 @@ export function initChat (){
         //         elemento.innerHTML += "hola" 
         //     }
         // })
+        // chatContacts.innerHTML =""
+        // const userItem = document.createElement("li");
+        // userItem.classList.add("contacto");
+        // userItem.textContent = usernameContact;
+        // userItem.dataset.userId = recipiente;
+        // chatContacts.appendChild(userItem);
 
         console.log(`Chat privado iniciado etre ${recipiente} en la sala ${roomName}`)
         
-        usernameHeader.textContent = username
+        usernameHeader.textContent = usernameContact
         chatMessages.innerHTML = "";
         const saludo = document.createElement("li");
         saludo.innerHTML = `El usuario ${recipiente}, se conectó`

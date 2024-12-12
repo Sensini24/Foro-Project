@@ -61,7 +61,7 @@ body {
 }
 
 .contacts-list {
-    width: 120px;
+    width: 200px;
     background-color: rgba(60, 56, 54, 0.8);
     padding: 10px;
     overflow-y: auto;
@@ -113,6 +113,20 @@ body {
     font-size: 1.2em;
 }
 
+.btn-close{
+    cursor: pointer;
+    margin-right: 10px;
+    background-color: #CD371E;
+    border-radius: 100%;
+    padding: 3px;
+    border: solid;
+    border-color: #458588;
+    border-width: 2px;
+}
+.btn-close:hover{
+    color: #D7992A;
+    border-color: #D7992A;
+}
 .chat-messages {
     flex: 1;
     overflow-y: auto;
