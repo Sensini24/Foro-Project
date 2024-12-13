@@ -21,6 +21,7 @@ import { layoutRoute } from './Routes/layoutRoutes.js';
 import { Message } from './Models/MessageModel.js';
 import { Socket } from 'dgram';
 import { log } from 'console';
+import { Notification } from './Models/NotificationModel.js';
 
 const __dirname =dirname(fileURLToPath(import.meta.url));
 
@@ -31,6 +32,7 @@ const app = express()
 //? Why asi? En este caso se hace uso de solicitudes http en tiempo real, se usa para Socket.IO
 const server = createServer(app);
 const modelMessage = Message;
+const modelNotification = Notification;
 //!CONECTAR SERVIDOR CON EL SOCKET IO
 const io = new Server(server, {
     connectionStateRecovery: {},
@@ -86,8 +88,22 @@ io.on("connection", async (socket)=>{
         nombre: socket.user.user_name
     };
     console.log("Usuarios conectados: ", usuariosConectados)
-    
-    let result;
+
+    //? Recuperacion de notifications
+    const idReceptor = socket.user._id
+    socket.on("recover notifications", async()=>{
+        try{
+            const notifications = await modelNotification.find({
+                recipientId:idReceptor,
+                status:"pending"
+            })
+            console.log("Notifications: ", notifications)
+            socket.emit("show notifications", notifications)
+        }catch(error){
+            console.log("Error al recuperar las notificaciones: ", error)
+        }
+    })
+
     // LA PARTE DE LOS CHATS 
     // socket.on("chat message", async(msg)=>{
     //     //* Obtengo el último documento para saber su offset
@@ -126,10 +142,8 @@ io.on("connection", async (socket)=>{
     // });
 
    // Enviar usuario conectados 
-   io.emit("users connected", Array.from(usuariosConectados), socket.user._id);
+    io.emit("users connected", Array.from(usuariosConectados), socket.user._id);
 
-    
-    
     //Atender peticion de chat privado
     socket.on("startprivatechat", (recipienteId)=>{
         //? EL recipiente no es mas que el id de usuario pasado previamente y luego adjudicado a un item de cliente uqe al clicar nos devuelve dicho id, el cual servira como key para obtener el socket almacenado en un map mas arribita.
@@ -145,6 +159,7 @@ io.on("connection", async (socket)=>{
             //Nos unimos al room
             socket.join(roomName);
 
+            
             //ASOCIAR INFORMACION DE ROOM A SOCKET
             // socketRooms.set(socket.id, roomName); 
             const nombreContacto = usuariosConectados.get(recipienteId)?.nombre;
@@ -152,13 +167,14 @@ io.on("connection", async (socket)=>{
         }
     })
 
+    //Evento que recibe que recibe información desde el contacto buscado en cliente
     socket.on("startchat newcontact", (idContact, usernamecontact)=>{
         console.log("RECIBIENDO DATOS DE CONTACTO DE CLIENTE: ", idContact, usernamecontact)
+
         if(idContact){
             console.log("Creando chat entre ", idContact, " y ", socket.user._id)
 
             const roomName = [socket.user._id, idContact].sort().join("-");
-
             console.log("tipo de dato de roonName: ", typeof roomName)
 
             socket.join(roomName);
@@ -181,7 +197,47 @@ io.on("connection", async (socket)=>{
         console.log("ultimo document: ", lastDocument);
         let ultimoId = lastDocument && lastDocument.id_offset ? lastDocument.id_offset + 1 : 1;
 
-        console.log("ULTIMO ID: ", ultimoId)
+        const messages = await Message.find({ roomId: roomName }).sort({ id_offset: 1 });
+
+        
+        let ids = []
+        messages.forEach(elemento =>{
+            if(ids.includes(elemento.senderId) ){
+                console.log("ya esta")
+            }else{
+                ids.push(elemento.senderId)
+            }   
+        })
+
+        //! Aqui tambien se podria validadr que si es que tampoco está en tus contactos entonces ahi si se ejecuta toda esta lógica
+        if(ultimoId == 1){
+            const idsrooms = roomName.split("-")
+            const receptorId = idsrooms.find(id=> id !== socket.user._id)
+            const receptorSocket = usuariosConectados.get(receptorId).socketid
+            const senderId = socket.user._id
+            const message = `El usuario ${socket.user.user_name} no está en tus contactos y te envió un mensaje al chat. Aceptas agregarlo o ignorarlo?`
+            const notifSended = await new modelNotification({
+                senderId: senderId,
+                recipientId: receptorId,
+                message: message,
+                type: "firstmessage",
+                roomId: roomName,
+                isRead: false,
+                status: "pending",
+                createdAt: new Date()
+            })
+            try {
+                await notifSended.save();
+                console.log("Notificación guardada en la base de datos.");
+                // No emitimos nada en este paso.
+            } catch (error) {
+                console.error("Error al guardar la notificación:", error);
+            }
+        }
+        
+        console.log("ULTIMO ID: ", ultimoId);
+        
+        
 
         if (!ultimoId || isNaN(ultimoId)) {
             console.error('Error: No se pudo calcular un id_offset válido');
@@ -199,6 +255,7 @@ io.on("connection", async (socket)=>{
         console.log("Mensaje guardado correctamente", result.id_offset);
 
         io.to(roomName).emit("sendMessage", {sender: socket.user.user_name, message, ultimoId, roomName });
+
     });
     
 
@@ -234,9 +291,50 @@ io.on("connection", async (socket)=>{
             const messages = await Message.find({ roomId: roomName }).sort({ id_offset: 1 });
 
             if (messages) {
+
+                // let ids = []
+                // messages.forEach(elemento =>{
+                //     if(ids.includes(elemento.senderId) ){
+                //         console.log("ya esta")
+                //     }else{
+                //         ids.push(elemento.senderId)
+                //     }   
+                // })
+
+                // console.log("roomname: " , roomName)
+                // const idsrooms = roomName.split("-")
+                // console.log("idsroom: " , idsrooms)
+                
+                // console.log("ids de ususario en chat: ", ids)
+
+                // let recipienteId = "";
+                // idsrooms.forEach(id=>{
+                //     if(id !== ids[0]){
+                //         console.log(id)
+                //         recipienteId=id
+                //     }
+                // })
+                // if(ids.length == 1){
+                    
+                //     console.log("recipiente: ", recipienteId)
+                //     console.log("senderid: ", ids[0])
+                //     let firstmessage = true;
+
+                //     const recipientSocket = usuariosConectados.get(recipienteId.trim())?.socketid;
+                //     const receptorId = recipienteId;
+                //     const senderSocket = usuariosConectados.get(ids[0].trim())?.socketid;
+                //     console.log("socket id: ", recipientSocket)
+                //     io.to(roomName).emit("firstmessage", firstmessage,receptorId, socket.user._id);
+                //     // if (recipientSocket) {
+                //     //     io.to(recipientSocket).emit("firstmessage", firstmessage, recipienteId, socket.user._id);
+                //     //     io.to(senderSocket).emit("firstmessage", firstmessage, recipienteId, socket.user._id);
+                //     // }
+                    
+                // }
                 //! Aqui cambié porque emitia a todo el room, y cuando cambiaba de chat emergía tambien para el compañero de chat
                 // io.to(roomName).emit('recoveredMessages', messages);
                 socket.emit('recoveredMessages', messages);
+                console.log("Mensajes recuperados: ", messages)
             } else {
                 console.log("NO SE ENCONTRARON DATOS");
             }

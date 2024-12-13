@@ -12,13 +12,14 @@ const ContactSchema = new mongoose.Schema({
         required:true,
         unique:true
     },
-    "isActive": {
-        type: Boolean,
-        default: true // Activo por defecto
+    "estado": {
+        type:String,
+        enum: ['accepted', 'inactive', 'pending'],
+        required: true
     },
     "isFavorite": {
         type: Boolean,
-        default: false // No favorito por defecto
+        default: false
     },
     "date": Date
 })

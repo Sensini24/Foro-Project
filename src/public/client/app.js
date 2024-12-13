@@ -6,6 +6,7 @@ import { initChat } from './chat.js';
 
 document.addEventListener("DOMContentLoaded", () => {
     
+    initChat();
     // const currentPath = window.location.pathname;
     // let idPost = currentPath.split("/").pop()
     // console.log("ID DE POST ACTUAL:", idPost)
