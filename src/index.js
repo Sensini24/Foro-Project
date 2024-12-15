@@ -89,20 +89,26 @@ io.on("connection", async (socket)=>{
     };
     console.log("Usuarios conectados: ", usuariosConectados)
 
-    //? Recuperacion de notifications
-    const idReceptor = socket.user._id
-    socket.on("recover notifications", async()=>{
+    async function recovereNotifications(idReceptor){
         try{
             const notifications = await modelNotification.find({
                 recipientId:idReceptor,
                 status:"pending"
             })
-            console.log("Notifications: ", notifications)
-            socket.emit("show notifications", notifications)
+            console.log("Notifications enviadas: ", notifications)
+            return notifications;
         }catch(error){
             console.log("Error al recuperar las notificaciones: ", error)
         }
+    }
+
+    //? Recuperacion de notifications
+    const idReceptor = socket.user._id
+    socket.on("recover notifications", async()=>{
+        let notifSearch = await recovereNotifications(idReceptor);
+        socket.emit("show notifications", notifSearch)
     })
+    
 
     // LA PARTE DE LOS CHATS 
     // socket.on("chat message", async(msg)=>{
@@ -210,7 +216,7 @@ io.on("connection", async (socket)=>{
         })
 
         //! Aqui tambien se podria validadr que si es que tampoco está en tus contactos entonces ahi si se ejecuta toda esta lógica
-        if(ultimoId == 1){
+        if(ids.length == 1){
             const idsrooms = roomName.split("-")
             const receptorId = idsrooms.find(id=> id !== socket.user._id)
             const receptorSocket = usuariosConectados.get(receptorId).socketid
@@ -229,7 +235,12 @@ io.on("connection", async (socket)=>{
             try {
                 await notifSended.save();
                 console.log("Notificación guardada en la base de datos.");
-                // No emitimos nada en este paso.
+
+                let notifSearch = await recovereNotifications(receptorId);
+                if(receptorSocket){
+                    io.to(receptorSocket).emit("newNotification", notifSearch);
+                }
+
             } catch (error) {
                 console.error("Error al guardar la notificación:", error);
             }

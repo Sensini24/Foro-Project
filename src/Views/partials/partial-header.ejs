@@ -32,6 +32,17 @@
         <!-- Opciones de usuario -->
         <div class="navbar-profile">
             <% if (usuario) { %>
+
+                <!--Modal de las notificaciones-->
+                    <!--Campanita de notificacioness...-->
+                    <div id="campanita" class="isHide" style="display: flex; cursor: pointer;">
+                        <i class="material-icons">notifications</i>
+                        <span id="notifications-number"></span>
+                    </div>
+                    <div id="notifications-container">
+                        <%- include('../partials/partial-modalNotifications') %>
+                    </div>
+                    
                 <!-- Mostrar nombre del usuario -->
                 <h3>Hola <%= usuario.user_name %></h3>
                 
@@ -40,15 +51,7 @@
                     <img id="img-user" src="https://via.placeholder.com/40" alt="Foto de usuario" class="profile-image" />
                 </div>
                 
-                <!--Modal de las notificaciones-->
-                    <!--Campanita de notificacioness...-->
-                    <div class="campanita" style="display: flex; cursor: pointer;">
-                        <i class="material-icons">notifications</i>
-                        <span id="notifications-number"></span>
-                    </div>
-                    <div id="notifications-container">
-                        <%- include('../partials/partial-modalNotifications') %>
-                    </div>
+                
                 
                 <!-- Subir foto -->
                 <!-- <form enctype="multipart/form-data" id="formImage">

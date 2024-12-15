@@ -140,7 +140,13 @@ body{
     }
 }
 
-
+#campanita{
+    border-radius: 50%;
+    padding: 8px;
+    border: solid;
+    border-color: #689D6A;
+    border-width: 2px;
+}
 #notifications-container {
     position: absolute;
     width: 400px;
@@ -149,6 +155,7 @@ body{
     display: none; 
     flex-direction: column;
     z-index: 2;
+    overflow-x: hidden;
     overflow-y: auto;
     top: 80px
 }
