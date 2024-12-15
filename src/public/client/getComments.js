@@ -1,9 +1,7 @@
     //* ------ ACTUALIZAR EL ESTADO DE UN COMENTARIO A VISIBLE O NO Y NOTIFICARLO EN INTERFAZ SI ESTA OCULTO O NO----
     
     //* ESTA ES LA FORMA PARA OBTENER EL RESULTADO DE CLICKAR BOTONES INDIVIDUALES Y TAMBIEN LOS ID COMMENTS DE CADA COMENTARIO. SE DEBE USAR EL EVENT TARGET PARA OBTENER EL BUTTON QUE SE ESTA PRESIONANDO
-    mostrarComentarios();
-    guardarComentarios();
-    
+
     async function handleHideComment(commentContainer){
         const hideButton = document.querySelectorAll('#button-hide')
 
@@ -115,7 +113,7 @@
     
 
     export async function mostrarComentarios(){
-        
+        console.log("Iniciando módulo de comentarios");
         // const cuerpoPostBlog = document.querySelector('.container2');
         // console.log("cuerpo post: ", cuerpoPostBlog)
 

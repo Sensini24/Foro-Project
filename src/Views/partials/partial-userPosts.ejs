@@ -8,6 +8,10 @@
 </head>
 <body>
     <div class="posts-container" id="pposts">
+        <% if(userposts.lenght == null || userposts.lenght == 0){%>
+            <div class="on-air">No tienes posts</div>
+        <% }%>
+
         <% userposts.forEach(post => { %>
         <div class="card">
             <!-- Encabezado del post -->

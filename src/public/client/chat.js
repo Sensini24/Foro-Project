@@ -1,4 +1,3 @@
-// Módulo principal para inicializar el chat
 export function initChat() {
     console.log("INICIANDO MODULOS DE CHAT");
 
@@ -6,11 +5,12 @@ export function initChat() {
     const domElements = cacheDOMElements();
 
     searchUser(socket, domElements);
-    showNotifications(socket, domElements);
+    // showNotifications(socket, domElements);
     showChatPrivado(socket, domElements);
+    showChatInterfaz(domElements)
 }
 
-// Inicializar socket.io con autenticación
+
 function initializeSocket() {
     return io({
         auth: {
@@ -18,6 +18,7 @@ function initializeSocket() {
         }
     });
 }
+
 
 // caché usados en diferentes funciones reutilizables
 function cacheDOMElements() {
@@ -29,8 +30,24 @@ function cacheDOMElements() {
         suggestionsList: document.querySelector("#sugestionList"),
         chatMessages: document.querySelector(".chat-messages"),
         chatContacts: document.querySelector(".chat-contacts"),
-        notifContainer: document.querySelector(".notifications-container")
+        notifContainer: document.querySelector(".notifications-container"),
+        chatIcon : document.querySelector(".chat-icon"),
+        chatContainer: document.getElementById("chat-container"),
+        btnClose: document.querySelector(".btn-close")
     };
+}
+
+function showChatInterfaz(domElements){
+    const {chatIcon, chatContainer, btnClose } = domElements;
+    chatIcon.addEventListener("click", ()=>{
+        chatContainer.style.display = "flex"
+        console.log("Chat puede verse")
+    })
+
+    btnClose.addEventListener("click", ()=>{
+        chatContainer.style.display = "none"
+        console.log("Chat oculto")
+    })
 }
 
 // Configuración de la búsqueda de usuarios
@@ -79,22 +96,22 @@ function newDataContact(socket) {
 }
 
 // Configuración de notificaciones
-function showNotifications(socket, domElements) {
-    const { notifContainer } = domElements;
+// function showNotifications(socket, domElements) {
+//     const { notifContainer } = domElements;
 
-    socket.on("connect", () => {
-        console.log("Conectado al servidor");
-        socket.emit("recover notifications");
-    });
+//     socket.on("connect", () => {
+//         console.log("Conectado al servidor");
+//         socket.emit("recover notifications");
+//     });
 
-    socket.on("show notifications", (notifications) => {
-        console.log("Notificaciones: ", notifications);
-    });
+//     socket.on("show notifications", (notifications) => {
+//         console.log("Notificaciones: ", notifications);
+//     });
 
-    notifContainer.addEventListener("click", () => {
-        console.log("Notificaciones clicadas");
-    });
-}
+//     notifContainer.addEventListener("click", () => {
+//         console.log("Notificaciones clicadas");
+//     });
+// }
 
 // Configuración del chat privado
 function showChatPrivado(socket, domElements) {

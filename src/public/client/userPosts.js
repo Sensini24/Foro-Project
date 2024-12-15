@@ -1,4 +1,5 @@
 export function initUserPosts(){
+    console.log("Iniciando módulo de posts de usuario registrado");
     const puntos = document.querySelectorAll("#puntos")
     const deletePost = document.getElementById("delete")
     const savePost = document.getElementById("save")
@@ -16,5 +17,3 @@ export function initUserPosts(){
     })
     
 }
-
-initUserPosts();

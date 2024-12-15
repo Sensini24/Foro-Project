@@ -1,0 +1,154 @@
+:root {
+    --gruvbox-bg: #282828;
+    --gruvbox-fg: #ebdbb2;
+    --gruvbox-red: #cc241d;
+    --gruvbox-green: #98971a;
+    --gruvbox-yellow: #d79921;
+    --gruvbox-blue: #458588;
+    --gruvbox-purple: #b16286;
+    --gruvbox-aqua: #689d6a;
+    --gruvbox-gray: #a89984;
+}
+body{
+    z-index: 2000;
+}
+.card {
+    background-color: var(--gruvbox-bg);
+    border: 2px solid var(--gruvbox-yellow);
+    border-radius: 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    width: 100%;
+    position: relative;
+    scroll-behavior: smooth;
+    z-index: 2000;
+}
+.card::before, .card::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--gruvbox-yellow);
+}
+
+.card::before {
+    top: -10px;
+    left: -10px;
+    border-right: none;
+    border-bottom: none;
+}
+
+.card::after {
+    bottom: -10px;
+    right: -10px;
+    border-left: none;
+    border-top: none;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    border-bottom: 1px solid var(--gruvbox-yellow);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* ... (previous styles remain unchanged) ... */
+
+/* Add these new styles for notifications */
+.notification-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.notification {
+    display: flex;
+    align-items: flex-start;
+    padding: 15px;
+    border-bottom: 1px solid var(--gruvbox-gray);
+    transition: background-color 0.3s ease;
+}
+
+.notification:last-child {
+    border-bottom: none;
+}
+
+.notification.unread {
+    background-color: rgba(235, 219, 178, 0.1);
+}
+
+.notification-icon {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--gruvbox-blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+}
+
+.notification-icon svg {
+    color: var(--gruvbox-bg);
+}
+
+.notification-content {
+    flex-grow: 1;
+}
+
+.notification-title {
+    margin: 0 0 5px;
+    color: var(--gruvbox-yellow);
+    font-size: 1.1em;
+}
+
+.notification-message {
+    margin: 0 0 5px;
+    color: var(--gruvbox-fg);
+}
+
+.notification-time {
+    font-size: 0.8em;
+    color: var(--gruvbox-gray);
+}
+
+.clear-button {
+    background-color: var(--gruvbox-red);
+    color: var(--gruvbox-bg);
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-family: 'Times NewRoman', serif;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+@media (max-width: 600px) {
+    .notification {
+        flex-direction: column;
+    }
+
+    .notification-icon {
+        margin-bottom: 10px;
+    }
+}
+
+
+#notifications-container {
+    position: absolute;
+    width: 400px;
+    height: 300px;
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.2);
+    display: none; 
+    flex-direction: column;
+    z-index: 2;
+    overflow-y: auto;
+    top: 80px
+}

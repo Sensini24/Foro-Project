@@ -27,7 +27,6 @@ export const interactions = async ()=>{
     })
 
 }
-interactions();
 
 
 

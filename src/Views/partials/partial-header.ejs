@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Header con Estilo</title>
 
+    <!--IMportar socker io-->
+    <script src="/socket.io/socket.io.js"></script>
     <!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
     <!-- <link rel="stylesheet" href="header.css"> -->
 </head>
@@ -37,10 +39,16 @@
                 <div class="user-photo">
                     <img id="img-user" src="https://via.placeholder.com/40" alt="Foto de usuario" class="profile-image" />
                 </div>
-                <div class="notifications-container" style="display: flex; cursor: pointer;">
-                    <i class="material-icons">notifications</i>
-                    1
-                </div>
+                
+                <!--Modal de las notificaciones-->
+                    <!--Campanita de notificacioness...-->
+                    <div class="campanita" style="display: flex; cursor: pointer;">
+                        <i class="material-icons">notifications</i>
+                        <span id="notifications-number"></span>
+                    </div>
+                    <div id="notifications-container">
+                        <%- include('../partials/partial-modalNotifications') %>
+                    </div>
                 
                 <!-- Subir foto -->
                 <!-- <form enctype="multipart/form-data" id="formImage">
@@ -67,6 +75,7 @@
             <% } %>
         </div>
     </header>
+    <script src="../client/headerclient.js" type="module"></script>
 </body>
 
 </html>
@@ -76,59 +85,59 @@
     //     console.log("Archivo: ", inputFile.value)
     // })
 
-    const formImage = document.getElementById("formImage")
-    const fileImage = document.getElementById("id-foto")
-    formImage.addEventListener("submit", (event)=>{
-        event.preventDefault()
+    // const formImage = document.getElementById("formImage")
+    // const fileImage = document.getElementById("id-foto")
+    // formImage.addEventListener("submit", (event)=>{
+    //     event.preventDefault()
 
         
-        const files = fileImage.files[0];
-        const formData = new FormData();
-        formData.append("profilePic", files);
+    //     const files = fileImage.files[0];
+    //     const formData = new FormData();
+    //     formData.append("profilePic", files);
 
-        fetch("/user/uploadImage",{
-        method:"POST",
-        body: formData
-    }).then(response => response.json()) // Procesa la respuesta del servidor
-    .then(data => {
-      console.log("Imagen subida con éxito:", data.file);
-      console.log(data.message)
-    })
-    .catch(error => {
-      console.error("Error al subir la imagen:", error);
-    });
-    })
+    //     fetch("/user/uploadImage",{
+    //     method:"POST",
+    //     body: formData
+    // }).then(response => response.json()) // Procesa la respuesta del servidor
+    // .then(data => {
+    //   console.log("Imagen subida con éxito:", data.file);
+    //   console.log(data.message)
+    // })
+    // .catch(error => {
+    //   console.error("Error al subir la imagen:", error);
+    // });
+    // })
 
-    const img_user = document.getElementById("img-user")
-    fetch("/user/getUser")
-    .then(response => response.json())
-    .then(data => {
-        if(data.usuario == null){
-            console.log("NO hay usuario")
-            img_user.src = "/Images/avatar/user.png"
-            console.log(data.message)
-            console.log(data.usuario)
-            console.log("No tiene una imagen prevista: ", img_user.src)
-        }else{
-            console.log("usuario obtenido")
-            console.log(data.message)
-            console.log(data.usuario)
-            // const pathAdecuado = data.usuario.substring(6,data.usuario.lenght)
-            // console.log("Path adecuado: ", ".." + pathAdecuado)
-            img_user.src = data.usuario
-            console.log("")
-            console.log("Imagen cargada: ", img_user.src)
-        }
+    // const img_user = document.getElementById("img-user")
+    // fetch("/user/getUser")
+    // .then(response => response.json())
+    // .then(data => {
+    //     if(data.usuario == null){
+    //         console.log("NO hay usuario")
+    //         img_user.src = "/Images/avatar/user.png"
+    //         console.log(data.message)
+    //         console.log(data.usuario)
+    //         console.log("No tiene una imagen prevista: ", img_user.src)
+    //     }else{
+    //         console.log("usuario obtenido")
+    //         console.log(data.message)
+    //         console.log(data.usuario)
+    //         // const pathAdecuado = data.usuario.substring(6,data.usuario.lenght)
+    //         // console.log("Path adecuado: ", ".." + pathAdecuado)
+    //         img_user.src = data.usuario
+    //         console.log("")
+    //         console.log("Imagen cargada: ", img_user.src)
+    //     }
 
-    })
+    // })
     
-    .catch(error => {
-        console.error('Error:', error);
-    });
+    // .catch(error => {
+    //     console.error('Error:', error);
+    // });
     
-    const postsidheader = document.getElementById("post-id-header")
+    // const postsidheader = document.getElementById("post-id-header")
 
-    postsidheader.addEventListener("click", ()=>{
-        console.log("BOTON DE POST EN HEADER CLICKADO")
-    })
+    // postsidheader.addEventListener("click", ()=>{
+    //     console.log("BOTON DE POST EN HEADER CLICKADO")
+    // })
 </script>

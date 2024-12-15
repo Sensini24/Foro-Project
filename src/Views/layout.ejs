@@ -6,6 +6,8 @@
         <!-- Estilos CSS y Fuentes -->
         
         <link rel="stylesheet" href="../css/header.css">
+        <link rel="stylesheet" href="../css/header-elements.css">
+
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.cdnfonts.com/css/cascadia-code" rel="stylesheet">
@@ -17,7 +19,7 @@
     </head>
     
 <body>
-    <header>
+    <header class="header-selector">
         <%- include('partials/partial-header') %>
     </header>
     
@@ -25,7 +27,9 @@
     <main class="main-layout">
         <!--ATAJOS-->
         <aside class="sidebar left-sidebar">
-            <%- include('partials/partial-sidebar') %>
+                <%- include('partials/partial-sidebar') %>
+            
+            
         </aside>
 
         <!--BODY-->

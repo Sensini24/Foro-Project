@@ -15,4 +15,4 @@ function allPosts (){
     });
 }
 
-allPosts();
+// allPosts();

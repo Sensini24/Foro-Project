@@ -88,4 +88,4 @@ async function showModal(message) {
     })
 }
 
-initAddPost();
+// initAddPost();
