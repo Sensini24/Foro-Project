@@ -1,14 +1,14 @@
 import mongoose from "mongoose";
 
 const ContactSchema = new mongoose.Schema({
+    "owner_id":{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required:true
+    },
     "contact_id": {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required:true,
-        unique:true
-    },
-    "username":{
-        type: String,
         required:true,
         unique:true
     },
