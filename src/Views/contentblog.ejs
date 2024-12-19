@@ -12,11 +12,11 @@
     <div class="container" id="cuerpo-post-blog">
         <!-- Título del post -->
         <div class="blog-title sr-only" aria-hidden="true" id="id-post"><%= post.id %></div>
-        <h1 class="blog-title"><%= post.title %></h1>
+        <h1 class="blog-title" id="title-post"><%= post.title %></h1>
     
         <!-- Metadatos -->
         <div class="post-meta">
-            <div class="blog-author">By <%= post.author %></div>
+            <div class="blog-author"><%= post.author %></div>
             <div class="blog-date">Published on <%= post.date %></div>
         </div>
     

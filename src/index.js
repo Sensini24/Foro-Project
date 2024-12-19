@@ -22,7 +22,7 @@ import { Message } from './Models/MessageModel.js';
 import { Socket } from 'dgram';
 import { log } from 'console';
 import { SendPrivateMessage, StarChatNewContact, StartPrivateChat } from './sockets/chatSocket.js';
-import { recoverNotification } from './sockets/notificationsSocket.js';
+import { newInteractionNotification, recoverNotification } from './sockets/notificationsSocket.js';
 
 const __dirname =dirname(fileURLToPath(import.meta.url));
 
@@ -32,7 +32,6 @@ const app = express()
 
 //? Why asi? En este caso se hace uso de solicitudes http en tiempo real, se usa para Socket.IO
 const server = createServer(app);
-const modelMessage = Message;
 
 //!CONECTAR SERVIDOR CON EL SOCKET IO
 const io = new Server(server, {
@@ -139,6 +138,9 @@ io.on("connection", async (socket)=>{
     
     //? Envio de mensaje privado a un usuario
     SendPrivateMessage(socket,io, usuariosConectados);
+
+    //? Guardado de interactions: like, dislike, etc
+     newInteractionNotification(socket, usuariosConectados, io)
     
 
     // console.log("sds: " , usuariosConectados)

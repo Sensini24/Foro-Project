@@ -1,5 +1,8 @@
 
 export const interactions = async ()=>{
+    const socket = initializeSocket();
+
+
     const cuerpopostblog = document.querySelector("#cuerpo-post-blog")
     const idPost =document.querySelector("#id-post").textContent.trim()
     // const data = await handleCountInteractions(idPost)
@@ -12,12 +15,12 @@ export const interactions = async ()=>{
         switch(targeta.id){
             case "add-like":
                 console.log("Id like clicado")
-                await handleSaveInteracction(cuerpopostblog, "like")
+                await handleSaveInteracction(cuerpopostblog, "like", socket)
                 break;
             
             case "add-dislike":
                 console.log("Id dislike clicado")
-                await handleSaveInteracction(cuerpopostblog, "dislike")
+                await handleSaveInteracction(cuerpopostblog, "dislike", socket)
                 break;
 
             case "add-share":
@@ -28,13 +31,22 @@ export const interactions = async ()=>{
 
 }
 
+function initializeSocket() {
+    return io({
+        auth: {
+            serverOffset: 0
+        }
+    });
+}
 
 
-const handleSaveInteracction = async(cuerpopostblog, type)=>{
+const handleSaveInteracction = async(cuerpopostblog, type, socket)=>{
     let numerovalor = cuerpopostblog.querySelector("#like-count").textContent
     const postId = cuerpopostblog.querySelector("#id-post").textContent.trim()
+    const usuarioUserPost = cuerpopostblog.querySelector(".blog-author").textContent.trim()
+    const postName = cuerpopostblog.querySelector("#title-post").textContent.trim()
 
-    
+    console.log("NOMBRE DE POST: ", postName)
     //Determinar que interaccion entre like o dislike tiene el usuario
     const whatInteracction = await handleCountInteractions(postId)
     if(!whatInteracction.interactionsUser){
@@ -105,18 +117,22 @@ const handleSaveInteracction = async(cuerpopostblog, type)=>{
             //TODO: AQui quito a dislike
             updateInteractionCount(likeCountElement,1);
             updateInteractionCount(dislikeCountElement,-1);
+
+            socket.emit("newLike notification", usuarioUserPost, postName);
+            console.log("NOmbre de ususario enviado: ", usuarioUserPost, postName)
         }
     }else if(!validationTypeLike && !validationTypeDislike){
         if(type==="like"){
             fetchSaveInteraction(postId, type)
             applyStyles(addLike, ".add-like", "like-count")
             updateInteractionCount(likeCountElement,1);
+            socket.emit("newLike notification", usuarioUserPost);
+            console.log("NOmbre de ususario enviado: ", usuarioUserPost, postName)
         }else if(type==="dislike"){
             fetchSaveInteraction(postId, type)
             applyStyles(addDislike, ".add-dislike", "dislike-count")
             updateInteractionCount(dislikeCountElement,1);
         }
-        
     }
     // const like = "like"
 
@@ -250,7 +266,7 @@ const applyStyles = (button, textClass, countId) => {
 
     const textElement = button.querySelector(textClass); // Seleccionar el texto interno
     if (textElement) textElement.classList.add("active-text"); // Añadir clase adicional para el texto
-    console.log("elementtet: ", textElement)
+    // console.log("elementtet: ", textElement)
     const countElement = document.getElementById(countId); // Seleccionar el contador
     
     if (countElement) countElement.classList.add("active-count"); // Añadir clase adicional para el contador
@@ -296,32 +312,3 @@ async function handleDeleteInteraction(id, type){
     }
         
 }
-
-
-
-// async function handleCountInteractions (id){
-//     try {
-//         const response = await fetch(`/interactions/${id}`, {
-//             method: 'POST',
-//             headers: { 'Content-Type': 'application/json' },
-//             body: JSON.stringify({
-//                 post_id: postId,
-//                 type: like
-//             })
-//         });
-    
-//         if (!response.ok) {
-//             throw new Error(`HTTP error! status: ${response.status}`);
-//         }
-    
-//         const data = await response.json();
-    
-//         if (data.successMessage) {
-//             console.log("Interacción guardada exitosamente: ", data.result);
-//         } else {
-//             console.log("No se guardó tu interacción: ", data.error);
-//         }
-//     } catch (error) {
-//         console.error("Error al enviar la interacción:", error);
-//     }
-// }

@@ -21,8 +21,7 @@ const notificationSchema = new mongoose.Schema({
     required: true,
   },
   roomId: {
-    type: String,
-    required: true,
+    type: String
   },
   isRead: {
     type: Boolean,
@@ -35,7 +34,7 @@ const notificationSchema = new mongoose.Schema({
   },
   createdAt: {
     type: Date,
-    default: Date.now,
+    default: Date.now
   },
 });
 
