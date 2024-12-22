@@ -3,13 +3,13 @@ import { NewContactNotification } from "./notificationsSocket.js";
 
 const modelMessage = Message;
 export function StartPrivateChat(socket, usuariosConectados){
-    socket.on("startprivatechat", (recipienteId)=>{
+    socket.on("startprivatechat", (recipienteId, nombrecontact)=>{
         //? EL recipiente no es mas que el id de usuario pasado previamente y luego adjudicado a un item de cliente uqe al clicar nos devuelve dicho id, el cual servira como key para obtener el socket almacenado en un map mas arribita.
         const recipientSocketId = usuariosConectados.get(recipienteId)?.socketid;
     
         if(recipientSocketId){
             //EN caso de que exista, ordenamo y unimos el id del usuario actual mas el del usuario con quie queremos hablar.
-            console.log(`Iniciando chat privado entre ${socket.user._id} y ${recipienteId}`);
+            console.log(`Iniciando chat privado entre ${socket.user._id} y ${recipienteId}-${nombrecontact}`);
         
             // Crear un nombre único para la sala
             const roomName = [socket.user._id, recipienteId].sort().join("-");
@@ -21,40 +21,48 @@ export function StartPrivateChat(socket, usuariosConectados){
             //ASOCIAR INFORMACION DE ROOM A SOCKET
             // socketRooms.set(socket.id, roomName); 
             const nombreContacto = usuariosConectados.get(recipienteId)?.nombre;
-            socket.emit('privateChatStarted', socket.user._id, roomName, nombreContacto);
+            socket.emit('privateChatStarted', {idSender:socket.user._id, username:socket.user.user_name, room:roomName, contactname:nombrecontact, idContact:recipienteId});
         }
     })
 }
 
 export async function SendPrivateMessage(socket, io, usuariosConectados){
-    socket.on("privateMessage", async ({ roomName, message }) => {
+    socket.on("privateMessage", async ({ roomName, message, nameContact, sendername, idContact }) => {
+    // socket.on("privateMessage", async (data, message) => {
+        // const nameContact = data.contactname;
+        // const roomName = data.room;
+        // const idContact = data.idContact;
+        // const sendername = data.username;
         const lastDocument = await modelMessage.findOne({roomId: roomName}).sort({id_offset:-1});
-        console.log("ultimo document: ", lastDocument);
+        // console.log("ultimo document: ", lastDocument);
         let ultimoId = lastDocument && lastDocument.id_offset ? lastDocument.id_offset + 1 : 1;
-        console.log("ULTIMO ID: ", ultimoId);
+        // console.log("Nombre de Contacto: ", nameContact);
         
         /*
          Recupero los ids de los mensaje y los recorro para ver si no hay mas que uno
          Si hay solo uno entonces es nuevo el contacto y se envia la notificacion al receptor para avisar que es un mensaje de alguien que no está en su contacto.
         */
-        NewContactNotification(io,socket, roomName, usuariosConectados)
+        
         
         if (!ultimoId || isNaN(ultimoId)) {
             console.error('Error: No se pudo calcular un id_offset válido');
             return;
           }
-    
+        
+        console.log("===============ROOMNAME DESDE PRVATE MESSAGE:",roomName, nameContact, idContact)
         const result = await new modelMessage({
             id_offset:ultimoId,
             content: message,
             date: new Date(),
             senderId: socket.user._id,
+            recipientId: idContact,
             roomId:roomName
         }).save();
     
-        console.log("Mensaje guardado correctamente", result.id_offset);
+        NewContactNotification(io,socket, roomName, usuariosConectados, message)
+        console.log("Mensaje guardado correctamente", result);
     
-        io.to(roomName).emit("sendMessage", {sender: socket.user.user_name, message, ultimoId, roomName });
+        io.to(roomName).emit("sendMessage", {userid:socket.user._id, senderId:result.senderId, sendername, message, ultimoId, roomName:roomName, nameContact, idContact });
     
     });
 }
@@ -75,7 +83,7 @@ export function StarChatNewContact(socket){
             socket.join(roomName);
             console.log("Sala de chat creada con usuario desconocido: ", roomName)
             
-            socket.emit('privateChatStarted', socket.user._id, roomName, usernamecontact);
+            socket.emit('privateChatStarted', {idSender:socket.user._id, username:socket.user.user_name, room:roomName, contactname:usernamecontact, idContact: idContact});
         }
     })
 }

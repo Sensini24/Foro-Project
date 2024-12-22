@@ -49,17 +49,16 @@ function showNotifications(socket, domElements) {
 }
 
 
-function IncreaseNumberNotifications(notifUnreadList, notifNumber, notifications){
-    // Filtrar solo los no leidos. Esto es para el modal en header
+async function IncreaseNumberNotifications(notifUnreadList, notifNumber, notifications) {
     notifUnreadList.innerHTML = "";
-    const noleidos = notifications.filter(dato => dato.isRead == false);
+    const noleidos = await notifications.filter(dato => dato.isRead == false);
     notifNumber.innerHTML = noleidos.length;
 
-    noleidos.forEach(elem=>{
+    for (const elem of noleidos) {
         const {message, type, createdAt} = elem;
-       
-
-        const messageNotif = getDateMessage(createdAt)
+        
+        let messageNotif = await getDateMessage(createdAt);
+        
         let item = `<li class="notification unread">
                     <div class="notification-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 17H2a3 3 0 0 0 3-3V9a7 7 0 0 1 14 0v5a3 3 0 0 0 3 3zm-8.27 4a2 2 0 0 1-3.46 0"></path></svg>
@@ -73,32 +72,34 @@ function IncreaseNumberNotifications(notifUnreadList, notifNumber, notifications
 
             </li>`
 
-        switch(type){
+        switch(type) {
             case "firstmessage":
                 notifUnreadList.innerHTML += item;
+                break;
             case "youlike":
                 notifUnreadList.innerHTML += item;
-
+                break;
         }
-    })
+    }
 }
 
-function realtimeNotifications(socket,domElements){
-    socket.on("newNotification", (notifications)=>{
+
+async function realtimeNotifications(socket,domElements){
+    socket.on("newNotification", async (notifications)=>{
         const {notifNumber, notifUnreadList} = domElements;
-        console.log("Notificaciones recibidas en tiempo real: ", notifications);
+        console.log("Notificaciones recibidas en tiempo real: ",typeof notifications[notifications.length-1].createdAt);
         // Incrementar numero de notificaciones no leidas.
-        IncreaseNumberNotifications(notifUnreadList, notifNumber, notifications)
+        await IncreaseNumberNotifications(notifUnreadList, notifNumber, notifications)
 
         
     })
 }
-function getNotifications(socket,domElements){
-    socket.on("show notifications", (notifications)=>{
+async function getNotifications(socket,domElements){
+    socket.on("show notifications", async (notifications)=>{
         const {notifNumber, notifUnreadList} = domElements;
         
         console.log("Notificaciones recuperadas: ", notifications);
-        IncreaseNumberNotifications(notifUnreadList, notifNumber, notifications)
+        await IncreaseNumberNotifications(notifUnreadList, notifNumber, notifications)
     })
 }
 
@@ -115,47 +116,37 @@ function showModalNotifications(domElements){
     });
 }
 
-function getDateMessage(createdAt){
-    const FechaNotification = new Date(createdAt);
-    const FechaCurrent = new Date()
+async function getDateMessage(createdAt) {
+    try {
+        const FechaNotification = new Date(createdAt);
+        const FechaCurrent = new Date();
+        
+        if (isNaN(FechaNotification.getTime())) {
+            console.log("Fecha inválida, retornando valor por defecto");
+            return "Hace un momento";
+        }
 
-    const yearNotif = FechaNotification.getFullYear()
-    const yearCurrent = FechaCurrent.getFullYear()
-    const montNotif = FechaNotification.getMonth()
-    const monthCurrent = FechaCurrent.getMonth()
-    const dayNotif = FechaNotification.getDate()
-    const dayCurrent = FechaCurrent.getDate()
-    const hourNotif = FechaNotification.getHours()
-    const hourCurrent = FechaCurrent.getHours()
-    const minuteNotif = FechaNotification.getMinutes()
-    const minuteCurrent = FechaCurrent.getMinutes()
-    // console.log("Año Notif: ", yearNotif, "/ Año Actual: ", yearCurrent)
-    // console.log("Mes Notif: ", montNotif, "/ Mes Actual: ", monthCurrent)
-    // console.log("DIa Notif: ", dayNotif, "/ DIa Actual: ", dayCurrent)
-    // console.log("Hora Notif: ", hourNotif, "/ Hora Actual: ", hourCurrent)
-    // console.log("Minuto Notif: ", minuteNotif, "/ Minuto Actual: ", minuteCurrent)
-    let messageTime = "";
-    
-    if(yearCurrent > yearNotif){
-        return messageTime = `Hace ${yearCurrent -yearNotif} años`
-    }else if(yearCurrent < yearNotif){
-        return messageTime = `Hace ${yearNotif - yearCurrent} años`
-    }else if(monthCurrent > montNotif){
-        return messageTime = `Hace ${monthCurrent -montNotif} meses`
-    }else if(monthCurrent < montNotif){
-        return messageTime = `Hace ${montNotif - monthCurrent} meses`
-    }else if(dayCurrent > dayNotif){
-        return messageTime = `Hace ${dayCurrent -dayNotif} días`
-    }else if(dayCurrent < dayNotif){
-        return messageTime = `Hace ${dayNotif - dayCurrent} días`
-    }else  if(hourCurrent > hourNotif){
-        return messageTime = `Hace ${hourCurrent -hourNotif} horas`
-    }else if(hourNotif < hourCurrent){
-        return messageTime = `Hace ${hourNotif - hourCurrent} horas`
-    }else if(minuteCurrent > minuteNotif){
-        return messageTime = `Hace ${minuteCurrent-minuteNotif} minutos`
-    }else if(minuteCurrent < minuteNotif){
-        return messageTime = `Hace ${minuteNotif-minuteCurrent} minutos`
+        const diff = FechaCurrent - FechaNotification;
+        const minutes = Math.floor(diff / 60000);
+        const hours = Math.floor(diff / 3600000);
+        const days = Math.floor(diff / 86400000);
+        const months = Math.floor(days / 30);
+        const years = Math.floor(days / 365);
+
+        if (minutes < 1) return "Hace un momento";
+        if (minutes === 1) return "Hace un minuto";
+        if (minutes < 60) return `Hace ${minutes} minutos`;
+        if (hours === 1) return "Hace una hora";
+        if (hours < 24) return `Hace ${hours} horas`;
+        if (days === 1) return "Hace un día";
+        if (days < 30) return `Hace ${days} días`;
+        if (months === 1) return "Hace un mes";
+        if (months < 12) return `Hace ${months} meses`;
+        if (years === 1) return "Hace un año";
+        return `Hace ${years} años`;
+
+    } catch (error) {
+        console.error("Error procesando fecha:", error);
+        return "Hace un momento";
     }
 }
-

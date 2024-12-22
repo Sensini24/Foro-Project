@@ -89,7 +89,7 @@ function newDataContact(socket) {
         contact.addEventListener("click", () => {
             const idContact = contact.dataset.userId;
             const usernameContact = contact.textContent.trim();
-            console.log(idContact, usernameContact);
+            console.log("DESDE STARCHAT NEWCONTACT: ", idContact, usernameContact);
             socket.emit("startchat newcontact", idContact, usernameContact);
         });
     });
@@ -127,53 +127,99 @@ function showChatPrivado(socket, domElements) {
 
             userItem.addEventListener("click", () => {
                 console.log(`Iniciando chat con ${nombre} (${userId})`);
-                socket.emit("startprivatechat", userId);
+                socket.emit("startprivatechat", userId, nombre);
             });
 
             chatContacts.appendChild(userItem);
         });
     });
 
-    socket.on("privateChatStarted", (recipient, roomName, usernameContact) => {
+    
+    socket.on("privateChatStarted", (data) => {
         const usernameHeader = document.querySelector("#user_name");
-        usernameHeader.textContent = usernameContact;
-
+        console.log("Data: ", data);
+        usernameHeader.textContent = data.contactname;
+        console.log("SE EMITIO EL NOMBRE DE CONTACTO Y SENDER e2e2: ", data.idSender, data.username, data.room, data.contactname);
         chatMessages.innerHTML = "";
-        chatMessages.dataset.userId = roomName;
-        socket.roomName = roomName;
+        chatMessages.dataset.userId = data.room;
+        console.log("ROOM CREADO: ", data.room);
+        socket.roomName = data.room;
 
-        formChat.addEventListener("submit", (event) => {
+        // Define la función de manejo del evento submit
+        function handleFormSubmit(event) {
             event.preventDefault();
+            
             if (chatInput.value.trim()) {
-                socket.emit("privateMessage", { roomName: roomName, message: chatInput.value });
+                socket.emit("privateMessage", { roomName: data.room, message: chatInput.value, nameContact: data.contactname, sendername: data.username, idContact: data.idContact });
                 chatInput.value = "";
+                console.log("DESDE FORM ENVIO DE MENSAJE: ", { roomName: data.room, message: chatInput.value, nameContact: data.contactname, sendername: data.username, idContact: data.idContact });
             }
-        });
+        }
 
-        socket.emit("recoverMessages", roomName);
+        // Elimina cualquier evento submit anterior
+        formChat.removeEventListener("submit", formChat.handleFormSubmit);
+
+        // Asigna la nueva función de manejo del evento submit
+        formChat.handleFormSubmit = handleFormSubmit;
+
+        // Agrega el nuevo evento submit
+        formChat.addEventListener("submit", formChat.handleFormSubmit);
+
+        console.log("ROOM DESDE PRIVATE MESSAGE: ", data.room);
+
+        socket.emit("recoverMessages", data.room, data.contactname, data.username);
+        console.log("SE EMITIO EL NOMBRE DE CONTACTO Y SENDER: ", data.contactname, data.username);
     });
 
     socket.on("sendMessage", (data) => {
+        console.log("ROOM DESDE SENDEMESSAGE: ", chatMessages.dataset.userId, data.roomName, data)
         if (chatMessages.dataset.userId === data.roomName) {
+            console.log("SIE ES EL ROOM Y SE ENVIO: ", chatMessages.dataset.userId, data.roomName, data)
             const messageItem = document.createElement("div");
-            messageItem.innerHTML = `<div class="message received">
-                                        <span class="sender">De ${data.sender}:</span>
+            const usernameHeader = document.querySelector("#user_name");
+
+            if(usernameHeader.textContent.trim() !== data.nameContact){
+                console.log("CONTACTO: ", data.userid, data.senderId, data.message, true)
+                messageItem.innerHTML = `<div class="message received">
+                                         <span class="sender">De ${data.sendername}:</span>
                                         <p>${data.message}</p>
                                     </div>`;
+            }else{
+                console.log("SENDER: ", data.userid, data.senderId, data.message)
+                messageItem.innerHTML = `<div class="message sent">
+                                        <span class="sender">Tú:</span>
+                                        <p>${data.message}</p>
+                                    </div>`;
+            }
+            
             chatMessages.appendChild(messageItem);
             messageItem.scrollIntoView({ behavior: "smooth", block: "start" });
+        }else{
+            console.log("No es el room: ", data)
         }
     });
 
-    socket.on("recoveredMessages", (messages) => {
+    socket.on("recoveredMessages", (userid,messages, usernameContact, sendername) => {
         chatMessages.innerHTML = "";
-        messages.forEach(({ sender, content }) => {
+        console.log(messages)
+        messages.forEach(({content, senderId }) => {
+            // console.log("NOmbres de contacto y sender: ",messages, usernameContact, sendername)
             const messageItem = document.createElement("div");
-            messageItem.innerHTML = `<div class="message received">
-                                        <span class="sender">De ${sender}:</span>
+            if( userid != senderId){
+                console.log(userid, senderId)
+                messageItem.innerHTML = `<div class="message received">
+                                        <span class="sender">De ${sendername}:</span>
                                         <p>${content}</p>
                                     </div>`;
+            }else{
+                messageItem.innerHTML = `<div class="message sent">
+                                        <span class="sender">Tú:</span>
+                                        <p>${content}</p>
+                                    </div>`;
+            }
+            
             chatMessages.appendChild(messageItem);
+            // console.log("NOmbres de contacto y sender: ", messa)
         });
 
         const lastItem = chatMessages.lastElementChild;

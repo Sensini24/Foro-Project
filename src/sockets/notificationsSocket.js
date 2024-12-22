@@ -31,9 +31,10 @@ async function notificationsDataBase(idReceptor){
 }
 
 // Crea notificación de recepcion de mensajes de desconocidos
-export async function NewContactNotification(io, socket, roomName, usuariosConectados){
+export async function NewContactNotification(io, socket, roomName, usuariosConectados, message){
     console.log("USUARIOS CONECTADOS EN NOTIFICATION: ", usuariosConectados)
     const messages = await modelMessage.find({ roomId: roomName }).sort({ id_offset: 1 });
+    const messageChat = message;
     let ids = []
         messages.forEach(elemento =>{
             if(ids.includes(elemento.senderId) ){
@@ -54,7 +55,7 @@ export async function NewContactNotification(io, socket, roomName, usuariosConec
             console.log("Receptor socket: ", receptorSocket);
 
             const senderId = socket.user._id
-            const message = `El usuario ${socket.user.user_name} no está en tus contactos y te envió un mensaje al chat. Aceptas agregarlo o ignorarlo?`
+            const message = `El usuario ${socket.user.user_name} no está en tus contactos y te envió un mensaje al chat: "${messageChat}". Aceptas agregarlo o ignorarlo?`
     
             const notifSended = await new modelNotification({
                 senderId: senderId,
@@ -119,9 +120,9 @@ export async function newInteractionNotification(socket, usuariosConectados, io)
         const receptorUser = await modelUsuario.find({user_name:usuarioUserPost});
         const idReceptor = receptorUser[0]._id.toString();
         const senderId = socket.user._id
-        // console.log("recepcion de postname: ", postName)
+        console.log("recepcion de postname: ", postName)
         
-        const message = `El usuario ${socket.user.user_name} le dio like a tu post titulado ${postName}`
+        const message = `El usuario ${socket.user.user_name} le dio like a tu post titulado:  "${postName}"`
         console.log("Id de usuario: ", receptorUser[0]._id);
 
         let receptorSocket = usuariosConectados.get(idReceptor) != null || undefined ? usuariosConectados.get(idReceptor).socketid : null
@@ -132,7 +133,8 @@ export async function newInteractionNotification(socket, usuariosConectados, io)
             message: message,
             type: "youlike",
             isRead: false,
-            status: "pending"
+            status: "pending",
+            createdAt: new Date()
         });
         try{
             await notifSended.save();
@@ -140,10 +142,11 @@ export async function newInteractionNotification(socket, usuariosConectados, io)
             const notifSearch = await notificationsDataBase(idReceptor);
             console.log("Notificacion enviada: ", notifSearch)
 
+            const tamaño= notifSearch.length
             if(receptorSocket || receptorSocket == null){
                 io.to(receptorSocket).emit("newNotification", notifSearch);
                 console.log("Enviado a socket: ", receptorSocket)
-                console.log("Enviado en tiempo real")
+                console.log("Enviado en tiempo real: ", notifSearch[tamaño-1].createdAt)
             }
         }catch(err){
             console.log("No se pudo guardar esta notificación: ", err);

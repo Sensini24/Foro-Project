@@ -126,7 +126,7 @@ const handleSaveInteracction = async(cuerpopostblog, type, socket)=>{
             fetchSaveInteraction(postId, type)
             applyStyles(addLike, ".add-like", "like-count")
             updateInteractionCount(likeCountElement,1);
-            socket.emit("newLike notification", usuarioUserPost);
+            socket.emit("newLike notification", usuarioUserPost, postName);
             console.log("NOmbre de ususario enviado: ", usuarioUserPost, postName)
         }else if(type==="dislike"){
             fetchSaveInteraction(postId, type)

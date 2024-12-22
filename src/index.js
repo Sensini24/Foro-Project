@@ -170,14 +170,15 @@ io.on("connection", async (socket)=>{
     //     }
     // }
 
-    socket.on("recoverMessages", async (roomName) => {
+    socket.on("recoverMessages", async (roomName, usernameContact, sendername) => {
         try {
             const messages = await Message.find({ roomId: roomName }).sort({ id_offset: 1 });
 
             if (messages) {
                 //! Aqui cambié porque emitia a todo el room, y cuando cambiaba de chat emergía tambien para el compañero de chat
                 // io.to(roomName).emit('recoveredMessages', messages);
-                socket.emit('recoveredMessages', messages);
+                socket.emit('recoveredMessages',socket.user._id, messages, usernameContact,sendername);
+                
             } else {
                 console.log("NO SE ENCONTRARON DATOS");
             }
