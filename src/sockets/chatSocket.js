@@ -28,11 +28,6 @@ export function StartPrivateChat(socket, usuariosConectados){
 
 export async function SendPrivateMessage(socket, io, usuariosConectados){
     socket.on("privateMessage", async ({ roomName, message, nameContact, sendername, idContact }) => {
-    // socket.on("privateMessage", async (data, message) => {
-        // const nameContact = data.contactname;
-        // const roomName = data.room;
-        // const idContact = data.idContact;
-        // const sendername = data.username;
         const lastDocument = await modelMessage.findOne({roomId: roomName}).sort({id_offset:-1});
         // console.log("ultimo document: ", lastDocument);
         let ultimoId = lastDocument && lastDocument.id_offset ? lastDocument.id_offset + 1 : 1;
@@ -42,7 +37,7 @@ export async function SendPrivateMessage(socket, io, usuariosConectados){
          Recupero los ids de los mensaje y los recorro para ver si no hay mas que uno
          Si hay solo uno entonces es nuevo el contacto y se envia la notificacion al receptor para avisar que es un mensaje de alguien que no está en su contacto.
         */
-        
+         
         
         if (!ultimoId || isNaN(ultimoId)) {
             console.error('Error: No se pudo calcular un id_offset válido');
@@ -59,7 +54,7 @@ export async function SendPrivateMessage(socket, io, usuariosConectados){
             roomId:roomName
         }).save();
     
-        NewContactNotification(io,socket, roomName, usuariosConectados, message)
+        NewContactNotification(io,socket, roomName, usuariosConectados, message, nameContact,idContact)
         console.log("Mensaje guardado correctamente", result);
     
         io.to(roomName).emit("sendMessage", {userid:socket.user._id, senderId:result.senderId, sendername, message, ultimoId, roomName:roomName, nameContact, idContact });

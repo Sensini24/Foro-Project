@@ -1,7 +1,6 @@
 import jsonwebtoken, { decode } from "jsonwebtoken";
 import dotenv from "dotenv"
 import { User } from "../Models/User.js";
-import bcrypt from 'bcrypt';
 
 
 export async function crearWebToken(Usuario){

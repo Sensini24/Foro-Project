@@ -33,7 +33,8 @@ function cacheDOMElements() {
         notifContainer: document.querySelector(".notifications-container"),
         chatIcon : document.querySelector(".chat-icon"),
         chatContainer: document.getElementById("chat-container"),
-        btnClose: document.querySelector(".btn-close")
+        btnClose: document.querySelector(".btn-close"),
+        chatContactsPending: document.querySelector(".chat-contacts-pending")
     };
 }
 
@@ -227,4 +228,17 @@ function showChatPrivado(socket, domElements) {
             lastItem.scrollIntoView({ behavior: "instant", block: "start" });
         }
     });
+
+
+    socket.on("getPendingContact", (nameContact,receptorId)=>{
+        const { chatContactsPending } = domElements;
+        chatContactsPending.innerHTML = "";
+        const userItem = document.createElement("li");
+        userItem.classList.add("contacto");
+        userItem.textContent = nameContact;
+        userItem.dataset.userId = receptorId;
+
+        chatContactsPending.appendChild(userItem);
+        console.log("Agregadp contact pending")
+    })
 }
