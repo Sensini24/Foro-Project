@@ -17,7 +17,7 @@ body{
     border: 2px solid var(--gruvbox-yellow);
     border-radius: 0;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    max-width: 600px;
+    max-width: 1000px;
     width: 100%;
     position: relative;
     scroll-behavior: smooth;
@@ -149,7 +149,7 @@ body{
 }
 #notifications-container {
     position: absolute;
-    width: 400px;
+    width: 32rem;
     height: 300px;
     box-shadow: -2px 0 8px rgba(0, 0, 0, 0.2);
     display: none; 
@@ -158,4 +158,14 @@ body{
     overflow-x: hidden;
     overflow-y: auto;
     top: 80px
+}
+.unread:hover{
+    background-color: #689D6A;
+}
+.unread:hover .notification-message {
+    color: #282828;
+}
+
+.unread:hover span{
+    color: #378889;
 }

@@ -55,31 +55,16 @@ async function IncreaseNumberNotifications(notifUnreadList, notifNumber, notific
     notifNumber.innerHTML = noleidos.length;
 
     for (const elem of noleidos) {
-        const {message, type, createdAt} = elem;
+        console.log("room id de notif: ", elem)
+        const {message, type, createdAt, senderId, recipientId} = elem;
+        
         
         let messageNotif = await getDateMessage(createdAt);
+    
+        let item = await gethtmlNotifications(type, message, messageNotif, senderId, recipientId)
         
-        let item = `<li class="notification unread">
-                    <div class="notification-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 17H2a3 3 0 0 0 3-3V9a7 7 0 0 1 14 0v5a3 3 0 0 0 3 3zm-8.27 4a2 2 0 0 1-3.46 0"></path></svg>
-                </div>
-                <div class="notification-content">
-                    <h2 class="notification-title">New Symposium Invitation</h2>
-                    <p class="notification-message">${message}</p>
-                    <span class="notification-time">${messageNotif}</span>
-                </div>
-                <button>Aceptar</button>
-
-            </li>`
-
-        switch(type) {
-            case "firstmessage":
-                notifUnreadList.innerHTML += item;
-                break;
-            case "youlike":
-                notifUnreadList.innerHTML += item;
-                break;
-        }
+        notifUnreadList.innerHTML += item;
+        
     }
 }
 
@@ -94,6 +79,7 @@ async function realtimeNotifications(socket,domElements){
         
     })
 }
+
 async function getNotifications(socket,domElements){
     socket.on("show notifications", async (notifications)=>{
         const {notifNumber, notifUnreadList} = domElements;
@@ -149,4 +135,36 @@ async function getDateMessage(createdAt) {
         console.error("Error procesando fecha:", error);
         return "Hace un momento";
     }
+}
+
+function gethtmlNotifications(typehtml, message, messageNotif, senderId, recipientId){
+    const notificationsStyles = {
+        "firstmessage": `<li class="notification unread" id="li-notification" data-sender-id=${senderId} data-recipient-id=${recipientId}>
+                    <div class="notification-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 17H2a3 3 0 0 0 3-3V9a7 7 0 0 1 14 0v5a3 3 0 0 0 3 3zm-8.27 4a2 2 0 0 1-3.46 0"></path></svg>
+                </div>
+                <div class="notification-content">
+                    <h2 class="notification-title">Contacto desconocido</h2>
+                    <p class="notification-message">${message}</p>
+                    <span class="notification-time">${messageNotif}</span>
+                </div>
+                <button>Aceptar</button>
+            </li>`,
+
+        "youlike" : `<li class="notification unread" data-sender-id=${senderId} data-recipient-id=${recipientId}>
+                    <div class="notification-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg"  width="24" height="24" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6.633 10.25c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 0 1 2.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 0 0 .322-1.672V2.75a.75.75 0 0 1 .75-.75 2.25 2.25 0 0 1 2.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282m0 0h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 0 1-2.649 7.521c-.388.482-.987.729-1.605.729H13.48c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 0 0-1.423-.23H5.904m10.598-9.75H14.25M5.904 18.5c.083.205.173.405.27.602.197.4-.078.898-.523.898h-.908c-.889 0-1.713-.518-1.972-1.368a12 12 0 0 1-.521-3.507c0-1.553.295-3.036.831-4.398C3.387 9.953 4.167 9.5 5 9.5h1.053c.472 0 .745.556.5.96a8.958 8.958 0 0 0-1.302 4.665c0 1.194.232 2.333.654 3.375Z" />
+                    </svg>
+                </div>
+                <div class="notification-content">
+                    <h2 class="notification-title">Nuevo Like</h2>
+                    <p class="notification-message">${message}</p>
+                    <span class="notification-time">${messageNotif}</span>
+                </div>
+            </li>`,
+    }
+
+    return notificationsStyles[typehtml];
+
 }
