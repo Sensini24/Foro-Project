@@ -23,11 +23,20 @@ document.addEventListener("DOMContentLoaded", async() => {
         const {initUserPosts} = await import("./userPosts.js")
         initUserPosts();
     }
+    else if(currentPath.includes('/notif/all')){
+        const {initInteractNotifications} = await import("./notificationclient.js")
+        initInteractNotifications();
+    }
 
     //Módulos universales
     const {initChat} = await import("./chat.js")
     initChat()
     
+    //Opciones de header como las notifications
     const {initHeaderOptions} = await import("./headerclient.js")
     initHeaderOptions()
+
+    //Interacciones con las notifications
+    // const {initInteractNotifications} = await import("./notificationclient.js")
+    // initInteractNotifications()
 });

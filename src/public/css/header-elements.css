@@ -119,16 +119,6 @@ body{
     color: var(--gruvbox-gray);
 }
 
-.clear-button {
-    background-color: var(--gruvbox-red);
-    color: var(--gruvbox-bg);
-    border: none;
-    padding: 8px 16px;
-    cursor: pointer;
-    font-family: 'Times NewRoman', serif;
-    font-weight: bold;
-    text-transform: uppercase;
-}
 
 @media (max-width: 600px) {
     .notification {
@@ -150,7 +140,7 @@ body{
 #notifications-container {
     position: absolute;
     width: 32rem;
-    height: 300px;
+    height: 600px;
     box-shadow: -2px 0 8px rgba(0, 0, 0, 0.2);
     display: none; 
     flex-direction: column;
@@ -168,4 +158,32 @@ body{
 
 .unread:hover span{
     color: #378889;
+}
+.all-button{
+    font-family: 'Times New Roman', serif;
+    font-size: 16px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    outline: none;
+    background-color: var(--gruvbox-blue);
+    color: var(--gruvbox-bg);
+}
+
+.all-button:hover  {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+
+.clear-button  {
+    border-radius: 25px;
+    background-color: var(--gruvbox-orange);
+    color: var(--gruvbox-bg);
+}
+.clear-button:hover  {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }

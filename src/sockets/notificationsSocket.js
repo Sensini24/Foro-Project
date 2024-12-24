@@ -22,7 +22,7 @@ async function notificationsDataBase(idReceptor){
         const notifications = await modelNotification.find({
             recipientId:idReceptor,
             status:"pending"
-        })
+        }).sort({createdAt:-1})
         // console.log("Notifications enviadas: ", notifications)
         return notifications;
     }catch(error){

@@ -10,6 +10,7 @@ import postRoute from './Routes/postRoutes.js'
 import commentRouter from './Routes/commentRoutes.js'
 import authRoute from './Routes/authRoutes.js';
 import chatRoute from './Routes/chatRoutes.js';
+import notifRoute from './Routes/notificationsRoutes.js';
 import connect from './database.js'
 import cookieParser from 'cookie-parser';
 import expressLayouts from 'express-ejs-layouts';
@@ -229,7 +230,8 @@ app.use(routheTags)
 app.use(routePostInteractions)
 app.use(layoutRoute)
 app.use(chatRoute);
-app.use(userRouter)
+app.use(userRouter);
+app.use(notifRoute)
 
 
 const PORT = process.env.PORT

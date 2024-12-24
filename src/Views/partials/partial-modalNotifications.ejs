@@ -5,12 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notifications - Greek Odyssey</title>
     <link rel="stylesheet" href="../css/header-elements.css">
+    <link rel="stylesheet" href="../css/notifications.css">
 </head>
 <body>
     <div class="card">
         <header class="card-header">
-            <h1 class="title">Notificaciones</h1>
-            <button class="clear-button" style="width: 9rem;">Marcar todo como leído</button>
+            <div style="width: 100%;">
+                <h1 class="title">Notificaciones</h1>
+                <hr>
+                <div style="display: flex; align-items: center; justify-content: space-around; margin-top: 10px;">
+                    <button class="clear-button" style="width: 10rem; height: 3rem; font-size: 15px;">Marcar todo como leído</button>
+                    <button class="all-button" style="width: 9rem;">
+                        <a href="/notif/all"><span class="icon">📑</span> Ver todas las notificaciones</a>
+                    </button>
+                </div>
+            </div>
         </header>
         <main class="card-content">
             <ul class="notification-list">

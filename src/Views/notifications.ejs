@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/notifications.css">
+    <title>Notificaciones</title>
+</head>
+<body>
+    <div class="notifications-container">
+        <div class="notifications-header">
+            <div class="header-title">
+                <h1>Notificaciones</h1>
+                <span class="notification-count">12</span>
+            </div>
+            <div class="header-actions">
+                <button class="btn">
+                    <span>Filtrar</span>
+                </button>
+                <button class="btn btn-primary">
+                    <span>Marcar todo como leído</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="filters">
+            <button class="filter-btn active">Todas</button>
+            <button class="filter-btn">Sin leer</button>
+            <button class="filter-btn">Menciones</button>
+            <button class="filter-btn">Comentarios</button>
+            <button class="filter-btn">Actualizaciones</button>
+            <button class="filter-btn">Sistema</button>
+        </div>
+
+        <div class="notifications-list">
+            <!-- Notificación con acciones -->
+            <% if(!notifications){ %>
+                <h3>No hay notificaciones</h3>
+            <%}else{%>
+                <% notifications.forEach(notif => { %>
+                    <div class="notification-item unread">
+                        <div class="avatar">JD</div>
+                        <div class="notification-content">
+                            <div class="notification-header">
+                                <span class="notification-title"><%= notif.senderId %></span>
+                                <span class="notification-time"><%= notif.createdAt  %></span>
+                            </div>
+                            <p class="notification-message">
+                                <%= notif.message %>
+                            </p>
+                            <div class="notification-actions">
+                                <button class="action-btn accept">Aceptar</button>
+                                <button class="action-btn reject">Rechazar</button>
+                            </div>
+                        </div>
+                    </div>
+                    <%})%>
+                
+            <%}%>
+            
+        </div>
+    </div>
+</body>
+</html>

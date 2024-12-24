@@ -10,7 +10,8 @@ export function initHeaderOptions(){
     showNotifications(socket, domElements);
     showModalNotifications(domElements);
     getNotifications(socket,domElements);
-    realtimeNotifications(socket,domElements)
+    realtimeNotifications(socket,domElements);
+    notifFunctionality(domElements);
 }
 
 function initializeSocket() {
@@ -28,7 +29,9 @@ function ChargeDOMElements(){
         campanita: document.querySelector("#campanita"),
         notifNumber: document.querySelector("#notifications-number"),
         notifUnreadContainer: document.querySelector(".notification unread"),
-        notifUnreadList : document.querySelector(".notification-list") 
+        notifUnreadList : document.querySelector(".notification-list"),
+        cardNotifContainer : document.querySelector(".card-content"),
+        allNotifButton : document.querySelector(".all-button")
     }
     
 }
@@ -58,13 +61,10 @@ async function IncreaseNumberNotifications(notifUnreadList, notifNumber, notific
         console.log("room id de notif: ", elem)
         const {message, type, createdAt, senderId, recipientId} = elem;
         
-        
         let messageNotif = await getDateMessage(createdAt);
-    
         let item = await gethtmlNotifications(type, message, messageNotif, senderId, recipientId)
         
         notifUnreadList.innerHTML += item;
-        
     }
 }
 
@@ -102,7 +102,7 @@ function showModalNotifications(domElements){
     });
 }
 
-async function getDateMessage(createdAt) {
+export async function getDateMessage(createdAt) {
     try {
         const FechaNotification = new Date(createdAt);
         const FechaCurrent = new Date();
@@ -141,7 +141,7 @@ function gethtmlNotifications(typehtml, message, messageNotif, senderId, recipie
     const notificationsStyles = {
         "firstmessage": `<li class="notification unread" id="li-notification" data-sender-id=${senderId} data-recipient-id=${recipientId}>
                     <div class="notification-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 17H2a3 3 0 0 0 3-3V9a7 7 0 0 1 14 0v5a3 3 0 0 0 3 3zm-8.27 4a2 2 0 0 1-3.46 0"></path></svg>
+                    <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd"><path d="M24 23h-24v-13.275l2-1.455v-7.27h20v7.272l2 1.453v13.275zm-20-10.472v-9.528h16v9.527l-8 5.473-8-5.472zm14-.528h-12v-1h12v1zm0-3v1h-12v-1h12zm-7-1h-5v-3h5v3zm7 0h-6v-1h6v1zm0-2h-6v-1h6v1z"/></svg>
                 </div>
                 <div class="notification-content">
                     <h2 class="notification-title">Contacto desconocido</h2>
@@ -168,3 +168,27 @@ function gethtmlNotifications(typehtml, message, messageNotif, senderId, recipie
     return notificationsStyles[typehtml];
 
 }
+
+function notifFunctionality(domElements){
+    const {cardNotifContainer, allNotifButton} = domElements
+    
+
+    cardNotifContainer.addEventListener("click", (event)=>{
+        const target = event.target.closest("li")
+        if(target){
+            const senderId = target.dataset.senderId;
+            const recipientId = target.dataset.recipientId;
+            console.log("Sender ID:", senderId);
+            console.log("Recipient ID:", recipientId);
+        }
+    })
+
+    // allNotifButton.addEventListener("click", async ()=>{
+    //     const response = await fetch("/notif/all");
+    //     const data = response.text()
+
+        
+    // })
+}
+
+
