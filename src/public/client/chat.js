@@ -206,10 +206,11 @@ function showChatPrivado(socket, domElements) {
         messages.forEach(({content, senderId }) => {
             // console.log("NOmbres de contacto y sender: ",messages, usernameContact, sendername)
             const messageItem = document.createElement("div");
+            const usernameHeader = document.querySelector("#user_name");
             if( userid != senderId){
                 console.log(userid, senderId)
                 messageItem.innerHTML = `<div class="message received">
-                                        <span class="sender">De ${sendername}:</span>
+                                        <span class="sender">De ${usernameContact}:</span>
                                         <p>${content}</p>
                                     </div>`;
             }else{

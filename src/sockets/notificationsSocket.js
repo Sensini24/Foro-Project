@@ -20,8 +20,7 @@ export async function recoverNotification(socket,userID){
 async function notificationsDataBase(idReceptor){
     try{
         const notifications = await modelNotification.find({
-            recipientId:idReceptor,
-            status:"pending"
+            recipientId:idReceptor
         }).sort({createdAt:-1})
         // console.log("Notifications enviadas: ", notifications)
         return notifications;
@@ -64,7 +63,6 @@ export async function NewContactNotification(io, socket, roomName, usuariosConec
             type: "firstmessage",
             roomId: roomName,
             isRead: false,
-            status: "pending",
             createdAt: new Date()
         });
 
@@ -140,7 +138,6 @@ export async function newInteractionNotification(socket, usuariosConectados, io)
             message: message,
             type: "youlike",
             isRead: false,
-            status: "pending",
             createdAt: new Date()
         });
         try{

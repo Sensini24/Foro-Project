@@ -11,15 +11,18 @@
         <div class="notifications-header">
             <div class="header-title">
                 <h1>Notificaciones</h1>
-                <span class="notification-count">12</span>
+                <span class="notification-count">
+                    <%=notifications.length%>
+                </span>
             </div>
             <div class="header-actions">
                 <button class="btn">
                     <span>Filtrar</span>
                 </button>
-                <button class="btn btn-primary">
-                    <span>Marcar todo como leído</span>
-                </button>
+                
+                    <button class="btn btn-primary">
+                        <span>Marcar todo como leído</span>
+                    </button>
             </div>
         </div>
 
@@ -34,24 +37,34 @@
 
         <div class="notifications-list">
             <!-- Notificación con acciones -->
-            <% if(!notifications){ %>
-                <h3>No hay notificaciones</h3>
+            <% if(notifications.length <1){ %>
+                <h3 style="display: flex; align-items: center; justify-content: center;">No tiene notificaciones</h3>
             <%}else{%>
                 <% notifications.forEach(notif => { %>
-                    <div class="notification-item unread">
+                    <div class="notification-item unread" data-sender-id="<%= notif.senderId %>" data-recipient-id="<%= notif.recipientId%>">
                         <div class="avatar">JD</div>
                         <div class="notification-content">
                             <div class="notification-header">
-                                <span class="notification-title"><%= notif.senderId %></span>
+                                <!-- <%if(notif.type == "firstmessage"){%>
+                                    <span class="notification-title">Nuevo Contacto</span>
+                                <%}%> -->
+                                <span class="notification-title"><%= notif.type %></span>
                                 <span class="notification-time"><%= notif.createdAt  %></span>
                             </div>
                             <p class="notification-message">
                                 <%= notif.message %>
                             </p>
-                            <div class="notification-actions">
-                                <button class="action-btn accept">Aceptar</button>
-                                <button class="action-btn reject">Rechazar</button>
-                            </div>
+                            <!-- <%if(notif.type == "firstmessage"){%>
+                                <div class="notification-actions" >
+                                    <button class="action-btn accept">Aceptar</button>
+                                    <button class="action-btn reject">Rechazar</button>
+                                </div>
+                            <%}else if(notif.type == "youlike"){%>
+                                <div class="notification-actions">
+                                    <button class="action-btn">Responder</button>
+                                    <button class="action-btn">Ver comentario</button>
+                                </div>
+                            <%}%> -->
                         </div>
                     </div>
                     <%})%>

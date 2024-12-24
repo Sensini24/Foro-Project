@@ -81,6 +81,7 @@ body{
 
 .notification.unread {
     background-color: rgba(235, 219, 178, 0.1);
+    cursor: pointer;
 }
 
 .notification-icon {
@@ -151,6 +152,7 @@ body{
 }
 .unread:hover{
     background-color: #689D6A;
+
 }
 .unread:hover .notification-message {
     color: #282828;
@@ -187,3 +189,4 @@ body{
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
+

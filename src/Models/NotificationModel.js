@@ -17,7 +17,7 @@ const notificationSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ['firstmessage', 'youlike', 'youshare'],
+    enum: ['firstmessage', 'youlike', 'youshare', 'youmention', 'youcomment'],
     required: true,
   },
   roomId: {
@@ -26,11 +26,6 @@ const notificationSchema = new mongoose.Schema({
   isRead: {
     type: Boolean,
     default: false,
-  },
-  status: {
-    type: String,
-    enum: ['pending', 'accepted', 'rejected'],
-    default: 'pending',
   },
   createdAt: {
     type: Date,
