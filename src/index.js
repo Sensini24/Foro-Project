@@ -23,7 +23,7 @@ import { Message } from './Models/MessageModel.js';
 import { Socket } from 'dgram';
 import { log } from 'console';
 import { SendPrivateMessage, StarChatNewContact, StartPrivateChat } from './sockets/chatSocket.js';
-import { newInteractionNotification, recoverNotification } from './sockets/notificationsSocket.js';
+import { newInteractionNotification, recoverContacts, recoverNotification } from './sockets/notificationsSocket.js';
 
 const __dirname =dirname(fileURLToPath(import.meta.url));
 
@@ -89,7 +89,8 @@ io.on("connection", async (socket)=>{
     //? Recuperacion de notifications mediante el id del usuario.
     const userID = socket.user._id
     recoverNotification(socket,userID);
-    
+    //? Recuperacion de notifications mediante el id del usuario.
+    recoverContacts(socket, userID)
 
     // LA PARTE DE LOS CHATS 
     // socket.on("chat message", async(msg)=>{

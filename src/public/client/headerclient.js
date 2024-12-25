@@ -72,7 +72,7 @@ async function IncreaseNumberNotifications(notifUnreadList, notifNumber, notific
 async function realtimeNotifications(socket,domElements){
     socket.on("newNotification", async (notifications)=>{
         const {notifNumber, notifUnreadList} = domElements;
-        console.log("Notificaciones recibidas en tiempo real: ",typeof notifications[notifications.length-1].createdAt);
+        console.log("Notificaciones recibidas en tiempo real: ",notifications);
         // Incrementar numero de notificaciones no leidas.
         await IncreaseNumberNotifications(notifUnreadList, notifNumber, notifications)
 

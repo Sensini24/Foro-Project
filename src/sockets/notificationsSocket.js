@@ -17,6 +17,55 @@ export async function recoverNotification(socket,userID){
     })
 }
 
+//? Obtener contactos pendientes de usuario
+export async function recoverContacts(socket, userID){
+    const receptorUser = await modelUsuario.find({owner_id: userID, estado: "pending"});
+    if(receptorUser){
+        socket.emit("recover contacts", receptorUser) 
+    }
+}
+
+//Guardado de notifications
+async function saveNotification(senderId, idReceptor, message, type){
+    try{
+        const newNotification = await new modelNotification({
+            senderId: senderId,
+            recipientId: idReceptor,
+            message: message,
+            type: type,
+            isRead: false,
+            createdAt: new Date()
+        })
+        
+        const savedNotification = await newNotification.save();
+        console.log("Notificación guardada exitosamente", savedNotification);
+        return savedNotification;
+    }catch(err){
+        console.log("No se pudo guardar la notificación")
+    }
+}
+
+// Guardado de Contacto
+async function saveContact(owner_id, contact_id, estado){
+    try{
+        const newContact = await modelContact({
+            "owner_id":owner_id,
+            "contact_id": contact_id,
+            "estado": estado,
+            "isFavorite": false,
+            "date": new Date()
+        })
+        
+        newContact.save()
+        .then(doc => console.log("Contacto guardado exitosamente", doc))
+        .catch(error=> console.log("Error al guardar el contacto", error));
+
+        return newContact;
+    }catch(err){
+        console.log("No se pudo guardar el contacto")
+    }
+}
+
 async function notificationsDataBase(idReceptor){
     try{
         const notifications = await modelNotification.find({
@@ -56,62 +105,36 @@ export async function NewContactNotification(io, socket, roomName, usuariosConec
         const senderId = socket.user._id
         const message = `El usuario ${socket.user.user_name} no está en tus contactos y te envió un mensaje al chat: "${messageChat}". Aceptas agregarlo o ignorarlo?`
 
-        const notifSended = await new modelNotification({
-            senderId: senderId,
-            recipientId: receptorId,
-            message: message,
-            type: "firstmessage",
-            roomId: roomName,
-            isRead: false,
-            createdAt: new Date()
-        });
+        const notif = await saveNotification(senderId, receptorId, message, "firstmessage")//guardado de notificacion
+        console.log("Notificación guardada en la base de datos.");
 
-        try {
-            await notifSended.save();
-            console.log("Notificación guardada en la base de datos.");
+        
+        let notifSearch = await notificationsDataBase(receptorId);// Buscar en notif de receptor
+        await saveNewContact(senderId, receptorId, "pending", io, socket, nameContact, idContact)//guardado de contacto en pending
 
-            
-            let notifSearch = await notificationsDataBase(receptorId);
-
-            //guardado de contacto en pending
-            await saveContact(senderId, receptorId, "pending", io, socket, nameContact, idContact)
-
-            
-
-
-            if(receptorSocket || receptorSocket == null){
-                io.to(receptorSocket).emit("newNotification", notifSearch);
-            }
-
-        } catch (error) {
-            console.error("Error al guardar la notificación:", error);
+        if(receptorSocket || receptorSocket == null){
+            io.to(receptorSocket).emit("newNotification", notifSearch);
         }
     }
 }
 
-async function saveContact(owner_id, contact_id, estado, io, socket, nameContact){
+async function saveNewContact(owner_id, contact_id, estado, io, socket, nameContact){
     try{
-        const newContact = await new modelContact(
-            {
-                "owner_id": owner_id,
-                "contact_id": contact_id,
-                "estado": estado,
-                "isFavorite": false,
-                "date": new Date()
-            }
-        )
-
         const repeatContact = await modelContact.find({"owner_id": owner_id, "contact_id": contact_id})
 
         if(repeatContact.length >0){
             return console.log("Este usuario ya estás en tus contactos.")
         }
-        await newContact.save();
+
+        // Guardamos el contacto pendiente.
+        const newcontact = await saveContact(owner_id, contact_id, estado)
 
         //! Envio del contacto en pending hacia el emisor
         io.to(socket.id).emit("getPendingContact", nameContact, contact_id)
 
-        console.log("Contacto guardado en la base de datos: ", newContact);
+        // socket.emit
+
+        console.log("Contacto guardado en la base de datos: ", newcontact);
 
     }catch(error){
         console.log("El contacto no pudo ser guardado: ", error)
@@ -128,32 +151,19 @@ export async function newInteractionNotification(socket, usuariosConectados, io)
         console.log("recepcion de postname: ", postName)
         
         const message = `El usuario ${socket.user.user_name} le dio like a tu post titulado:  "${postName}"`
-        console.log("Id de usuario: ", receptorUser[0]._id);
 
         let receptorSocket = usuariosConectados.get(idReceptor) != null || undefined ? usuariosConectados.get(idReceptor).socketid : null
-        console.log("socket de receptor: ", receptorSocket)
-        const notifSended = await new modelNotification({
-            senderId: senderId,
-            recipientId: idReceptor,
-            message: message,
-            type: "youlike",
-            isRead: false,
-            createdAt: new Date()
-        });
-        try{
-            await notifSended.save();
-            console.log("Notificación guardada exitosamente")
+        
+        const notif = await saveNotification(senderId, idReceptor, message, "youlike")// Guardar notificación
+        if(receptorSocket || receptorSocket == null){
             const notifSearch = await notificationsDataBase(idReceptor);
             console.log("Notificacion enviada: ", notifSearch)
-
-            const tamaño= notifSearch.length
-            if(receptorSocket || receptorSocket == null){
-                io.to(receptorSocket).emit("newNotification", notifSearch);
-                console.log("Enviado a socket: ", receptorSocket)
-                console.log("Enviado en tiempo real: ", notifSearch[tamaño-1].createdAt)
-            }
-        }catch(err){
-            console.log("No se pudo guardar esta notificación: ", err);
+            io.to(receptorSocket).emit("newNotification", notifSearch);
         }
        });
 }
+
+
+
+
+
