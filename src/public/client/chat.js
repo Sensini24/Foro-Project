@@ -231,15 +231,57 @@ function showChatPrivado(socket, domElements) {
     });
 
 
-    socket.on("getPendingContact", (nameContact,receptorId)=>{
+    socket.on("getPendingContact", (userContacts)=>{
+        console.log("CONTACTOS OBTENIDOS EN TUIEMPO REAL: ", userContacts)
         const { chatContactsPending } = domElements;
         chatContactsPending.innerHTML = "";
-        const userItem = document.createElement("li");
-        userItem.classList.add("contacto");
-        userItem.textContent = nameContact;
-        userItem.dataset.userId = receptorId;
+        userContacts.forEach(contact=>{
+            console.log("Nombre de contacto: ", contact.contact_id.user_name)
 
-        chatContactsPending.appendChild(userItem);
-        console.log("Agregadp contact pending")
+            const contactName = contact.contact_id.user_name;
+            const contactId = contact.contact_id._id;
+
+            const userItem = document.createElement("li");
+            userItem.classList.add("contacto");
+            userItem.textContent = contactName;
+            userItem.dataset.userId = contactId;
+
+            userItem.addEventListener("click", () => {
+                console.log(`Iniciando chat con ${contactName} (${contactId})`);
+                socket.emit("startchat newcontact", contactId, contactName);
+            });
+            
+            chatContactsPending.appendChild(userItem);
+        })
     })
+
+    socket.on("recover contacts", (userContacts)=>{
+        console.log("CONTACTOS OBTENIDOS: ", userContacts)
+        const { chatContactsPending } = domElements;
+        chatContactsPending.innerHTML = "";
+        userContacts.forEach(contact=>{
+            console.log("Nombre de contacto: ", contact.contact_id.user_name)
+
+            const contactName = contact.contact_id.user_name;
+            const contactId = contact.contact_id._id;
+
+            const userItem = document.createElement("li");
+            userItem.classList.add("contacto");
+            userItem.textContent = contactName;
+            userItem.dataset.userId = contactId;
+
+            userItem.addEventListener("click", () => {
+                console.log(`Iniciando chat con ${contactName} (${contactId})`);
+                socket.emit("startchat newcontact", contactId, contactName);
+            });
+            
+            chatContactsPending.appendChild(userItem);
+        })
+    })
+
+
+    // const assignContact =(domElements)=>{
+
+        
+    // }
 }

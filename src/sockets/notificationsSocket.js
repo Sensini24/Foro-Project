@@ -19,9 +19,10 @@ export async function recoverNotification(socket,userID){
 
 //? Obtener contactos pendientes de usuario
 export async function recoverContacts(socket, userID){
-    const receptorUser = await modelUsuario.find({owner_id: userID, estado: "pending"});
-    if(receptorUser){
-        socket.emit("recover contacts", receptorUser) 
+    const userContacts = await modelContact.find({owner_id: userID, estado: "pending"}).
+    populate("contact_id", "user_name email profilePic");
+    if(userContacts){
+        socket.emit("recover contacts", userContacts) 
     }
 }
 
@@ -48,7 +49,7 @@ async function saveNotification(senderId, idReceptor, message, type){
 // Guardado de Contacto
 async function saveContact(owner_id, contact_id, estado){
     try{
-        const newContact = await modelContact({
+        const newContact = await new modelContact({
             "owner_id":owner_id,
             "contact_id": contact_id,
             "estado": estado,
@@ -56,11 +57,9 @@ async function saveContact(owner_id, contact_id, estado){
             "date": new Date()
         })
         
-        newContact.save()
-        .then(doc => console.log("Contacto guardado exitosamente", doc))
-        .catch(error=> console.log("Error al guardar el contacto", error));
-
-        return newContact;
+        const savedContact = await newContact.save();
+        console.log("Contacto guardado exitosamente", savedContact);
+        return savedContact;
     }catch(err){
         console.log("No se pudo guardar el contacto")
     }
@@ -126,15 +125,23 @@ async function saveNewContact(owner_id, contact_id, estado, io, socket, nameCont
             return console.log("Este usuario ya estás en tus contactos.")
         }
 
-        // Guardamos el contacto pendiente.
-        const newcontact = await saveContact(owner_id, contact_id, estado)
+        //! Guardamos el contacto pendiente para emisor y receptor en viceversa.
+        const newcontactEmisor = await saveContact(owner_id, contact_id, estado)
+        const newcontactReceptor = await saveContact(contact_id, owner_id, estado)
+
+        const userContacts = await modelContact.find({owner_id: owner_id, estado: "pending"}).
+        populate("contact_id", "user_name email profilePic");
+
+        console.log("CONTACTO OBTENIDO EN TIEMPO REAL: ", userContacts)
 
         //! Envio del contacto en pending hacia el emisor
-        io.to(socket.id).emit("getPendingContact", nameContact, contact_id)
+        // io.to(socket.id).emit("getPendingContact", nameContact, contact_id)
+        io.to(socket.id).emit("getPendingContact", userContacts)
 
         // socket.emit
 
-        console.log("Contacto guardado en la base de datos: ", newcontact);
+        console.log("Contacto para emisor guardado en la base de datos: ", newcontactEmisor);
+        console.log("Contacto guardado en la base de datos: ", newcontactReceptor);
 
     }catch(error){
         console.log("El contacto no pudo ser guardado: ", error)
