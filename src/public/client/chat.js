@@ -1,3 +1,5 @@
+import { getHtmlAnnounces } from "./html-codes.js";
+
 export function initChat() {
     console.log("INICIANDO MODULOS DE CHAT");
 
@@ -168,8 +170,8 @@ function showChatPrivado(socket, domElements) {
 
         console.log("ROOM DESDE PRIVATE MESSAGE: ", data.room);
 
-        socket.emit("recoverMessages", data.room, data.contactname, data.username);
-        console.log("SE EMITIO EL NOMBRE DE CONTACTO Y SENDER: ", data.contactname, data.username);
+        socket.emit("recoverMessages", data.room, data.contactname, data.username, data.idContact);
+        console.log("SE EMITIO EL NOMBRE DE CONTACTO Y SENDER: ", data.contactname, data.username, data.idContact);
     });
 
     socket.on("sendMessage", (data) => {
@@ -200,7 +202,7 @@ function showChatPrivado(socket, domElements) {
         }
     });
 
-    socket.on("recoveredMessages", (userid,messages, usernameContact, sendername) => {
+    socket.on("recoveredMessages", (userid,messages, usernameContact, sendername, contactId, isFirstMessage) => {
         chatMessages.innerHTML = "";
         console.log(messages)
         messages.forEach(({content, senderId }) => {
@@ -219,9 +221,17 @@ function showChatPrivado(socket, domElements) {
                                         <p>${content}</p>
                                     </div>`;
             }
+
+            //Intento avisarle al receptor de un mensaje nuevo si acepta seguir recibiendo mensaje
+            if(isFirstMessage == true && userid != senderId){
+                chatInput.disabled = true
+                messageItem.innerHTML += getHtmlAnnounces("confirmNewContact", usernameContact, contactId, sendername, userid);
+                chatMessages.appendChild(messageItem);
+
+            }else{  
+                chatMessages.appendChild(messageItem);
+            }
             
-            chatMessages.appendChild(messageItem);
-            // console.log("NOmbres de contacto y sender: ", messa)
         });
 
         const lastItem = chatMessages.lastElementChild;
@@ -229,6 +239,7 @@ function showChatPrivado(socket, domElements) {
             lastItem.scrollIntoView({ behavior: "instant", block: "start" });
         }
     });
+
 
 
     socket.on("getPendingContact", (userContacts)=>{
@@ -283,5 +294,5 @@ function showChatPrivado(socket, domElements) {
     // const assignContact =(domElements)=>{
 
         
-    // }
+    
 }

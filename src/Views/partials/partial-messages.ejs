@@ -1,0 +1,21 @@
+<template id="chat-confirmation-template">
+    <div class="chat-confirmation">
+      <div class="chat-icon">💬</div>
+      <p class="chat-message">¿Aceptas conversar con este usuario o prefieres ignorarlo?</p>
+      <div class="chat-user">
+        <div class="user-avatar"></div> <!-- Aquí se inyectará el avatar -->
+        <div class="user-info">
+          <div class="user-name" data-dynamic="usernameContact"></div>
+          <div class="user-name" data-dynamic="contactId"></div>
+          <div class="user-name" data-dynamic="sendername"></div>
+          <div class="user-name" data-dynamic="userid"></div>
+          <div class="user-status">Usuario nuevo</div>
+        </div>
+      </div>
+      <div class="chat-actions">
+        <button class="btn btn-accept">Aceptar</button>
+        <button class="btn btn-ignore">Ignorar</button>
+      </div>
+    </div>
+  </template>
+  

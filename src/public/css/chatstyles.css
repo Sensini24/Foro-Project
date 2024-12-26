@@ -207,3 +207,120 @@ body {
 ::-webkit-scrollbar-thumb:hover {
     background: var(--gruvbox-yellow);
 }
+
+
+
+
+/* INICIO DE MENSAJE CONFIRMACION EN CHAT PARA NUEVO CONTACTO */
+.chat-confirmation {
+    background-color: var(--bg0);
+    border-radius: 8px;
+    padding: 2rem;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--bg2);
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.chat-icon-contact{
+    font-size: 3rem;
+    text-align: center;
+    margin-bottom: 1rem;
+    color: var(--yellow);
+}
+
+.chat-message {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: var(--fg);
+    font-size: 1.1rem;
+    line-height: 1.4;
+}
+
+.chat-user {
+    background-color: var(--bg1);
+    border-radius: 6px;
+    padding: 0.75rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--bg2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    margin-right: 1rem;
+    color: var(--fg);
+}
+
+.user-info {
+    flex-grow: 1;
+}
+
+.user-name {
+    font-weight: bold;
+    color: var(--fg);
+    margin-bottom: 0.25rem;
+}
+
+.user-status {
+    font-size: 0.9rem;
+    color: var(--fg-dim);
+}
+
+.chat-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.btn {
+    flex: 1;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-accept {
+    background-color: var(--green);
+    color: var(--bg);
+}
+
+.btn-accept:hover {
+    background-color: var(--aqua);
+}
+
+.btn-ignore {
+    background-color: var(--bg1);
+    color: var(--fg);
+}
+
+.btn-ignore:hover {
+    background-color: var(--bg2);
+}
+
+@media (max-width: 480px) {
+    .chat-confirmation {
+        padding: 1.5rem;
+    }
+
+    .chat-actions {
+        flex-direction: column;
+    }
+}

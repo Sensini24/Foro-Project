@@ -132,6 +132,7 @@ async function saveNewContact(owner_id, contact_id, estado, io, socket, nameCont
         const userContacts = await modelContact.find({owner_id: owner_id, estado: "pending"}).
         populate("contact_id", "user_name email profilePic");
 
+        console.log("Contactos registrados: ", newcontactEmisor, newcontactReceptor)
         console.log("CONTACTO OBTENIDO EN TIEMPO REAL: ", userContacts)
 
         //! Envio del contacto en pending hacia el emisor
