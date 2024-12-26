@@ -65,6 +65,26 @@ async function saveContact(owner_id, contact_id, estado){
     }
 }
 
+// Actualizar Contacto
+async function updateContact(owner_id, contact_id, estado) {
+    try {
+        const setContact = await modelContact.updateOne(
+            { owner_id: owner_id, contact_id: contact_id }, 
+            { $set: { estado: estado } }
+        );
+
+        if (setContact.modifiedCount > 0) {
+            console.log("Contacto actualizado exitosamente", setContact);
+        } else {
+            console.log("No se encontró el contacto o no se actualizó");
+        }
+        return setContact;
+    } catch (err) {
+        console.error("No se pudo guardar el contacto:", err);
+    }
+}
+
+
 async function notificationsDataBase(idReceptor){
     try{
         const notifications = await modelNotification.find({
@@ -82,17 +102,10 @@ export async function NewContactNotification(io, socket, roomName, usuariosConec
     console.log("USUARIOS CONECTADOS EN NOTIFICATION: ", usuariosConectados)
     const messages = await modelMessage.find({ roomId: roomName }).sort({ id_offset: -1 });
     const messageChat = message;
-    let ids = []
-    messages.forEach(elemento =>{
-        if(ids.includes(elemento.senderId.toString())){
-            console.log("ya esta")
-        }else{
-            ids.push(elemento.senderId.toString())
-        }
-    })
+    let isFirstMessage = seeCountIds(messages);
 
     //! Aqui tambien se podria validadr que si es que tampoco está en tus contactos entonces ahi si se ejecuta toda esta lógica
-    if(ids.length == 1){
+    if(isFirstMessage == true){
         const idsrooms = roomName.split("-")
         console.log("SOCKET USER N NOTIFICATION: ", socket.user)
         const receptorId = idsrooms.find(id=> id !== socket.user._id)
@@ -169,6 +182,43 @@ export async function newInteractionNotification(socket, usuariosConectados, io)
             io.to(receptorSocket).emit("newNotification", notifSearch);
         }
        });
+}
+
+//----------------------- ME HE QUEDADO AQUI--------------------------------------
+// export async function acceptContact(socket){
+//     socket.on("accept contact", (userIDcurrent, contactId, estado)=>{
+//         const senderContact = updateContact(contactId, userIDcurrent, estado)
+//         const receptorContact = updateContact(userIDcurrent, contact_id, estado)
+
+//         console.log("COntacto actualizado de estado para sender: ", senderContact)
+//         console.log("COntacto actualizado de estado para recepetor: ", receptorContact)
+
+//         socket.emit()
+//     })
+// }
+
+
+
+
+export const seeCountIds =(messages)=>{
+    let isFirstMessage;
+    let ids = []
+    messages.forEach(elemento =>{
+        if(ids.includes(elemento.senderId.toString())){
+            console.log("ya esta")
+
+        }else{
+            ids.push(elemento.senderId.toString())
+        }
+    })
+
+    if(ids.length == 1){
+        isFirstMessage = true;
+    }else{
+        isFirstMessage = false
+    }
+
+    return isFirstMessage;
 }
 
 

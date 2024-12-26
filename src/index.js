@@ -23,7 +23,8 @@ import { Message } from './Models/MessageModel.js';
 import { Socket } from 'dgram';
 import { log } from 'console';
 import { SendPrivateMessage, StarChatNewContact, StartPrivateChat } from './sockets/chatSocket.js';
-import { newInteractionNotification, recoverContacts, recoverNotification } from './sockets/notificationsSocket.js';
+import { newInteractionNotification, recoverContacts, recoverNotification, seeCountIds } from './sockets/notificationsSocket.js';
+import { Contact } from './Models/ContactModel.js';
 
 const __dirname =dirname(fileURLToPath(import.meta.url));
 
@@ -175,22 +176,13 @@ io.on("connection", async (socket)=>{
     socket.on("recoverMessages", async (roomName, usernameContact, sendername, contactId) => {
         try {
             const messages = await Message.find({ roomId: roomName }).sort({ id_offset: 1 });
-            let isFirstMessage = true;
-            let ids = []
-            messages.forEach(elemento =>{
-                if(ids.includes(elemento.senderId.toString())){
-                    console.log("ya esta")
-                }else{
-                    ids.push(elemento.senderId.toString())
-                }
-            })
+            const contact = await Contact.find({contact_id:contactId }).populate("contact_id", "user_name email")
+            //retornar el resultado del recorrido de messages buscando si exite uno o mas "emisores"
+            let isFirstMessage = seeCountIds(messages);
+            
+            // console.log("ESTADO DE MENSAJES ENTRE USUARIOS: ", isFirstMessage)
+            // console.log("Contacto Datos: ", contact);
 
-            if(ids.length == 1){
-                isFirstMessage = true;
-            }else{
-                isFirstMessage = false
-            }
-            console.log("ESTADO DE MENSAJES ENTRE USUARIOS: ", isFirstMessage)
 
             if (messages) {
                 //! Aqui cambié porque emitia a todo el room, y cuando cambiaba de chat emergía tambien para el compañero de chat

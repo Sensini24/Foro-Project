@@ -204,7 +204,8 @@ function showChatPrivado(socket, domElements) {
 
     socket.on("recoveredMessages", (userid,messages, usernameContact, sendername, contactId, isFirstMessage) => {
         chatMessages.innerHTML = "";
-        console.log(messages)
+        console.log("Sender Id", messages[0].senderId)
+        let senderIdMessage = messages[0].senderId
         messages.forEach(({content, senderId }) => {
             // console.log("NOmbres de contacto y sender: ",messages, usernameContact, sendername)
             const messageItem = document.createElement("div");
@@ -222,17 +223,38 @@ function showChatPrivado(socket, domElements) {
                                     </div>`;
             }
 
-            //Intento avisarle al receptor de un mensaje nuevo si acepta seguir recibiendo mensaje
-            if(isFirstMessage == true && userid != senderId){
-                chatInput.disabled = true
-                messageItem.innerHTML += getHtmlAnnounces("confirmNewContact", usernameContact, contactId, sendername, userid);
-                chatMessages.appendChild(messageItem);
-
-            }else{  
-                chatMessages.appendChild(messageItem);
-            }
+            chatMessages.appendChild(messageItem)
             
         });
+
+        //Intento avisarle al receptor de un mensaje nuevo si acepta seguir recibiendo mensaje
+        if(isFirstMessage == true && userid != senderIdMessage){
+            chatInput.disabled = true
+            const confirmNode = document.createElement("div");
+            // extraer html del anuncio
+            confirmNode.innerHTML = getHtmlAnnounces("confirmNewContact", usernameContact, contactId, sendername, userid);
+            // confirmNode.dataset.id = contactId
+            chatMessages.appendChild(confirmNode);
+
+
+            // MAnejar evento para botonoe
+            const btnaccept = document.querySelector(".btn-accept");
+            //! Pasar contacto a accept
+            btnaccept.addEventListener("click", ()=>{
+                console.log("Presionaste aceptar: ", senderIdMessage, contactId)
+
+                //! EVENTO PARA PASAR DATO DE CONTACT Y ACEPTAR
+                socket.emit("accept contact", userid, contactId, "accepted")
+            })
+
+            document.querySelector(".btn-ignore").addEventListener("click", ()=>{
+                console.log("Presionaste ignorar")
+            })
+
+        }
+
+
+
 
         const lastItem = chatMessages.lastElementChild;
         if (lastItem) {
@@ -290,9 +312,10 @@ function showChatPrivado(socket, domElements) {
         })
     })
 
+    
+    //? HANDLERS DE BOTONES DE CONFIRMACION
+    // function handlerAccept(socket, contactId, senderId){
 
-    // const assignContact =(domElements)=>{
-
-        
+    // }
     
 }
