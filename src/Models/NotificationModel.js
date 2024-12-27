@@ -17,7 +17,7 @@ const notificationSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ['firstmessage', 'youlike', 'youshare', 'youmention', 'youcomment'],
+    enum: ['firstmessage', 'youlike', 'newcontact',  'youshare', 'youmention', 'youcomment', ],
     required: true,
   },
   roomId: {

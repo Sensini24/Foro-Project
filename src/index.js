@@ -23,7 +23,7 @@ import { Message } from './Models/MessageModel.js';
 import { Socket } from 'dgram';
 import { log } from 'console';
 import { SendPrivateMessage, StarChatNewContact, StartPrivateChat } from './sockets/chatSocket.js';
-import { newInteractionNotification, recoverContacts, recoverNotification, seeCountIds } from './sockets/notificationsSocket.js';
+import { acceptContact, newInteractionNotification, recoverContacts, recoverNotification, seeCountIds } from './sockets/notificationsSocket.js';
 import { Contact } from './Models/ContactModel.js';
 
 const __dirname =dirname(fileURLToPath(import.meta.url));
@@ -144,6 +144,9 @@ io.on("connection", async (socket)=>{
 
     //? Guardado de interactions: like, dislike, etc
      newInteractionNotification(socket, usuariosConectados, io)
+
+     //?Aceptar contacto nuevo
+     acceptContact(socket, usuariosConectados, io)
     
 
     // console.log("sds: " , usuariosConectados)
@@ -179,15 +182,17 @@ io.on("connection", async (socket)=>{
             const contact = await Contact.find({contact_id:contactId }).populate("contact_id", "user_name email")
             //retornar el resultado del recorrido de messages buscando si exite uno o mas "emisores"
             let isFirstMessage = seeCountIds(messages);
+            let contactState = contact[0].estado;
             
             // console.log("ESTADO DE MENSAJES ENTRE USUARIOS: ", isFirstMessage)
             // console.log("Contacto Datos: ", contact);
+            console.log("Contacto estado: ", contactState);
 
 
             if (messages) {
                 //! Aqui cambié porque emitia a todo el room, y cuando cambiaba de chat emergía tambien para el compañero de chat
                 // io.to(roomName).emit('recoveredMessages', messages);
-                socket.emit('recoveredMessages',socket.user._id, messages, usernameContact,sendername,contactId, isFirstMessage);
+                socket.emit('recoveredMessages',socket.user._id, messages, usernameContact,sendername,contactId, isFirstMessage, contactState);
                 
             } else {
                 console.log("NO SE ENCONTRARON DATOS");

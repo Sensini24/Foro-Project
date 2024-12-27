@@ -6,8 +6,8 @@ export function getHtmlAnnounces(type, usernameContact, contactId, sendername, u
             <div class="chat-user">
                 <div class="user-avatar">JD</div>
                 <div class="user-info">
-                    <div class="user-name">MI nombre: ${sendername}</div>
-                    <div class="user-name">Mi Id: ${userid}</div>
+                    <div class="user-name">MI nombre: ${usernameContact}</div>
+                    <div class="user-name">Mi Id: ${contactId}</div>
                     <div class="user-status">Usuario nuevo</div>
                 </div>
             </div>

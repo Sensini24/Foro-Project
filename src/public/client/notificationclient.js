@@ -37,12 +37,16 @@ const getTitleNotif = async (domElements)=>{
         // console.log("title: ", title)
         let typeTitle = title.textContent
          switch(typeTitle){
-             case "firstmessage":
+            case "firstmessage":
                 title.textContent = "Nuevo Contacto"
 
                 break;
-             case "youlike":
+            case "youlike":
                 title.textContent = "Nuevo Like"
+                break;
+
+            case "newcontact":
+                title.textContent = "Contacto Aceptado"
                 break;
         }
     })

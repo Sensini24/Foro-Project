@@ -176,26 +176,48 @@ export async function newInteractionNotification(socket, usuariosConectados, io)
         let receptorSocket = usuariosConectados.get(idReceptor) != null || undefined ? usuariosConectados.get(idReceptor).socketid : null
         
         const notif = await saveNotification(senderId, idReceptor, message, "youlike")// Guardar notificación
-        if(receptorSocket || receptorSocket == null){
+        if(receptorSocket || receptorSocket !== null){
             const notifSearch = await notificationsDataBase(idReceptor);
             console.log("Notificacion enviada: ", notifSearch)
             io.to(receptorSocket).emit("newNotification", notifSearch);
         }
+
+
        });
 }
 
 //----------------------- ME HE QUEDADO AQUI--------------------------------------
-// export async function acceptContact(socket){
-//     socket.on("accept contact", (userIDcurrent, contactId, estado)=>{
-//         const senderContact = updateContact(contactId, userIDcurrent, estado)
-//         const receptorContact = updateContact(userIDcurrent, contact_id, estado)
+export async function acceptContact(socket, usuariosConectados, io){
+    socket.on("accept contact", async(userIDcurrent, contactId, estado)=>{
+        console.log("CONTACT ID: ", contactId, userIDcurrent, estado)
+        console.log("USER ID CURRENT: ", userIDcurrent, contactId, estado)
+        console.log("ESTADO: ", estado)
+        const userCurrent = await modelContact.find({owner_id:userIDcurrent,contact_id:contactId}).populate("owner_id", "user_name email profilePic")
+        const contactCurrent = await modelContact.find({owner_id:contactId,contact_id:userIDcurrent}).populate("owner_id", "user_name email profilePic")
+        console.log(userCurrent, contactCurrent)
+        const senderContact = updateContact(contactId, userIDcurrent, estado)
+        const receptorContact = updateContact(userIDcurrent, contactId, estado)
 
-//         console.log("COntacto actualizado de estado para sender: ", senderContact)
-//         console.log("COntacto actualizado de estado para recepetor: ", receptorContact)
+        console.log("COntacto actualizado de estado para sender: ", senderContact)
+        console.log("COntacto actualizado de estado para recepetor: ", receptorContact)
 
-//         socket.emit()
-//     })
-// }
+        //?===============PARTE DE LA NOTIFICATION PARA USUARIO NUEVO ================
+        const message = `El usuario ${socket.user.user_name} te aceptó como contacto"`
+
+        let receptorSocket = usuariosConectados.get(contactId) != null || undefined ? usuariosConectados.get(contactId).socketid : null
+        
+        const notif = await saveNotification(userIDcurrent, contactId, message, "newcontact")// Guardar notificación
+        if(receptorSocket || receptorSocket !== null){
+            const notifSearch = await notificationsDataBase(contactId);
+            console.log("Notificacion enviada: ", notifSearch)
+            io.to(receptorSocket).emit("newNotification", notifSearch);
+        }
+
+        let isAccepted = true
+
+        socket.emit("notification new contact", isAccepted)
+    })
+}
 
 
 

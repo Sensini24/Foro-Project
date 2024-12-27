@@ -36,7 +36,9 @@ function cacheDOMElements() {
         chatIcon : document.querySelector(".chat-icon"),
         chatContainer: document.getElementById("chat-container"),
         btnClose: document.querySelector(".btn-close"),
-        chatContactsPending: document.querySelector(".chat-contacts-pending")
+        chatContactsPending: document.querySelector(".chat-contacts-pending"),
+        chatConfirmation: document.querySelector(".chat-confirmation")
+
     };
 }
 
@@ -118,7 +120,7 @@ function newDataContact(socket) {
 
 // Configuración del chat privado
 function showChatPrivado(socket, domElements) {
-    const { formChat, chatInput, chatMessages, chatContacts } = domElements;
+    const { formChat, chatInput, chatMessages, chatContacts, chatConfirmation } = domElements;
 
     socket.on("users connected", (connectedUsers, currentUserId) => {
         chatContacts.innerHTML = "";
@@ -202,66 +204,57 @@ function showChatPrivado(socket, domElements) {
         }
     });
 
-    socket.on("recoveredMessages", (userid,messages, usernameContact, sendername, contactId, isFirstMessage) => {
+    socket.on("recoveredMessages", (userid, messages, usernameContact, sendername, contactId, isFirstMessage, contactState) => {
         chatMessages.innerHTML = "";
-        console.log("Sender Id", messages[0].senderId)
-        let senderIdMessage = messages[0].senderId
-        messages.forEach(({content, senderId }) => {
-            // console.log("NOmbres de contacto y sender: ",messages, usernameContact, sendername)
+        console.log("Sender Id", messages[0].senderId);
+        const senderIdMessage = messages[0].senderId;
+    
+        // Función para crear y añadir mensajes al chat
+        const addMessage = (content, senderId) => {
             const messageItem = document.createElement("div");
-            const usernameHeader = document.querySelector("#user_name");
-            if( userid != senderId){
-                console.log(userid, senderId)
-                messageItem.innerHTML = `<div class="message received">
-                                        <span class="sender">De ${usernameContact}:</span>
+            const isReceived = userid !== senderId;
+            messageItem.innerHTML = `<div class="message ${isReceived ? 'received' : 'sent'}">
+                                        <span class="sender">${isReceived ? `De ${usernameContact}:` : 'Tú:'}</span>
                                         <p>${content}</p>
                                     </div>`;
-            }else{
-                messageItem.innerHTML = `<div class="message sent">
-                                        <span class="sender">Tú:</span>
-                                        <p>${content}</p>
-                                    </div>`;
-            }
-
-            chatMessages.appendChild(messageItem)
-            
+            chatMessages.appendChild(messageItem);
+        };
+    
+        // Añadir mensajes al chat
+        messages.forEach(({ content, senderId }) => {
+            addMessage(content, senderId);
         });
-
-        //Intento avisarle al receptor de un mensaje nuevo si acepta seguir recibiendo mensaje
-        if(isFirstMessage == true && userid != senderIdMessage){
-            chatInput.disabled = true
+    
+        // Manejar la confirmación de nuevo contacto
+        if (isFirstMessage && userid !== senderIdMessage && contactState == "pending") {
+            chatInput.disabled = true;
             const confirmNode = document.createElement("div");
-            // extraer html del anuncio
             confirmNode.innerHTML = getHtmlAnnounces("confirmNewContact", usernameContact, contactId, sendername, userid);
-            // confirmNode.dataset.id = contactId
             chatMessages.appendChild(confirmNode);
-
-
-            // MAnejar evento para botonoe
-            const btnaccept = document.querySelector(".btn-accept");
-            //! Pasar contacto a accept
-            btnaccept.addEventListener("click", ()=>{
-                console.log("Presionaste aceptar: ", senderIdMessage, contactId)
-
-                //! EVENTO PARA PASAR DATO DE CONTACT Y ACEPTAR
-                socket.emit("accept contact", userid, contactId, "accepted")
-            })
-
-            document.querySelector(".btn-ignore").addEventListener("click", ()=>{
-                console.log("Presionaste ignorar")
-            })
-
+    
+            // Manejar eventos de botones
+            const btnAccept = confirmNode.querySelector(".btn-accept");
+            const btnIgnore = confirmNode.querySelector(".btn-ignore");
+    
+            btnAccept.addEventListener("click", () => {
+                console.log("Presionaste aceptar:", senderIdMessage, contactId);
+                // Emitir evento para aceptar contacto
+                socket.emit("accept contact", userid, contactId, "accepted");
+            });
+    
+            btnIgnore.addEventListener("click", () => {
+                console.log("Presionaste ignorar");
+                // Aquí puedes añadir lógica para ignorar el contacto
+            });
         }
-
-
-
-
+    
+        // Desplazar a la vista el último mensaje
         const lastItem = chatMessages.lastElementChild;
         if (lastItem) {
             lastItem.scrollIntoView({ behavior: "instant", block: "start" });
         }
     });
-
+    
 
 
     socket.on("getPendingContact", (userContacts)=>{
@@ -312,6 +305,16 @@ function showChatPrivado(socket, domElements) {
         })
     })
 
+    socket.on("notification new contact", (isAccepted)=>{
+        if(isAccepted){
+            const announceConfirm = document.querySelector(".chat-confirmation")
+            console.log(announceConfirm);
+            console.log(isAccepted);
+            chatInput.disabled = false;
+            announceConfirm.remove()
+            
+        }
+    })
     
     //? HANDLERS DE BOTONES DE CONFIRMACION
     // function handlerAccept(socket, contactId, senderId){
