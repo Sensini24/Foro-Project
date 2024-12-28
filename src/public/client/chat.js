@@ -37,7 +37,9 @@ function cacheDOMElements() {
         chatContainer: document.getElementById("chat-container"),
         btnClose: document.querySelector(".btn-close"),
         chatContactsPending: document.querySelector(".chat-contacts-pending"),
-        chatConfirmation: document.querySelector(".chat-confirmation")
+        chatConfirmation: document.querySelector(".chat-confirmation"),
+        chatContactsContacts: document.querySelector(".chat-contacts-contacts"),
+       
 
     };
 }
@@ -226,7 +228,9 @@ function showChatPrivado(socket, domElements) {
         });
     
         // Manejar la confirmación de nuevo contacto
+        console.log("sendeid: ", senderIdMessage, "userid: ", userid, contactState )
         if (isFirstMessage && userid !== senderIdMessage && contactState == "pending") {
+           
             chatInput.disabled = true;
             const confirmNode = document.createElement("div");
             confirmNode.innerHTML = getHtmlAnnounces("confirmNewContact", usernameContact, contactId, sendername, userid);
@@ -283,25 +287,39 @@ function showChatPrivado(socket, domElements) {
 
     socket.on("recover contacts", (userContacts)=>{
         console.log("CONTACTOS OBTENIDOS: ", userContacts)
-        const { chatContactsPending } = domElements;
+        const { chatContactsPending, chatContactsContacts } = domElements;
         chatContactsPending.innerHTML = "";
+        // const contactPendings = userContacts.filter(contact => contact.estado == "pending");
         userContacts.forEach(contact=>{
             console.log("Nombre de contacto: ", contact.contact_id.user_name)
 
             const contactName = contact.contact_id.user_name;
             const contactId = contact.contact_id._id;
+            const contactEstado = contact.estado;
 
-            const userItem = document.createElement("li");
-            userItem.classList.add("contacto");
-            userItem.textContent = contactName;
-            userItem.dataset.userId = contactId;
-
-            userItem.addEventListener("click", () => {
-                console.log(`Iniciando chat con ${contactName} (${contactId})`);
-                socket.emit("startchat newcontact", contactId, contactName);
-            });
+            if(contactEstado == "pending"){
+                addAndStarChat(chatContactsPending)
+            }else if(contactEstado == "accepted"){
+                addAndStarChat(chatContactsContacts)
+            }
             
-            chatContactsPending.appendChild(userItem);
+
+            function addAndStarChat(arrayContactStado){
+                arrayContactStado.innerHTML = ""
+                const userItem = document.createElement("li");
+                userItem.classList.add("contacto");
+                userItem.textContent = contactName;
+                userItem.dataset.userId = contactId;
+                arrayContactStado.appendChild(userItem);
+
+
+                userItem.addEventListener("click", () => {
+                    console.log(`Iniciando chat con ${contactName} (${contactId})`);
+                    socket.emit("startchat newcontact", contactId, contactName);
+                });
+            }
+            
+            
         })
     })
 

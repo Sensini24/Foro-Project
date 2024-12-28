@@ -9,8 +9,7 @@ const ContactSchema = new mongoose.Schema({
     "contact_id": {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required:true,
-        unique:true
+        required:true
     },
     "estado": {
         type:String,

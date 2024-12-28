@@ -179,18 +179,20 @@ io.on("connection", async (socket)=>{
     socket.on("recoverMessages", async (roomName, usernameContact, sendername, contactId) => {
         try {
             const messages = await Message.find({ roomId: roomName }).sort({ id_offset: 1 });
-            const contact = await Contact.find({contact_id:contactId }).populate("contact_id", "user_name email")
+            const contact = await Contact.find({contact_id:contactId, owner_id:socket.user._id }).populate("contact_id", "user_name email")
             //retornar el resultado del recorrido de messages buscando si exite uno o mas "emisores"
             let isFirstMessage = seeCountIds(messages);
-            let contactState = contact[0].estado;
-            
-            // console.log("ESTADO DE MENSAJES ENTRE USUARIOS: ", isFirstMessage)
             // console.log("Contacto Datos: ", contact);
-            console.log("Contacto estado: ", contactState);
 
 
-            if (messages) {
+            if (messages.length >0) {
                 //! Aqui cambié porque emitia a todo el room, y cuando cambiaba de chat emergía tambien para el compañero de chat
+                let contactState = contact[0].estado;
+            
+                // console.log("ESTADO DE MENSAJES ENTRE USUARIOS: ", isFirstMessage)
+                // // console.log("Contacto Datos: ", contact);
+                // console.log("Contacto estado: ", contactState);
+
                 // io.to(roomName).emit('recoveredMessages', messages);
                 socket.emit('recoveredMessages',socket.user._id, messages, usernameContact,sendername,contactId, isFirstMessage, contactState);
                 

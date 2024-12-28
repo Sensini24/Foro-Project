@@ -1,3 +1,4 @@
+import { send } from "process";
 import { Contact } from "../Models/ContactModel.js";
 import { Message } from "../Models/MessageModel.js";
 import { Notification } from "../Models/NotificationModel.js";
@@ -19,7 +20,7 @@ export async function recoverNotification(socket,userID){
 
 //? Obtener contactos pendientes de usuario
 export async function recoverContacts(socket, userID){
-    const userContacts = await modelContact.find({owner_id: userID, estado: "pending"}).
+    const userContacts = await modelContact.find({owner_id: userID}).
     populate("contact_id", "user_name email profilePic");
     if(userContacts){
         socket.emit("recover contacts", userContacts) 
@@ -117,13 +118,21 @@ export async function NewContactNotification(io, socket, roomName, usuariosConec
         const senderId = socket.user._id
         const message = `El usuario ${socket.user.user_name} no está en tus contactos y te envió un mensaje al chat: "${messageChat}". Aceptas agregarlo o ignorarlo?`
 
+        console.log()
+        if(receptorId !== undefined && senderId !== undefined){
+
+            await saveNewContact(senderId, receptorId, "pending", io, socket, nameContact, idContact)//guardado de contacto en pending
+            
+
+        }else{
+            return console.log("NO se pudo guardar los contactos")
+        }
         const notif = await saveNotification(senderId, receptorId, message, "firstmessage")//guardado de notificacion
-        console.log("Notificación guardada en la base de datos.");
+        // console.log("Notificación guardada en la base de datos.");
 
         
         let notifSearch = await notificationsDataBase(receptorId);// Buscar en notif de receptor
-        await saveNewContact(senderId, receptorId, "pending", io, socket, nameContact, idContact)//guardado de contacto en pending
-
+        
         if(receptorSocket || receptorSocket == null){
             io.to(receptorSocket).emit("newNotification", notifSearch);
         }
@@ -139,8 +148,13 @@ async function saveNewContact(owner_id, contact_id, estado, io, socket, nameCont
         }
 
         //! Guardamos el contacto pendiente para emisor y receptor en viceversa.
-        const newcontactEmisor = await saveContact(owner_id, contact_id, estado)
-        const newcontactReceptor = await saveContact(contact_id, owner_id, estado)
+        // console.log("Guardando contacto receptor:", { owner_id: contact_id, contact_id: owner_id, estado });
+        const newcontactReceptor = await saveContact(contact_id, owner_id, estado);
+
+        // console.log("Guardando contacto emisor:", { owner_id, contact_id, estado });
+        const newcontactEmisor = await saveContact(owner_id, contact_id, estado);
+
+        
 
         const userContacts = await modelContact.find({owner_id: owner_id, estado: "pending"}).
         populate("contact_id", "user_name email profilePic");
@@ -214,6 +228,10 @@ export async function acceptContact(socket, usuariosConectados, io){
         }
 
         let isAccepted = true
+
+
+        // const userContacts = await modelContact.find({owner_id: owner_id, estado: "pending"}).
+        // populate("contact_id", "user_name email profilePic");
 
         socket.emit("notification new contact", isAccepted)
     })

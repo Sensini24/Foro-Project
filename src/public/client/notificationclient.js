@@ -99,8 +99,13 @@ const interactionButtonsNotif = (domElements)=>{
             }
         })
     })
+
     notifList.addEventListener("click", (event)=>{
         
         
     })
+}
+
+const isReadNotification = (domElements) =>{
+    
 }
