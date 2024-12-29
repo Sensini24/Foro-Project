@@ -137,6 +137,10 @@ body{
 
 .notif-read-icon{
     background-color: #98971a;
+    padding-left:14px;
+    padding-right:14px;
+    padding-top:4px;
+    border-radius:15px;
 }
 #campanita{
     border-radius: 50%;
