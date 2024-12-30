@@ -59,7 +59,7 @@ export const getComments = async(req, res)=>{
                 propietario,
                 username,
                 author,
-                layout:false 
+                layout:false
             })
     }catch(err){
         console.log("No se pudo obtener los comment", err)

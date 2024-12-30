@@ -31,7 +31,7 @@ export const convertDate =async (domElements)=>{
     })
 }
 
-const getTitleNotif = async (domElements)=>{
+export const getTitleNotif = async (domElements)=>{
     const {notifTitle} = domElements;
     await notifTitle.forEach(title=>{
         // console.log("title: ", title)

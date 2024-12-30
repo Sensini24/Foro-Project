@@ -1,3 +1,5 @@
+import { convertDate, getTitleNotif } from "./notificationclient.js";
+
 document.addEventListener("DOMContentLoaded", ()=>{
     console.log("Iniciando modulo de header")
 })
@@ -11,7 +13,10 @@ export function initHeaderOptions(){
     showModalNotifications(domElements);
     getNotifications(socket,domElements);
     realtimeNotifications(socket,domElements);
-    notifFunctionality(domElements);
+    notifModalFunctionality(domElements);
+    NotifInterfazFuncionality(domElements);
+    convertDate(domElements),
+    getTitleNotif(domElements)
 }
 
 function initializeSocket() {
@@ -28,10 +33,14 @@ function ChargeDOMElements(){
         card: document.querySelector(".card"),
         campanita: document.querySelector("#campanita"),
         notifNumber: document.querySelector("#notifications-number"),
-        notifUnreadContainer: document.querySelector(".notification unread"),
+        notifUnreadContainer: document.querySelector(".notification.unread"),
         notifUnreadList : document.querySelector(".notification-list"),
         cardNotifContainer : document.querySelector(".card-content"),
-        allNotifButton : document.querySelector(".all-button")
+        allNotifButton : document.querySelector(".all-button"),
+        cardNotification : document.querySelector("#li-notification"),
+        notifContainerInterfaz: document.querySelector(".notifications-container"),
+        time : document.querySelectorAll(".notification-time"),
+        notifTitle: document.querySelectorAll(".notification-title"),
     }
     
 }
@@ -41,12 +50,7 @@ function showNotifications(socket, domElements) {
 
     socket.on("connect", () => {
         console.log("Conectado al servidor");
-        socket.emit("recover notifications"); // Emitir evento al conectar
-
-        // socket.on("notifications stored", () => {
-        //     console.log("Notificaciones almacenadas, recuperando...");
-        //     socket.emit("recover notifications"); // Emitir evento para recuperar notificaciones
-        // });
+        socket.emit("recover notifications"); 
     });
 
 }
@@ -59,11 +63,11 @@ async function IncreaseNumberNotifications(notifUnreadList, notifNumber, notific
 
     for (const elem of noleidos) {
         // console.log("room id de notif: ", elem)
-        const {message, type, createdAt, senderId, recipientId} = elem;
-        
+        const {message, type, createdAt, senderId, recipientId, _id} = elem;
+        let notifId = _id;
         let messageNotif = await getDateMessage(createdAt);
-        let item = await gethtmlNotifications(type, message, messageNotif, senderId, recipientId)
-        
+        let item = await gethtmlNotifications(type, message, messageNotif, senderId, recipientId, notifId)
+        // console.log("Id de notificaciones no leidas: ", elem._id )
         notifUnreadList.innerHTML += item;
     }
 }
@@ -137,9 +141,9 @@ export async function getDateMessage(createdAt) {
     }
 }
 
-function gethtmlNotifications(typehtml, message, messageNotif, senderId, recipientId){
+function gethtmlNotifications(typehtml, message, messageNotif, senderId, recipientId, notifId){
     const notificationsStyles = {
-        "firstmessage": `<li class="notification unread" id="li-notification" data-sender-id=${senderId} data-recipient-id=${recipientId}>
+        "firstmessage": `<li class="notification unread" id="li-notification" data-sender-id=${senderId} data-recipient-id=${recipientId} data-notif-id=${notifId}>
                     <div class="notification-icon">
                     <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd"><path d="M24 23h-24v-13.275l2-1.455v-7.27h20v7.272l2 1.453v13.275zm-20-10.472v-9.528h16v9.527l-8 5.473-8-5.472zm14-.528h-12v-1h12v1zm0-3v1h-12v-1h12zm-7-1h-5v-3h5v3zm7 0h-6v-1h6v1zm0-2h-6v-1h6v1z"/></svg>
                 </div>
@@ -154,7 +158,7 @@ function gethtmlNotifications(typehtml, message, messageNotif, senderId, recipie
                 
             </li>`,
 
-        "youlike" : `<li class="notification unread" data-sender-id=${senderId} data-recipient-id=${recipientId}>
+        "youlike" : `<li class="notification unread" id="li-notification" data-sender-id=${senderId} data-recipient-id=${recipientId} data-notif-id=${notifId}>
                     <div class="notification-icon">
                     <svg xmlns="http://www.w3.org/2000/svg"  width="24" height="24" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6.633 10.25c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 0 1 2.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 0 0 .322-1.672V2.75a.75.75 0 0 1 .75-.75 2.25 2.25 0 0 1 2.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282m0 0h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 0 1-2.649 7.521c-.388.482-.987.729-1.605.729H13.48c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 0 0-1.423-.23H5.904m10.598-9.75H14.25M5.904 18.5c.083.205.173.405.27.602.197.4-.078.898-.523.898h-.908c-.889 0-1.713-.518-1.972-1.368a12 12 0 0 1-.521-3.507c0-1.553.295-3.036.831-4.398C3.387 9.953 4.167 9.5 5 9.5h1.053c.472 0 .745.556.5.96a8.958 8.958 0 0 0-1.302 4.665c0 1.194.232 2.333.654 3.375Z" />
@@ -170,7 +174,7 @@ function gethtmlNotifications(typehtml, message, messageNotif, senderId, recipie
                 </div>
             </li>`,
 
-        "newcontact" : `<li class="notification unread" data-sender-id=${senderId} data-recipient-id=${recipientId}>
+        "newcontact" : `<li class="notification unread" id="li-notification" data-sender-id=${senderId} data-recipient-id=${recipientId} data-notif-id=${notifId}>
                     <div class="notification-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm4.5 17.311l-1.76-3.397-1.032.505c-1.12.543-3.4-3.91-2.305-4.497l1.042-.513-1.747-3.409-1.053.52c-3.601 1.877 2.117 12.991 5.8 11.308l1.055-.517z"/></svg>
                 </div>
@@ -189,16 +193,19 @@ function gethtmlNotifications(typehtml, message, messageNotif, senderId, recipie
 
 }
 
-function notifFunctionality(domElements){
-    const {cardNotifContainer, allNotifButton} = domElements
+function notifModalFunctionality(domElements){
+    const {cardNotifContainer, allNotifButton, cardNotification} = domElements
     
 
-    cardNotifContainer.addEventListener("click", (event)=>{
+    cardNotifContainer.addEventListener("click", async (event)=>{
         const icon = event.target.closest(".notif-read-icon");
         const notification = event.target.closest("li");
-
+        const idNotification = notification.dataset.notifId;
+        console.log("ID DE NOTIFICACION : ", idNotification, notification)
         if(icon){
-            handlerIconRead(icon)
+            event.preventDefault()
+            await handlerIconRead(idNotification)
+            notification.remove()
             return
         }
 
@@ -208,16 +215,38 @@ function notifFunctionality(domElements){
         
         
     })
-
-    // allNotifButton.addEventListener("click", async ()=>{
-    //     const response = await fetch("/notif/all");
-    //     const data = response.text()
-
-        
-    // })
 }
-function handlerIconRead(icon){
-    console.log("Si hay lector")
+
+function NotifInterfazFuncionality(domElements){
+    const {notifContainerInterfaz} = domElements;
+    notifContainerInterfaz.addEventListener("click", async(event)=>{
+        const target = event.target
+        const filterButtons = target.closest(".filter-btn")
+        if(filterButtons){
+            const type = filterButtons.textContent.trim()
+            console.log(filterButtons.textContent.trim())
+            window.location.href = `/notif/${type}`;
+            
+        }
+    })
+
+}
+async function handlerIconRead(idNotif){
+    console.log("Si hay lector: ", idNotif)
+
+    const response = await fetch("/notif/isread",{
+        method:"POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body:JSON.stringify({idNotif:idNotif})
+    })
+    const data = await response.json();
+    if(data.success){
+        console.log("Marcado como leído: ", data.message)
+    }else if(!data.success){
+        console.log("NO se pudo marcar como leído: ", data.message)
+    }
 }
 
 function handlerNotificationCard(notification){
@@ -227,3 +256,29 @@ function handlerNotificationCard(notification){
     console.log("Recipient ID:", recipientId);
 }
 
+const handlerFilterButtons =async(type)=>{
+    try {
+        const response = await fetch(`/notif/${type}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error("Hubo un problema al obtener las notificaciones");
+        }
+
+        const data = await response.text();
+        console.log("Notificaciones filtradas: ", data);
+
+        const htmlData = await response.text();
+        console.log("Notificaciones filtradas:", htmlData);
+
+        // Actualizamos la interfaz con las notificaciones obtenidas
+        notifDisplayContainer.innerHTML = htmlData;
+        // Aquí podrías manejar la actualización de la interfaz con las notificaciones filtradas
+    } catch (err) {
+        console.error("Error en la solicitud: ", err.message);
+    }
+}

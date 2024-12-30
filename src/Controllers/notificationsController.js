@@ -16,7 +16,8 @@ export const getNotifications = async (req,res)=>{
 
         // console.log("NOTIFICACIOES DESDE CONTROLADOR: ", notifications)
         res.render("notifications",{
-            notifications: notifications
+            notifications: notifications,
+            layout: true
         })
     }catch(err){
         return res.status(400).json({message: `No se pudo obtener las notificaciones`})
@@ -26,21 +27,34 @@ export const getNotifications = async (req,res)=>{
 export const getNotificationsType = async (req,res)=>{
     
     try{
-        const type = req.body.params
+        const {type} = req.params
         const datapayload = req.usuariodatospayload || null
         const idUsuario = datapayload._id
+        
+        let filterType = changeType(type);
+        console.log("Notificaciones por tipo: ", filterType)
+        let notifications = []
+        if(typeof filterType !== "string"){
+            console.log("No es string: ", typeof filterType)
+            notifications = await modelNotification.find({recipientId:idUsuario, isRead:filterType}).sort({createdAt:-1})
+        }else{
+            console.log("Es string: ", filterType)
+            notifications = await modelNotification.find({recipientId:idUsuario, type:filterType}).sort({createdAt:-1})
+        }
         // console.log("ID USUARIO DESDE CONTROLLER NIOTIF: ", idUsuario)
-        const notifications = await modelNotification.find({recipientId:idUsuario, type:type}).sort({createdAt:-1})
+        // const notifications = await modelNotification.find({recipientId:idUsuario, type:type}).sort({createdAt:-1})
+        // console.log("Notificaciones por tipo: ", notifications, type)
         if(!notifications){
-            return res.status(404).json({message:`No se encontro ninguna notification sobre ${type} `})
+            return res.status(404).json({success: false, message:`No se encontro ninguna notification sobre ${type}`})
         }
 
-        // console.log("NOTIFICACIOES DESDE CONTROLADOR: ", notifications)
+        console.log("NOTIFICACIOES DESDE CONTROLADOR: ", notifications)
         res.render("notifications",{
-            notifications: notifications
+            notifications: notifications,
+            layout:true
         })
     }catch(err){
-        return res.status(400).json({message: `No se pudo obtener las notificaciones`})
+        return res.status(400).json({success: false, message: `No se pudo obtener las notificaciones`})
     }
 }
 
@@ -48,25 +62,41 @@ export const NotificationRead = async(req, res)=>{
     try{
         const datapayload = req.usuariodatospayload || null
         const idUsuario = datapayload._id
-        const {idNotification} = req.body
-
-        if(idNotification){
-            const updateNotif = await modelNotification({
-                _id:idNotification, recipientId:idUsuario}, {$set:{isRead:true}}
+        const {idNotif} = req.body
+        console.log("ID NOTIFICACION EN SERVIDOR PARA READ : ", idNotif)
+        if(idNotif){
+            const updateNotif = await modelNotification.updateOne({
+                _id:idNotif, recipientId:idUsuario}, {$set:{isRead:true}}
             )
 
             console.log("LA notificacion fue marcada como leída: ", updateNotif)
-            return res.status(200).json({message:"Notificación modificada correctamente"})
+            return res.status(200).json({success: true, message:"Notificación modificada correctamente"})
         }
 
-        return res.status(404).json({message:"No se encontró la notificación"})
+        return res.status(404).json({success: false,message:"No se encontró la notificación"})
 
 
     }catch(err){
-        return res.status(400).json({message:"NO se pudo moficar la notificación: ", err})
+        return res.status(400).json({success: false,message:"NO se pudo moficar la notificación: ", err})
     }
     
 
 }
 
 
+const changeType=(type)=>{
+    switch(type){
+        case "Leídas":
+            return true
+        case "Sin leer":
+            return false
+        // case "Menciones":
+        //     return "youlike"
+        case "Likes":
+            return "youlike"
+        case "Contactos":
+            return "newcontact"
+
+        break;
+    }
+}

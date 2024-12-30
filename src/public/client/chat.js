@@ -312,7 +312,7 @@ function showChatPrivado(socket, domElements) {
                 userItem.dataset.userId = contactId;
                 arrayContactStado.appendChild(userItem);
 
-
+                
                 userItem.addEventListener("click", () => {
                     console.log(`Iniciando chat con ${contactName} (${contactId})`);
                     socket.emit("startchat newcontact", contactId, contactName);
