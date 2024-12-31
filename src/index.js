@@ -23,7 +23,7 @@ import { Message } from './Models/MessageModel.js';
 import { Socket } from 'dgram';
 import { log } from 'console';
 import { SendPrivateMessage, StarChatNewContact, StartPrivateChat } from './sockets/chatSocket.js';
-import { acceptContact, newInteractionNotification, recoverContacts, recoverNotification, seeCountIds } from './sockets/notificationsSocket.js';
+import { acceptContact, commentNotification, newInteractionNotification, recoverContacts, recoverNotification, seeCountIds } from './sockets/notificationsSocket.js';
 import { Contact } from './Models/ContactModel.js';
 
 const __dirname =dirname(fileURLToPath(import.meta.url));
@@ -147,6 +147,9 @@ io.on("connection", async (socket)=>{
 
      //?Aceptar contacto nuevo
      acceptContact(socket, usuariosConectados, io)
+
+     //?Envio notification de comentario
+     commentNotification(socket)
     
 
     // console.log("sds: " , usuariosConectados)

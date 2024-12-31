@@ -8,7 +8,7 @@ export function initHeaderOptions(){
     
     const socket = initializeSocket();
     const domElements = ChargeDOMElements();
-
+    
     showNotifications(socket, domElements);
     showModalNotifications(domElements);
     getNotifications(socket,domElements);

@@ -7,6 +7,9 @@ export const getNotifications = async (req,res)=>{
 
     try{
         const datapayload = req.usuariodatospayload || null
+        if(!datapayload){
+            return res.status(401).json({message:"No está autorizado"})
+        }
         const idUsuario = datapayload._id
         // console.log("ID USUARIO DESDE CONTROLLER NIOTIF: ", idUsuario)
         const notifications = await modelNotification.find({recipientId:idUsuario}).sort({createdAt:-1})

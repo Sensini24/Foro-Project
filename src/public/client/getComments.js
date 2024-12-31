@@ -1,4 +1,29 @@
     //* ------ ACTUALIZAR EL ESTADO DE UN COMENTARIO A VISIBLE O NO Y NOTIFICARLO EN INTERFAZ SI ESTA OCULTO O NO----
+
+import { convertDate } from "./notificationclient.js";
+
+    export async function initGetComments(){
+        const socket = initializeSocket();
+
+        guardarComentarios(socket);
+        await mostrarComentarios();
+        
+    }
+
+    function initializeSocket() {
+        return io({
+            auth: {
+                serverOffset: 0
+            }
+        });
+    }
+
+    function getDomElements (){
+        return{
+            time : document.querySelectorAll(".comment-date")
+        }
+    }
+
     
     //* ESTA ES LA FORMA PARA OBTENER EL RESULTADO DE CLICKAR BOTONES INDIVIDUALES Y TAMBIEN LOS ID COMMENTS DE CADA COMENTARIO. SE DEBE USAR EL EVENT TARGET PARA OBTENER EL BUTTON QUE SE ESTA PRESIONANDO
 
@@ -60,7 +85,7 @@
             });
 
     }
-    export function guardarComentarios() {
+    export function guardarComentarios(socket) {
         const aviso_comment = document.getElementById("aviso-comment");
         const formComment = document.getElementById("formComment");
         const btnComment = document.getElementById("btn-comment");
@@ -101,7 +126,8 @@
                         } else if (response.ok) {
                             console.log("Comentario creado con éxito");
                             partialContainer.innerHTML = "";
-                            mostrarComentarios();
+                            mostrarComentarios(id_post, inputcomment);
+                            sendCommentNotification(socket,id_post, inputcomment)
                         } else {
                             console.error("Error al crear el comentario");
                         }
@@ -114,6 +140,7 @@
 
     export async function mostrarComentarios(){
         console.log("Iniciando módulo de comentarios");
+        
         // const cuerpoPostBlog = document.querySelector('.container2');
         // console.log("cuerpo post: ", cuerpoPostBlog)
 
@@ -124,23 +151,21 @@
             const response = await fetch(`/comments/request/${id_post}`)
             const comments = await response.text(); 
             partialContainer.innerHTML = comments
-            // definirEstadoComentario()
-            // EliminarComentario()
             responderComentariosPrincipales()
-            // GetRequestsComments()
+
+            const domElements = getDomElements()
+            convertDate(domElements)
         } catch (error) {
             console.error("Error al cargar los comentarios: ", error);
         }
     }
-
+    
     
     function responderComentariosPrincipales() {
         //* AQui obtengo el contenedor principal de los comentarios para agregarle un solo listener
         const commentContainer = document.getElementById("comment-container");
-        
         commentContainer.addEventListener("click", async (event) => {
-            // Identificar el botón o elemento clickeado
-            // const clickedButton = event.target.closest("button, #btn-morecomments");
+            //! Identificar el botón o elemento clickeado
             const clickedButton = event.target.closest("button, #btn-morecomments");
             if(!clickedButton) return;
             const comment = clickedButton.closest(".comment")
@@ -302,10 +327,14 @@
             const response = await fetch(`/comments/request/${id}/${idcommentparent}`)
             const data = await response.text()
             partialRequests.innerHTML = data;
-            // definirEstadoComentario();
-            // responderComentariosHijos(idcommentparent);
-            //handleDeleteComment(comment);
+            const domElements = getDomElements()
+            convertDate(domElements)
         } else {
             partialRequests.innerHTML = "";
         }
+    }
+
+    const sendCommentNotification =(socket,idpost, comment)=>{
+        console.log("Notifiacion enviada de comentario")
+        socket.emit("messageNotification", idpost, comment)
     }

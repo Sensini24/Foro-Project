@@ -62,7 +62,7 @@ export const getAllPost = async (req, res)=>{
             
         });
 
-        res.render("postList", {posts})
+        res.render("postList", {posts, layout:false})
        
         // res.status(200).json(blogs); // Responder con los blogs obtenidos
     }catch(error){

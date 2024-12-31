@@ -3,10 +3,14 @@ import { getDateMessage } from "./headerclient.js"
 export async function initInteractNotifications(){
     console.log("Ingresando a modulo de notificaciones")
     const domElements = cacheDOMElements();
-    await convertDate(domElements);
     getTitleNotif(domElements);
     assignActionsNotif(domElements);
-    interactionButtonsNotif(domElements)
+    interactionButtonsNotif(domElements);
+    await convertDate(domElements);
+    //Generalice el modulo para que acepte
+    // const {time} = domElements;
+    // console.log("time:", Array.from(time))
+    // await convertDate(Array.from(time));
 }
 
 function cacheDOMElements(){
@@ -19,15 +23,17 @@ function cacheDOMElements(){
     }
 }
 
+
 export const convertDate =async (domElements)=>{
     const {time} = domElements;
     time.forEach(async time=>{
-        // console.log("time: ", time)
+        console.log("time: ", time)
         let date = time.textContent
         let dateconvert = new Date(date)
 
         const result = await getDateMessage(dateconvert);
         time.textContent = result
+        console.log("time: ", time)
     })
 }
 
@@ -109,3 +115,4 @@ const interactionButtonsNotif = (domElements)=>{
 const isReadNotification = (domElements) =>{
     
 }
+

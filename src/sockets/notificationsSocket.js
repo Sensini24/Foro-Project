@@ -238,8 +238,6 @@ export async function acceptContact(socket, usuariosConectados, io){
 }
 
 
-
-
 export const seeCountIds =(messages)=>{
     let isFirstMessage;
     let ids = []
@@ -260,6 +258,13 @@ export const seeCountIds =(messages)=>{
 
     return isFirstMessage;
 }
+
+export const commentNotification =(socket)=>{
+    socket.on("messageNotification", (idpost, comment)=>{
+        console.log("DATOS DE COMENTARIO: ", idpost, comment)
+    })
+}
+
 
 
 

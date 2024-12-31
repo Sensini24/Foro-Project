@@ -12,11 +12,10 @@ document.addEventListener("DOMContentLoaded", async() => {
     } 
     // Mostrar todos los posts
     else if (currentPath.startsWith('/post/') && idPost !== 'addpostget' && idPost !== 'partialAllPost') {
-        const {mostrarComentarios, guardarComentarios} = await import("./getComments.js");
+        const {initGetComments} = await import("./getComments.js");
         const {interactions} = await import("./contentpost.js");
-        mostrarComentarios();
+        initGetComments();
         interactions();
-        guardarComentarios();
     }
     //Mostrar los posr del usuario actual
     else if(currentPath.includes('/user/posts')){
