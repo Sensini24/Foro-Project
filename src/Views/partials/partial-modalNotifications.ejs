@@ -8,45 +8,74 @@
     <link rel="stylesheet" href="../css/notifications.css">
 </head>
 <body>
-    <div class="card">
-        <header class="card-header">
-            <div style="width: 100%;">
-                <h1 class="title">Notificaciones</h1>
-                <hr>
-                <div style="display: flex; align-items: center; justify-content: space-around; margin-top: 10px;">
-                    
-                    <button class="clear-button" style="width: 10rem; height: 3rem; font-size: 15px;">Marcar todo como leído</button>
-                    <button class="all-button" style="width: 9rem;">
-                        <a href="/notif/all"><span class="icon">📑</span> Ver todas las notificaciones</a>
-                    </button>
-                </div>
+    <div class="notifications-modal">
+        <div class="tabs">
+            <div class="tab active">Notificaciones</div>
+            <div class="tab">Mensajes</div>
+        </div>
+        <div class="header">
+            <span class="section-title">HOY</span>
+            <div class="header-actions">
+                <span class="mark-read">Marcar todo como leído</span>
+                <span class="settings-button">⚙️</span>
             </div>
-        </header>
-        <main class="card-content">
-            <ul class="notification-list">
-                <!-- <li class="notification">
-                    <div class="notification-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        </div>
+        <div class="notifications-list">
+            <div class="notification-item">
+                <div class="avatar">O</div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <div class="notification-title">
+                            <span class="status-indicator"></span>
+                            ObsidianMD
+                        </div>
+                        <span class="notification-time">4h</span>
                     </div>
-                    <div class="notification-content">
-                        <h2 class="notification-title">New Comment on Your Scroll</h2>
-                        <p class="notification-message">Aristotle commented on your "Poetics of Programming" scroll</p>
-                        <span class="notification-time">1 day ago</span>
+                    <div class="notification-text">
+                        LifeOS Plugin Open Source Version Q4 Update
                     </div>
-                </li>
-                <li class="notification">
-                    <div class="notification-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                </div>
+                <div class="menu-button">⋮</div>
+            </div>
+            <div class="notification-item">
+                <div class="avatar">V</div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <div class="notification-title">
+                            <span class="status-indicator"></span>
+                            vim
+                        </div>
+                        <span class="notification-time">7h</span>
                     </div>
-                    <div class="notification-content">
-                        <h2 class="notification-title">Your Scroll Was Favorited</h2>
-                        <p class="notification-message">Pythagoras added your "Theorem of Functional Programming" to favorites</p>
-                        <span class="notification-time">3 days ago</span>
+                    <div class="notification-text">
+                        Updated my Vim Cheat Sheet for Programmers
                     </div>
-                </li> -->
-            </ul>
-        </main>
+                </div>
+                <div class="menu-button">⋮</div>
+            </div>
+            <div class="notification-item">
+                <div class="avatar">O</div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <div class="notification-title">
+                            <span class="status-indicator"></span>
+                            ObsidianMD
+                        </div>
+                        <span class="notification-time">10h</span>
+                    </div>
+                    <div class="notification-text">
+                        Before/After a month of atomic-style notes
+                    </div>
+                </div>
+                <div class="menu-button">⋮</div>
+                
+            </div>
+        </div>
+        
+        <button class="see-all" onclick="window.location.href='/notif/all'">Ver todas las notificaciones</button>
+
     </div>
 </body>
 </html>
+
 

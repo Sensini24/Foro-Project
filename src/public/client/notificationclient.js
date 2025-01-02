@@ -1,5 +1,14 @@
 import { getDateMessage } from "./headerclient.js"
 
+document.addEventListener("DOMContentLoaded", async () => {
+    const domElements = { 
+        time: document.querySelectorAll(".notificationInterfaz-time") 
+    };
+
+    //! TUVE QUE AGREGAR ESTA FUNCION AQUI POR QUE NECESARIAMENTE ME PIDE QUE SE CARGUE ELL DOM PRIMERO
+    await convertDate(domElements);
+});
+
 export async function initInteractNotifications(){
     console.log("Ingresando a modulo de notificaciones")
     const domElements = cacheDOMElements();
@@ -7,22 +16,19 @@ export async function initInteractNotifications(){
     assignActionsNotif(domElements);
     interactionButtonsNotif(domElements);
     NotifInterfazFuncionality(domElements)
-    await convertDate(domElements);
+    // await convertDate(domElements);
     chargeActiveStateColor()
-    //Generalice el modulo para que acepte
-    // const {time} = domElements;
-    // console.log("time:", Array.from(time))
-    // await convertDate(Array.from(time));
 }
-
 function cacheDOMElements(){
     return{
-        time : document.querySelectorAll(".notification-time"),
+        time : document.querySelectorAll(".notificationInterfaz-time"),
         notifTitle: document.querySelectorAll(".notification-title"),
         notifContent: document.querySelectorAll(".notification-content"),
         notifList: document.querySelector(".notifications-list"),
         notifItem: document.querySelectorAll(".notification-item"),
-        notifContainerInterfaz: document.querySelector(".notifications-container")
+        notifContainerInterfaz: document.querySelector(".notifications-container"),
+        MenuButton: document.querySelectorAll(".menu-button"),
+        menuNotification: document.querySelectorAll(".menu-notification")
     }
 }
 
@@ -34,7 +40,14 @@ export const convertDate =async (domElements)=>{
         let dateconvert = new Date(date)
 
         const result = await getDateMessage(dateconvert);
-        time.textContent = result
+        
+        console.log("resultado converison tiemop notifiaciones: ", time)
+        if(result){
+            time.textContent = result
+        }else{
+            time.textContent = "no hay"
+        }
+        
     })
 }
 

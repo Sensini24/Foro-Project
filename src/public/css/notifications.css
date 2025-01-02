@@ -184,6 +184,7 @@ body {
 .notification-header {
     display: flex;
     justify-content: space-between;
+    flex-direction: column;
     align-items: flex-start;
     margin-bottom: 0.5rem;
 }
@@ -302,4 +303,193 @@ body {
         flex-direction: column;
         gap: 0.5rem;
     }
+}
+
+
+
+.notifications-modal {
+    background-color: var(--bg);
+    width: 100%;
+    max-width: 400px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.tabs {
+    display: flex;
+    border-bottom: 1px solid var(--bg2);
+}
+
+.tab {
+    flex: 1;
+    padding: 1rem;
+    text-align: center;
+    color: var(--fg-dim);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.tab.active {
+    color: var(--blue);
+}
+
+.tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--blue);
+}
+
+.header {
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--bg2);
+}
+
+.section-title {
+    font-size: 0.75rem;
+    color: var(--fg-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.header-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.mark-read {
+    color: var(--blue);
+    font-size: 0.875rem;
+    cursor: pointer;
+}
+
+.settings-button {
+    color: var(--fg-dim);
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.settings-button:hover {
+    color: var(--fg);
+}
+
+.notifications-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+.notification-list{
+    padding: 1rem;
+}
+
+.notification-item {
+    padding: 1rem;
+    display: flex;
+    gap: 1rem;
+    align-items: start;
+    border-bottom: 1px solid var(--bg1);
+    transition: background-color 0.2s ease;
+}
+
+.notification-item:hover {
+    background-color: var(--bg1);
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--purple);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: var(--bg);
+}
+
+.notification-content {
+    flex: 1;
+}
+
+.notification-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 0.25rem;
+}
+
+.notification-title {
+    font-weight: 600;
+    color: var(--fg);
+}
+
+.notification-time {
+    color: var(--fg-dim);
+    font-size: 0.875rem;
+}
+
+.notification-text {
+    color: var(--fg-dim);
+    font-size: 0.875rem;
+    line-height: 1.4;
+}
+
+.menu-button {
+    color: var(--fg-dim);
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.menu-button:hover {
+    background-color: var(--bg2);
+    color: var(--fg);
+}
+
+.see-all {
+    display: block;
+    width: 100%;
+    padding: 1rem;
+    text-align: center;
+    background-color: var(--bg1);
+    color: var(--blue);
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.see-all:hover {
+    background-color: var(--bg2);
+}
+
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--aqua);
+    margin-right: 0.5rem;
+    display: inline-block;
+}
+
+/* Scrollbar personalizado */
+.notifications-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.notifications-list::-webkit-scrollbar-track {
+    background: var(--bg1);
+}
+
+.notifications-list::-webkit-scrollbar-thumb {
+    background: var(--bg2);
+    border-radius: 4px;
 }

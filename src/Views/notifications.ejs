@@ -38,7 +38,7 @@
             <button class="filter-btn">Sistema</button> -->
         </div>
 
-        <div class="notifications-list">
+        <div class="notification-list">
             <!-- Notificación con acciones -->
             <% if(notifications.length <1){ %>
                 <h3 style="display: flex; align-items: center; justify-content: center;">No tiene notificaciones</h3>
@@ -52,7 +52,7 @@
                                     <span class="notification-title">Nuevo Contacto</span>
                                 <%}%> -->
                                 <span class="notification-title"><%= notif.type %></span>
-                                <span class="notification-time"><%= notif.createdAt  %></span>
+                                <span class="notificationInterfaz-time"><%= notif.createdAt %></span>
                             </div>
                             <p class="notification-message">
                                 <%= notif.message %>

@@ -41,16 +41,13 @@ export const getNotificationsType = async (req,res)=>{
         if(filterType == null){
             notifications = await modelNotification.find({recipientId:idUsuario}).sort({createdAt:-1})
         }
-        else if(typeof filterType !== "string"){
+        else if(typeof filterType !== "string"){ //en caso de que se envie un bool como "isRead"
             console.log("No es string: ", typeof filterType)
             notifications = await modelNotification.find({recipientId:idUsuario, isRead:filterType}).sort({createdAt:-1})
         }else{
-            console.log("Es string: ", filterType)
+            console.log("Es string: ", filterType)//en caso de que se envie un string como "youlike"
             notifications = await modelNotification.find({recipientId:idUsuario, type:filterType}).sort({createdAt:-1})
         }
-        // console.log("ID USUARIO DESDE CONTROLLER NIOTIF: ", idUsuario)
-        // const notifications = await modelNotification.find({recipientId:idUsuario, type:type}).sort({createdAt:-1})
-        // console.log("Notificaciones por tipo: ", notifications, type)
         if(!notifications){
             return res.status(404).json({success: false, message:`No se encontro ninguna notification sobre ${type}`})
         }
@@ -104,7 +101,6 @@ const changeType=(type)=>{
             return "youlike"
         case "Contactos":
             return "newcontact"
-
         break;
     }
 }

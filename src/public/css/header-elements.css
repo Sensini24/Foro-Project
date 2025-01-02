@@ -151,8 +151,8 @@ body{
 }
 #notifications-container {
     position: absolute;
-    width: 27rem;
-    height: 33rem;
+    width: auto;
+    height: auto;
     box-shadow: -2px 0 8px rgba(0, 0, 0, 0.2);
     display: none;
     flex-direction: column;
@@ -201,3 +201,19 @@ body{
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+.menu-container {
+    display: none;  /* Menú oculto por defecto */
+    position: absolute;
+    top: 100%;  /* Posicionar justo debajo del botón */
+    right: 0;  /* Alinea a la derecha del botón */
+    background-color: white;  /* Fondo blanco */
+    border: 1px solid #ccc;  /* Borde para el cuadro */
+    width: 150px;  /* Ancho del menú */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  /* Sombra */
+    z-index: 9999;  /* Asegura que el menú se muestre sobre otros elementos */
+    margin-bottom: 500px;
+}
+.notification-item {
+    position: absolute;  /* Necesario para que el menú se posicione relativo a este contenedor */
+    padding: 10px;
+}
