@@ -6,7 +6,9 @@ export async function initInteractNotifications(){
     getTitleNotif(domElements);
     assignActionsNotif(domElements);
     interactionButtonsNotif(domElements);
+    NotifInterfazFuncionality(domElements)
     await convertDate(domElements);
+    chargeActiveStateColor()
     //Generalice el modulo para que acepte
     // const {time} = domElements;
     // console.log("time:", Array.from(time))
@@ -19,7 +21,8 @@ function cacheDOMElements(){
         notifTitle: document.querySelectorAll(".notification-title"),
         notifContent: document.querySelectorAll(".notification-content"),
         notifList: document.querySelector(".notifications-list"),
-        notifItem: document.querySelectorAll(".notification-item")
+        notifItem: document.querySelectorAll(".notification-item"),
+        notifContainerInterfaz: document.querySelector(".notifications-container")
     }
 }
 
@@ -27,13 +30,11 @@ function cacheDOMElements(){
 export const convertDate =async (domElements)=>{
     const {time} = domElements;
     time.forEach(async time=>{
-        console.log("time: ", time)
         let date = time.textContent
         let dateconvert = new Date(date)
 
         const result = await getDateMessage(dateconvert);
         time.textContent = result
-        console.log("time: ", time)
     })
 }
 
@@ -112,7 +113,39 @@ const interactionButtonsNotif = (domElements)=>{
     })
 }
 
-const isReadNotification = (domElements) =>{
-    
+function NotifInterfazFuncionality(domElements){
+    const {notifContainerInterfaz} = domElements;
+    notifContainerInterfaz.addEventListener("click", async(event)=>{
+        
+        const target = event.target
+        const filterButtons = target.closest(".filter-btn")
+        if(filterButtons){
+            const type = filterButtons.textContent.trim()
+            console.log(filterButtons.textContent.trim())
+            window.location.href = `/notif/${type}`;
+            localStorage.setItem("activeContact", type)
+            // const filterbtn = document.querySelectorAll(".filter-btn")
+            // filterbtn.forEach(btn=>{
+            //     btn.classList.remove(".active")
+            //     console.log("ye: ", btn)
+            // })  
+        }
+    })
+
+}
+
+
+function chargeActiveStateColor(){
+    const activeContactType = localStorage.getItem("activeContact");
+    if (activeContactType) {
+        const allNotifButtons = document.querySelectorAll(".filter-btn")
+        
+        allNotifButtons.forEach(btn => {
+            btn.classList.remove(".active")
+            if(btn.textContent.trim() == activeContactType) {
+                btn.classList.add("active");
+            }
+        });
+    }
 }
 

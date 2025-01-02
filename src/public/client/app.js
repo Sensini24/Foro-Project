@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", async() => {
         const {initUserPosts} = await import("./userPosts.js")
         initUserPosts();
     }
-    else if(currentPath.includes('/notif/all')){
+    else if(currentPath.includes('/notif/')){
         const {initInteractNotifications} = await import("./notificationclient.js")
         initInteractNotifications();
     }

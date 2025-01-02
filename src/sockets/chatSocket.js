@@ -26,6 +26,7 @@ export function StartPrivateChat(socket, usuariosConectados){
     })
 }
 
+//? RECIBE EL MENSAJE DESDE CLIENTE Y LO ENVIA NUEVAMENTE AL ROOM PARA QUE AMBOS USUARIO LO RECIBAN
 export async function SendPrivateMessage(socket, io, usuariosConectados){
     socket.on("privateMessage", async ({ roomName, message, nameContact, sendername, idContact }) => {
         const lastDocument = await modelMessage.findOne({roomId: roomName}).sort({id_offset:-1});

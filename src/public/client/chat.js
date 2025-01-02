@@ -97,6 +97,8 @@ function newDataContact(socket) {
             const idContact = contact.dataset.userId;
             const usernameContact = contact.textContent.trim();
             console.log("DESDE STARCHAT NEWCONTACT: ", idContact, usernameContact);
+
+            //? ESTE EVENTO SE RECICLA PARA ENVIA INFO AL SERVIDOR Y CREAR UN ROOM E INICIAR UN CHAT PRIVADO.
             socket.emit("startchat newcontact", idContact, usernameContact);
         });
     });
@@ -134,6 +136,8 @@ function showChatPrivado(socket, domElements) {
 
             userItem.addEventListener("click", () => {
                 console.log(`Iniciando chat con ${nombre} (${userId})`);
+
+                //? SOLO ENVIA LA INFO DEL USUARIO CLICADO Y CUANDO OYE EL EVENTO EN SERVIDOR CREA UN ROOM CON ESOS DATOS.
                 socket.emit("startprivatechat", userId, nombre);
             });
 
@@ -141,7 +145,7 @@ function showChatPrivado(socket, domElements) {
         });
     });
 
-    
+    //? YA CREADO EL ROOM SE ENVIA LOS DATOS DE ESTE CON LOS OTROS PARA CREAR EL ESPACIO DE CARGA DE MENSAJES
     socket.on("privateChatStarted", (data) => {
         const usernameHeader = document.querySelector("#user_name");
         console.log("Data: ", data);
@@ -163,21 +167,27 @@ function showChatPrivado(socket, domElements) {
             }
         }
 
-        // Elimina cualquier evento submit anterior
-        formChat.removeEventListener("submit", formChat.handleFormSubmit);
+        //! EN CASO DE QUE EXISTE EL FORM DE ENVIO DE MENSAJE
+        if(formChat){
+            // Elimina cualquier evento submit anterior
+            formChat.removeEventListener("submit", formChat.handleFormSubmit);
 
-        // Asigna la nueva función de manejo del evento submit
-        formChat.handleFormSubmit = handleFormSubmit;
+            // Asigna la nueva función de manejo del evento submit
+            formChat.handleFormSubmit = handleFormSubmit;
 
-        // Agrega el nuevo evento submit
-        formChat.addEventListener("submit", formChat.handleFormSubmit);
+            // Agrega el nuevo evento submit
+            formChat.addEventListener("submit", formChat.handleFormSubmit);
 
-        console.log("ROOM DESDE PRIVATE MESSAGE: ", data.room);
+            console.log("ROOM DESDE PRIVATE MESSAGE: ", data.room);
 
-        socket.emit("recoverMessages", data.room, data.contactname, data.username, data.idContact);
-        console.log("SE EMITIO EL NOMBRE DE CONTACTO Y SENDER: ", data.contactname, data.username, data.idContact);
+            //? CREA EL EVENTO QUE ENVIA INFO A SERVIDOR PARA RECOBRAR MENSAJES
+            socket.emit("recoverMessages", data.room, data.contactname, data.username, data.idContact);
+            console.log("SE EMITIO EL NOMBRE DE CONTACTO Y SENDER: ", data.contactname, data.username, data.idContact);
+        }
+        
     });
 
+    //? RECIBE LOS MENSAJE DE SERVIDOR CON EVENTO privateMessage Y LO CARGA AL ROOM O INTERFAZ CREADO.
     socket.on("sendMessage", (data) => {
         console.log("ROOM DESDE SENDEMESSAGE: ", chatMessages.dataset.userId, data.roomName, data)
         if (chatMessages.dataset.userId === data.roomName) {
@@ -206,6 +216,8 @@ function showChatPrivado(socket, domElements) {
         }
     });
 
+
+    //? RECOBRA LOS MENSAJE DESDE SERVIDOR
     socket.on("recoveredMessages", (userid, messages, usernameContact, sendername, contactId, isFirstMessage, contactState) => {
         chatMessages.innerHTML = "";
         console.log("Sender Id", messages[0].senderId);
@@ -227,7 +239,7 @@ function showChatPrivado(socket, domElements) {
             addMessage(content, senderId);
         });
     
-        // Manejar la confirmación de nuevo contacto
+        //? EN CASO DE QUE EL ID DEL USUARIO ACTUAL SEA DIFERENTE AL DEL QUE ENVIO EL MENSAJE, Y SI SOLO SON MENSAJES DE UN USUARIO, ADEMAS DE QUE SEA EL CONTACTO DE ESTADO PENDING, ENTONCES LE SALE LA INTERFAZ DE CONFIRMACION DE CONTACTO.
         console.log("sendeid: ", senderIdMessage, "userid: ", userid, contactState )
         if (isFirstMessage && userid !== senderIdMessage && contactState == "pending") {
            
@@ -242,7 +254,8 @@ function showChatPrivado(socket, domElements) {
     
             btnAccept.addEventListener("click", () => {
                 console.log("Presionaste aceptar:", senderIdMessage, contactId);
-                // Emitir evento para aceptar contacto
+
+                //? Emitir evento para aceptar contacto
                 socket.emit("accept contact", userid, contactId, "accepted");
             });
     
@@ -267,21 +280,10 @@ function showChatPrivado(socket, domElements) {
         chatContactsPending.innerHTML = "";
         userContacts.forEach(contact=>{
             console.log("Nombre de contacto: ", contact.contact_id.user_name)
-
             const contactName = contact.contact_id.user_name;
             const contactId = contact.contact_id._id;
 
-            const userItem = document.createElement("li");
-            userItem.classList.add("contacto");
-            userItem.textContent = contactName;
-            userItem.dataset.userId = contactId;
-
-            userItem.addEventListener("click", () => {
-                console.log(`Iniciando chat con ${contactName} (${contactId})`);
-                socket.emit("startchat newcontact", contactId, contactName);
-            });
-            
-            chatContactsPending.appendChild(userItem);
+            addAndStarChat(chatContactsPending, contactName, contactId)
         })
     })
 
@@ -298,31 +300,36 @@ function showChatPrivado(socket, domElements) {
             const contactEstado = contact.estado;
 
             if(contactEstado == "pending"){
-                addAndStarChat(chatContactsPending)
+                addAndStarChat(chatContactsPending,contactName, contactId)
             }else if(contactEstado == "accepted"){
-                addAndStarChat(chatContactsContacts)
+                addAndStarChat(chatContactsContacts,contactName, contactId)
             }
-            
-
-            function addAndStarChat(arrayContactStado){
-                arrayContactStado.innerHTML = ""
-                const userItem = document.createElement("li");
-                userItem.classList.add("contacto");
-                userItem.textContent = contactName;
-                userItem.dataset.userId = contactId;
-                arrayContactStado.appendChild(userItem);
-
-                
-                userItem.addEventListener("click", () => {
-                    console.log(`Iniciando chat con ${contactName} (${contactId})`);
-                    socket.emit("startchat newcontact", contactId, contactName);
-                });
-            }
-            
             
         })
     })
 
+    function addAndStarChat(arrayContactStado, contactName, contactId){
+        const userItem = document.createElement("li");
+        userItem.classList.add("contacto");
+        userItem.textContent = contactName;
+        userItem.dataset.userId = contactId;
+        arrayContactStado.appendChild(userItem);
+        console.log("Contacto agregado a panel de chat: ", contactName)
+
+        
+        userItem.addEventListener("click", () => {
+            let allcontact = document.querySelectorAll(".contacto")
+            allcontact.forEach(contact=>contact.classList.remove("active"))
+            userItem.classList.add("active")
+            console.log(`Iniciando chat con ${contactName} (${contactId})`);
+
+            //? AQUI CUANDO SE AGREGA EL CONTACTO YA SEA PENDING O ACCEPTED SE ENVIA
+            //? LA INFO PARA CREAR EL ROOM Y LO DEMAS DE RECUPERACION DE MENSAJES.
+            socket.emit("startchat newcontact", contactId, contactName);
+        });
+    }
+
+    //? SI EL USUARIO ACEPTA AL NUEVO CONTACTO SE ELIMINAN LAS LIMITACIONES
     socket.on("notification new contact", (isAccepted)=>{
         if(isAccepted){
             const announceConfirm = document.querySelector(".chat-confirmation")

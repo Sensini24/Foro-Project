@@ -14,7 +14,6 @@ export function initHeaderOptions(){
     getNotifications(socket,domElements);
     realtimeNotifications(socket,domElements);
     notifModalFunctionality(domElements);
-    NotifInterfazFuncionality(domElements);
     convertDate(domElements),
     getTitleNotif(domElements)
 }
@@ -38,7 +37,7 @@ function ChargeDOMElements(){
         cardNotifContainer : document.querySelector(".card-content"),
         allNotifButton : document.querySelector(".all-button"),
         cardNotification : document.querySelector("#li-notification"),
-        notifContainerInterfaz: document.querySelector(".notifications-container"),
+        // notifContainerInterfaz: document.querySelector(".notifications-container"),
         time : document.querySelectorAll(".notification-time"),
         notifTitle: document.querySelectorAll(".notification-title"),
     }
@@ -112,7 +111,7 @@ export async function getDateMessage(createdAt) {
         const FechaCurrent = new Date();
         
         if (isNaN(FechaNotification.getTime())) {
-            console.log("Fecha inválida, retornando valor por defecto");
+            // console.log("Fecha inválida, retornando valor por defecto");
             return "Hace un momento";
         }
 
@@ -217,20 +216,7 @@ function notifModalFunctionality(domElements){
     })
 }
 
-function NotifInterfazFuncionality(domElements){
-    const {notifContainerInterfaz} = domElements;
-    notifContainerInterfaz.addEventListener("click", async(event)=>{
-        const target = event.target
-        const filterButtons = target.closest(".filter-btn")
-        if(filterButtons){
-            const type = filterButtons.textContent.trim()
-            console.log(filterButtons.textContent.trim())
-            window.location.href = `/notif/${type}`;
-            
-        }
-    })
 
-}
 async function handlerIconRead(idNotif){
     console.log("Si hay lector: ", idNotif)
 

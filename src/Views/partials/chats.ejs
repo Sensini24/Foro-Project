@@ -21,15 +21,11 @@
             <div>
                 <h2>Contacts</h2>
                 <ul class="chat-contacts-contacts">
-                    <li class="active">Socrates</li>
-                    <li>Plato</li>
-                    <li>Aristotle</li>
                 </ul>
             </div>
             <div>
                 <h2>Contacts Pending</h2>
                 <ul class="chat-contacts-pending">
-                    <li class="active">Socrates</li>
                 </ul>
             </div>
             <div>
@@ -45,11 +41,16 @@
         </div>
         <div class="chat-window">
             <div class="chat-header">
-                <h2 id="user_name" >Socrates</h2>
+                 <h2 id="user_name"></h2><!--quite el header -->
                 <i class="btn-close material-icons">close</i>
             </div>
-            <div class="chat-messages">
-                <div class="message received">
+            <div class="chat-messages"><!--quite el cuerpo de mensajes -->
+
+                    <div class="salutStart" style="padding-left: 10rem;">
+                        <%- include('../partials/partial-menuChat') %>
+                    </div>
+                
+                <!-- <div class="message received">
                     <span class="sender">Socrates:</span>
                     <p>What is the nature of knowledge, my friend?</p>
                 </div>
@@ -64,9 +65,9 @@
                 <div class="message sent">
                     <span class="sender">You:</span>
                     <p>Indeed. How do we distinguish between true knowledge and mere opinion?</p>
-                </div>
+                </div> -->
             </div>
-            <div class="chat-input">
+            <div class="chat-input active">
                 <form id="form-chat">
                     <input type="text" id="input-chat" placeholder="Type your message...">
                     <button>Send</button>

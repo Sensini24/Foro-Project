@@ -37,7 +37,11 @@ export const getNotificationsType = async (req,res)=>{
         let filterType = changeType(type);
         console.log("Notificaciones por tipo: ", filterType)
         let notifications = []
-        if(typeof filterType !== "string"){
+
+        if(filterType == null){
+            notifications = await modelNotification.find({recipientId:idUsuario}).sort({createdAt:-1})
+        }
+        else if(typeof filterType !== "string"){
             console.log("No es string: ", typeof filterType)
             notifications = await modelNotification.find({recipientId:idUsuario, isRead:filterType}).sort({createdAt:-1})
         }else{
@@ -78,7 +82,6 @@ export const NotificationRead = async(req, res)=>{
 
         return res.status(404).json({success: false,message:"No se encontró la notificación"})
 
-
     }catch(err){
         return res.status(400).json({success: false,message:"NO se pudo moficar la notificación: ", err})
     }
@@ -93,8 +96,10 @@ const changeType=(type)=>{
             return true
         case "Sin leer":
             return false
-        // case "Menciones":
-        //     return "youlike"
+        case "Menciones":
+            return "youmention"
+        case "Comentarios":
+            return "youcomment"
         case "Likes":
             return "youlike"
         case "Contactos":
