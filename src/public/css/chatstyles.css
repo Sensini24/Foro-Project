@@ -75,7 +75,7 @@ body {
 }
 
 .contacts-list {
-    width: 200px;
+    width: 13rem;
     background-color: rgba(60, 56, 54, 0.8);
     padding: 10px;
     overflow-y: auto;
@@ -345,7 +345,6 @@ body {
 
 .welcome-container {
     text-align: center;
-    padding: 2rem;
     max-width: 400px;
     width: 100%;
 }
@@ -446,4 +445,8 @@ body {
     font-weight: bold;
 }
 
+.salutStart{
+    padding: 0px;
+    margin-right: 8rem;
+}
 

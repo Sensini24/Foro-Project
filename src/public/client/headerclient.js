@@ -17,6 +17,7 @@ export function initHeaderOptions(){
     convertDate(domElements);
     getTitleNotif(domElements);
     menuButton(domElements)
+    chargeNotifforTypeofLocalStorage(domElements)
 }
 
 function initializeSocket() {
@@ -41,6 +42,8 @@ function ChargeDOMElements(){
         // notifContainerInterfaz: document.querySelector(".notifications-container"),
         time : document.querySelectorAll(".notification-time"),
         notifTitle: document.querySelectorAll(".notification-title"),
+        seenotifsButton: document.querySelector("#see-notifs"),
+        
     }
 
 }
@@ -55,7 +58,7 @@ function showNotifications(socket, domElements) {
 
 }
 
-
+//? CALCULA CANTIDAD DE NOTIFICACIONES,CONVIERTE LA FECHA, Y FILTRA LOS "NO LEIDOS"
 async function IncreaseNumberNotifications(notifUnreadList, notifNumber, notifications) {
     notifUnreadList.innerHTML = "";
     const noleidos = await notifications.filter(dato => dato.isRead == false);
@@ -72,7 +75,7 @@ async function IncreaseNumberNotifications(notifUnreadList, notifNumber, notific
     }
 }
 
-
+//? RECIBE NOTIFICACIONES CON EVENTO EN TIEMPO REAL Y LO CARGA EN EL MODAL DE NOTIFICACIONES.
 async function realtimeNotifications(socket,domElements){
     socket.on("newNotification", async (notifications)=>{
         console.log("Notificaciones recibidas en tiempo real: ",notifications);
@@ -85,6 +88,7 @@ async function realtimeNotifications(socket,domElements){
     })
 }
 
+//? OBTENER NOTIFICACIONES RECUPERADAS AL CONECTARSE.
 async function getNotifications(socket,domElements){
     socket.on("show notifications", async (notifications)=>{
         const {notifNumber, notifUnreadList} = domElements;
@@ -95,6 +99,7 @@ async function getNotifications(socket,domElements){
 }
 
 
+//? MUESTA EL MODAL DE NOTIFICACIONES Y LO OCULTA SI SE PRESIONA OTRA VEZ EN LA CAMPANA O SI SE HACE FUERA DE SU RANGO.
 function showModalNotifications(domElements, event){
     const { campanita, notifContainer} = domElements;
     campanita.addEventListener("click", (event) => {
@@ -133,6 +138,7 @@ function showModalNotifications(domElements, event){
     // if(notifContainer)
 }
 
+//? CONVIERTE LA FECHA STAMP A MINUTOS HORAS, DIAS, ETC.
 export async function getDateMessage(createdAt) {
     try {
         const FechaNotification = new Date(createdAt);
@@ -289,7 +295,7 @@ function notifModalFunctionality(domElements){
     })
 }
 
-
+//? Marca como leido al hacer clikc en la opcion leido del modal pequeño
 async function handlerIconRead(idNotif){
     console.log("Si hay lector: ", idNotif)
 
@@ -315,6 +321,7 @@ function handlerNotificationCard(notification){
     console.log("Recipient ID:", recipientId);
 }
 
+//? Muestra el peuqeño modal al clickar los tres puntos, además lo cierra si se presiona otra vez o si se hace fuera del modal.
 const menuButton = (domElements)=>{
     const {notifUnreadList} = domElements;
     notifUnreadList.addEventListener("click", (event)=>{
@@ -341,6 +348,17 @@ const menuButton = (domElements)=>{
         }
     })
 
+}
+
+//? Esta funcion sirve para cargar las notificacion a partir del tipo guardado en local storage
+function chargeNotifforTypeofLocalStorage(domElements){
+    const {seenotifsButton} = domElements;
+    if(seenotifsButton){
+        seenotifsButton.addEventListener("click", ()=>{
+        const activeContactType = localStorage.getItem("activeContact");
+            window.location.href=`/notif/${activeContactType}`
+        })
+    }
 }
 
 // const handlerFilterButtons =async(type)=>{

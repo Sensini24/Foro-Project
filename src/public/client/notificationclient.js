@@ -18,6 +18,7 @@ export async function initInteractNotifications(){
     NotifInterfazFuncionality(domElements)
     // await convertDate(domElements);
     contactActiveStateColor()
+    ShowCommentNotification(domElements)
 }
 function cacheDOMElements(){
     return{
@@ -28,11 +29,14 @@ function cacheDOMElements(){
         notifItem: document.querySelectorAll(".notification-item"),
         notifContainerInterfaz: document.querySelector(".notifications-container"),
         MenuButton: document.querySelectorAll(".menu-button"),
-        menuNotification: document.querySelectorAll(".menu-notification")
+        menuNotification: document.querySelectorAll(".menu-notification"),
+        notifListInterfaz: document.querySelector(".notification-list")
+        
     }
 }
 
 
+//? CONVIERTE LOS DATOS DE TIEMPO EN DATOS MAS EXACTOS
 export const convertDate =async (domElements)=>{
     const {time} = domElements;
     time.forEach(async time=>{
@@ -51,6 +55,7 @@ export const convertDate =async (domElements)=>{
     })
 }
 
+//? TRADUCE LOS TIPOS DE NOTIFICACIONES A TITULOS LEGIBLES Y ENTENDIBLES
 export const getTitleNotif = async (domElements)=>{
     const {notifTitle} = domElements;
     await notifTitle.forEach(title=>{
@@ -70,15 +75,17 @@ export const getTitleNotif = async (domElements)=>{
                 break;
 
             case "youcomment":
-                title.textContent = "Nuevo comentario"
+                title.textContent = "Nuevo Comentario"
         }
     })
 }
+
+//? ASIGNA BOTNOS O ELEMENTOS POR TIPO DE NOTIFICACION A LA LISTA DE NOTIFICACIONES COMPLETAS.
 const assignActionsNotif = (domElements)=>{
     const {notifContent} = domElements;
     notifContent.forEach(content=>{
         console.log("content: ", content)
-        let typeTitle = content.querySelector(".notification-title").textContent;
+        let typeTitle = content.querySelector(".notification-title").textContent.trim();
         console.log("notificationtitle: ", typeTitle)
         let item = ""
         switch(typeTitle){
@@ -89,11 +96,11 @@ const assignActionsNotif = (domElements)=>{
                     </div>`
             content.innerHTML  += item;
             break;
-
-            case "Nuevo Like":
+{/* <button class="action-btn">Responder</button> */}
+            case "Nuevo Comentario":
             item = `<div class="notification-actions">
-                        <button class="action-btn">Responder</button>
-                        <button class="action-btn">Ver comentario</button>
+                        
+                        <button class="action-btn tocomment">Ver comentario</button>
                     </div>`
             content.innerHTML  += item;
             break;
@@ -138,7 +145,7 @@ function NotifInterfazFuncionality(domElements){
         const filterButtons = target.closest(".filter-btn")
         if(filterButtons){
             const type = filterButtons.textContent.trim()
-            console.log(filterButtons.textContent.trim())
+            // console.log(filterButtons.textContent.trim())
             window.location.href = `/notif/${type}`;
             localStorage.setItem("activeContact", type)
             // const filterbtn = document.querySelectorAll(".filter-btn")
@@ -166,4 +173,18 @@ function contactActiveStateColor(){
     }
 }
 
-//? 
+
+//? Mostrar el comentario a partir de notificaciones
+function ShowCommentNotification(domElements){
+    const {notifListInterfaz} = domElements;
+    notifListInterfaz.addEventListener("click", (event)=>{
+        const notifItem = event.target.closest(".notification-item")
+        if(notifItem){
+            console.log("Notifications item: ", notifItem)
+            const toCommentbtn = event.target.closest(".action-btn.tocomment")
+            if(toCommentbtn){
+                window.location.href= `/post/${postId}#comment-${commentId}`;
+            }
+        }
+    })
+}
