@@ -149,7 +149,7 @@ io.on("connection", async (socket)=>{
      acceptContact(socket, usuariosConectados, io)
 
      //?Envio notification de comentario
-     commentNotification(socket)
+     commentNotification(socket, usuariosConectados, io)
     
 
     // console.log("sds: " , usuariosConectados)

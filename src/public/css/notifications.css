@@ -184,7 +184,7 @@ body {
 .notification-header {
     display: flex;
     justify-content: space-between;
-    flex-direction: column;
+    flex-direction: row;
     align-items: flex-start;
     margin-bottom: 0.5rem;
 }
@@ -403,6 +403,10 @@ body {
     background-color: var(--bg1);
 }
 
+.notificationInterfaz-time{
+    font-size: 13px;
+}
+
 .avatar {
     width: 40px;
     height: 40px;
@@ -419,9 +423,10 @@ body {
     flex: 1;
 }
 
-.notification-header {
+.notification-header-modal {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    justify-content: start;
     align-items: start;
     margin-bottom: 0.25rem;
 }

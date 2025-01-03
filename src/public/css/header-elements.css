@@ -202,18 +202,31 @@ body{
 }
 
 .menu-container {
-    display: none;  /* Menú oculto por defecto */
+    display: none;
     position: absolute;
-    top: 100%;  /* Posicionar justo debajo del botón */
-    right: 0;  /* Alinea a la derecha del botón */
-    background-color: white;  /* Fondo blanco */
-    border: 1px solid #ccc;  /* Borde para el cuadro */
-    width: 150px;  /* Ancho del menú */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  /* Sombra */
-    z-index: 9999;  /* Asegura que el menú se muestre sobre otros elementos */
-    margin-bottom: 500px;
+    top: 30%;
+    right: 22px;
+    background-color: #282828;
+    border: 1px solid #282828;
+    width: 17rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    margin-bottom: 0px;
+    border-radius: 5px;
+    
+
+}
+.menu-container:hover{
+    background-color: #32302F;
+    cursor: pointer;
 }
 .notification-item {
-    position: absolute;  /* Necesario para que el menú se posicione relativo a este contenedor */
+    position: absolute;
     padding: 10px;
+    cursor: pointer;
+}
+
+
+.changeRead{
+    padding: 12px;
 }

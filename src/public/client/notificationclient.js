@@ -17,7 +17,7 @@ export async function initInteractNotifications(){
     interactionButtonsNotif(domElements);
     NotifInterfazFuncionality(domElements)
     // await convertDate(domElements);
-    chargeActiveStateColor()
+    contactActiveStateColor()
 }
 function cacheDOMElements(){
     return{
@@ -68,6 +68,9 @@ export const getTitleNotif = async (domElements)=>{
             case "newcontact":
                 title.textContent = "Contacto Aceptado"
                 break;
+
+            case "youcomment":
+                title.textContent = "Nuevo comentario"
         }
     })
 }
@@ -126,6 +129,7 @@ const interactionButtonsNotif = (domElements)=>{
     })
 }
 
+//? USO LOCALSTROGAE PARA MANTENER EL ENCABEZADO ELEGIDO PINTADO Y QUITAR AL OTRO
 function NotifInterfazFuncionality(domElements){
     const {notifContainerInterfaz} = domElements;
     notifContainerInterfaz.addEventListener("click", async(event)=>{
@@ -147,8 +151,8 @@ function NotifInterfazFuncionality(domElements){
 
 }
 
-
-function chargeActiveStateColor(){
+//? SE RETORNA EL VALOR DE LOCAR STORAGE
+function contactActiveStateColor(){
     const activeContactType = localStorage.getItem("activeContact");
     if (activeContactType) {
         const allNotifButtons = document.querySelectorAll(".filter-btn")
@@ -162,3 +166,4 @@ function chargeActiveStateColor(){
     }
 }
 
+//? 

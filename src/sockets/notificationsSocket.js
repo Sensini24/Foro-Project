@@ -3,11 +3,28 @@ import { Contact } from "../Models/ContactModel.js";
 import { Message } from "../Models/MessageModel.js";
 import { Notification } from "../Models/NotificationModel.js";
 import { User } from "../Models/User.js";
+import { Post } from "../Models/Post.js";
 
 const modelNotification = Notification;
 const modelMessage = Message;
 const modelContact = Contact;
 const modelUsuario = User;
+const modelPost = Post;
+
+async function findUser(username){
+    try{
+        if(!username){
+            return console.log("El idpost no es válido")
+        }
+        const user = await modelUsuario.find({user_name:username}).
+        populate("")
+        return user;
+    }catch(err){
+        console.log("No se puedo obtener el usuario: ", err)
+    }
+    
+}
+
 
 // Recupera notificaciones y se los envia a cliente
 export async function recoverNotification(socket,userID){
@@ -18,7 +35,7 @@ export async function recoverNotification(socket,userID){
     })
 }
 
-//? Obtener contactos pendientes de usuario
+//? Obtener contactos de usuario
 export async function recoverContacts(socket, userID){
     const userContacts = await modelContact.find({owner_id: userID}).
     populate("contact_id", "user_name email profilePic");
@@ -259,9 +276,21 @@ export const seeCountIds =(messages)=>{
     return isFirstMessage;
 }
 
-export const commentNotification =(socket)=>{
-    socket.on("messageNotification", (idpost, comment)=>{
-        console.log("DATOS DE COMENTARIO: ", idpost, comment)
+//? DATOS ENVIADOS DESDE GET COMMENTS CON SOCKET
+export const commentNotification =(socket, usuariosConectados, io)=>{
+    socket.on("messageNotification", async(idpost,authorPost,namePost, comment)=>{
+        const authorData = await findUser(authorPost);
+        const receptorid = authorData[0]._id.toString()
+        console.log("receptor id: ", receptorid)
+        let receptorSocket = usuariosConectados.get(receptorid) != null || undefined ? usuariosConectados.get(receptorid).socketid : null
+        const senderid = socket.user._id
+        const message = `El usuario ${socket.user.user_name} comentó en tu post llamado ${namePost}`
+        const notification = await saveNotification(senderid, receptorid, message, "youcomment")
+        const notifSearch = await notificationsDataBase(receptorid);
+        console.log("DATOS DE COMENTARIO: ", idpost,receptorid,namePost, comment)
+
+        console.log("SOCKET ID DE RECEPTO PARA NOTIF DE MENSAJE: ", receptorSocket)
+        io.to(receptorSocket).emit("newNotification", notifSearch);
     })
 }
 

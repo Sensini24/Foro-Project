@@ -5,15 +5,15 @@ document.addEventListener("DOMContentLoaded", ()=>{
 })
 
 export function initHeaderOptions(){
-    
+
     const socket = initializeSocket();
     const domElements = ChargeDOMElements();
-    
+
     showNotifications(socket, domElements);
     showModalNotifications(domElements);
     getNotifications(socket,domElements);
     realtimeNotifications(socket,domElements);
-    // notifModalFunctionality(domElements);
+    notifModalFunctionality(domElements);
     convertDate(domElements);
     getTitleNotif(domElements);
     menuButton(domElements)
@@ -35,14 +35,14 @@ function ChargeDOMElements(){
         notifNumber: document.querySelector("#notifications-number"),
         notifUnreadContainer: document.querySelector(".notification.unread"),
         notifUnreadList : document.querySelector(".notifications-list"),
-        cardNotifContainer : document.querySelector(".card-content"),
+        // cardNotifContainer : document.querySelector(".card-content"),
         allNotifButton : document.querySelector(".all-button"),
         cardNotification : document.querySelector("#li-notification"),
         // notifContainerInterfaz: document.querySelector(".notifications-container"),
         time : document.querySelectorAll(".notification-time"),
         notifTitle: document.querySelectorAll(".notification-title"),
     }
-    
+
 }
 
 function showNotifications(socket, domElements) {
@@ -50,7 +50,7 @@ function showNotifications(socket, domElements) {
 
     socket.on("connect", () => {
         console.log("Conectado al servidor");
-        socket.emit("recover notifications"); 
+        socket.emit("recover notifications");
     });
 
 }
@@ -75,28 +75,29 @@ async function IncreaseNumberNotifications(notifUnreadList, notifNumber, notific
 
 async function realtimeNotifications(socket,domElements){
     socket.on("newNotification", async (notifications)=>{
+        console.log("Notificaciones recibidas en tiempo real: ",notifications);
         const {notifNumber, notifUnreadList} = domElements;
         console.log("Notificaciones recibidas en tiempo real: ",notifications);
         // Incrementar numero de notificaciones no leidas.
         await IncreaseNumberNotifications(notifUnreadList, notifNumber, notifications)
 
-        
+
     })
 }
 
 async function getNotifications(socket,domElements){
     socket.on("show notifications", async (notifications)=>{
         const {notifNumber, notifUnreadList} = domElements;
-        
+
         console.log("Notificaciones recuperadas: ", notifications);
         await IncreaseNumberNotifications(notifUnreadList, notifNumber, notifications)
     })
 }
 
 
-function showModalNotifications(domElements){
+function showModalNotifications(domElements, event){
     const { campanita, notifContainer} = domElements;
-    campanita.addEventListener("click", () => {
+    campanita.addEventListener("click", (event) => {
         console.log("Notificaciones clicadas");
         let datos = notifContainer.style.display =="block"
         datos ? notifContainer.style.display ="none" :
@@ -104,13 +105,39 @@ function showModalNotifications(domElements){
         let hideactive = campanita.classList == "isHide" ? campanita.classList = "isActive" : campanita.classList = "isHide"
         let hover = campanita.classList == "isHide" ? campanita.style.background = "none" : campanita.style.background = "#d7992a"
     });
+
+    
+    document.addEventListener("click", (event)=>{
+        const isInside = notifContainer.contains(event.target)
+        const isCampana = campanita.contains(event.target)
+        if(!isInside && !isCampana){
+            notifContainer.style.display ="none"
+            campanita.classList = "isHide"
+            campanita.style.background = "none"
+        }
+    })
+    // notifContainer.addEventListener("click", (event)=>{
+
+    //     if(!event.target.closest(".notification-item")){
+    //         campanita.classList = "isHide"
+    //         console.log("se oculta")
+    //     }else{
+    //         console.log("Si hay cnotifiaction")
+    //     }
+    // })
+
+    // if(target){
+    //     console.log("notifiacation container: ", target)
+    // }
+
+    // if(notifContainer)
 }
 
 export async function getDateMessage(createdAt) {
     try {
         const FechaNotification = new Date(createdAt);
         const FechaCurrent = new Date();
-        
+
         if (isNaN(FechaNotification.getTime())) {
             // console.log("Fecha inválida, retornando valor por defecto");
             return "Hace un momento";
@@ -146,7 +173,7 @@ function gethtmlNotifications(typehtml, message, messageNotif, senderId, recipie
         "firstmessage": `<div class="notification-item" id="li-notification" data-sender-id=${senderId} data-recipient-id=${recipientId} data-notif-id=${notifId}>
                     <div class="avatar">O</div>
                     <div class="notification-content">
-                        <div class="notification-header">
+                        <div class="notification-header-modal">
                             <div class="notification-title">
                                 <span class="status-indicator"></span>
                                 Contacto Desconocido
@@ -159,14 +186,14 @@ function gethtmlNotifications(typehtml, message, messageNotif, senderId, recipie
                     </div>
                     <div class="menu-button">⋮</div>
                     <div id="menu-notification" class="menu-container">
-                        <p>hola</p>
+                        <div class="changeRead">Marcar leído</div>
                     </div>
                 </div>`,
 
              "youlike": `<div class="notification-item" id="li-notification" data-sender-id=${senderId} data-recipient-id=${recipientId} data-notif-id=${notifId}>
                     <div class="avatar">O</div>
                     <div class="notification-content">
-                        <div class="notification-header">
+                        <div class="notification-header-modal">
                             <div class="notification-title">
                                 <span class="status-indicator"></span>
                                 Nuevo Like
@@ -179,14 +206,14 @@ function gethtmlNotifications(typehtml, message, messageNotif, senderId, recipie
                     </div>
                     <div class="menu-button">⋮</div>
                     <div id="menu-notification" class="menu-container">
-                        <p>hola</p>
+                        <div class="changeRead">Marcar leído</div>
                     </div>
                 </div>`,
 
         "newcontact" : `<div class="notification-item" id="li-notification" data-sender-id=${senderId} data-recipient-id=${recipientId} data-notif-id=${notifId}>
                     <div class="avatar">O</div>
                     <div class="notification-content">
-                        <div class="notification-header">
+                        <div class="notification-header-modal">
                             <div class="notification-title">
                                 <span class="status-indicator">Contacto Desconocido</span>
                                 Contacto Desconocido
@@ -199,7 +226,26 @@ function gethtmlNotifications(typehtml, message, messageNotif, senderId, recipie
                     </div>
                     <div class="menu-button">⋮</div>
                     <div id="menu-notification" class="menu-container">
-                        <p>hola</p>
+                        <div class="changeRead">Marcar leído</div>
+                    </div>
+                </div>`,
+        "youcomment" : `<div class="notification-item" id="li-notification" data-sender-id=${senderId} data-recipient-id=${recipientId} data-notif-id=${notifId}>
+                    <div class="avatar">O</div>
+                    <div class="notification-content">
+                        <div class="notification-header-modal">
+                            <div class="notification-title">
+                                <span class="status-indicator"></span>
+                                Un nuevo comentario
+                            </div>
+                            <span class="notification-time">${messageNotif}</span>
+                        </div>
+                        <div class="notification-text">
+                        ${message}
+                        </div>
+                    </div>
+                    <div class="menu-button">⋮</div>
+                    <div id="menu-notification" class="menu-container">
+                        <div class="changeRead">Marcar leído</div>
                     </div>
                 </div>`,
     }
@@ -208,28 +254,40 @@ function gethtmlNotifications(typehtml, message, messageNotif, senderId, recipie
 
 }
 
-// function notifModalFunctionality(domElements){
-//     const {cardNotifContainer} = domElements
-    
-//     cardNotifContainer.addEventListener("click", async (event)=>{
-//         const icon = event.target.closest(".notif-read-icon");
-//         const notification = event.target.closest("li");
-//         const idNotification = notification.dataset.notifId;
-//         console.log("ID DE NOTIFICACION : ", idNotification, notification)
-//         if(icon){
-//             event.preventDefault()
-//             await handlerIconRead(idNotification)
-//             notification.remove()
-//             return
-//         }
+function notifModalFunctionality(domElements){
+    const {notifUnreadList} = domElements
 
-//         if(notification){
-//             handlerNotificationCard(notification)
-//         }
+    notifUnreadList.addEventListener("click", async (event)=>{
+        const buttonMenu = event.target.closest("#menu-notification");
+        const notificationItem = event.target.closest(".notification-item");
+        const idNotification = notificationItem.dataset.notifId;
+        if(buttonMenu){
+            console.log("Id notificatrion: ", idNotification)
+            event.preventDefault()
+            await handlerIconRead(idNotification)
+            notificationItem.remove()
+        }else{
+            console.log("No existe bvutton menyu")
+        }
         
-        
-//     })
-// }
+        // const icon = event.target.closest(".notif-read-icon");
+        // const notification = event.target.closest("li");
+        // const idNotification = notification.dataset.notifId;
+        // console.log("ID DE NOTIFICACION : ", idNotification, notification)
+        // if(icon){
+        //     event.preventDefault()
+        //     await handlerIconRead(idNotification)
+        //     notification.remove()
+        //     return
+        // }
+
+        // if(notification){
+        //     handlerNotificationCard(notification)
+        // }
+
+
+    })
+}
 
 
 async function handlerIconRead(idNotif){
@@ -261,18 +319,28 @@ const menuButton = (domElements)=>{
     const {notifUnreadList} = domElements;
     notifUnreadList.addEventListener("click", (event)=>{
         const menu = event.target.closest(".menu-button")
-        console.log("menu", menu)
         if(menu){
-            const menuContainer = menu.closest(".notification-item") 
+            const menuContainer = menu.closest(".notification-item")
             const dato = menuContainer.querySelector("#menu-notification")
-            let datos = dato.style.display =="block"
+            
+            let datos = dato.style.display =="flex"
                 datos ? dato.style.display ="none" :
-                dato.style.display ="block"
-            console.log("menu container: ", menuContainer)
-            console.log("div: ", dato)
+                dato.style.display ="flex"
+        }else{
 
+            const notifCont = document.querySelectorAll(".notification-item")
+            notifCont.forEach((mencont)=>{
+                let dato = mencont.querySelector("#menu-notification")
+                if (dato){
+                    if(dato.style.display === "flex" && !event.target.closest("#menu-notification")){
+                        dato.style.display = "none";
+                    }
+                }
+                
+            })
         }
     })
+
 }
 
 // const handlerFilterButtons =async(type)=>{
