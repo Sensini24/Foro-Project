@@ -4,8 +4,9 @@ import { convertDate } from "./notificationclient.js";
 // Inicialización del sistema
 export async function initCommentsModule() {
     const socket = initializeSocket();
+    const domElements = getDomElements();
     handlerCommentSocket(socket);
-    await renderComments();
+    await renderComments(domElements);
 }
 
 // Configuración del socket
@@ -19,11 +20,14 @@ function initializeSocket() {
 function getDomElements() {
     return {
         time: document.querySelectorAll(".comment-date"),
+        partialContainer: document.getElementById("partial-container"),
+        commentContainer: document.getElementById("comment-container")
     };
 }
 
 // Renderizar comentarios en la interfaz
-export async function renderComments() {
+async function renderComments(domElements) {
+    // const {partialContainer} = domElements;
     const postId = getPostId();
     const partialContainer = document.getElementById("partial-container");
 
@@ -41,9 +45,8 @@ export async function renderComments() {
 
 // Manejo de eventos de comentarios
 function attachCommentEventListeners() {
-    const commentContainer = document.getElementById("comment-container");
-    if (!commentContainer) return;
-
+    const commentContainer = document.getElementById("comment-container")
+    if (!commentContainer) return console.log("no hay comment container");
     commentContainer.addEventListener("click", async (event) => {
         const clickedButton = event.target.closest("button, #btn-morecomments");
         if (!clickedButton) return;
@@ -162,6 +165,8 @@ async function toggleCommentReplies(comment) {
 // Eliminar comentario
 async function deleteComment(comment) {
     const commentId = comment.querySelector(".comment-id")?.textContent.trim();
+    const replies = comment.closest(".replies")
+    const mainContent = comment.closest(".main-comment")
     const postId = getPostId();
 
     try {
@@ -172,7 +177,12 @@ async function deleteComment(comment) {
         });
 
         if (response.ok) {
-            comment.remove();
+            if(replies){
+                replies.remove();
+            }
+
+            comment.remove()
+            
         } else {
             console.error("Error al eliminar el comentario");
         }
@@ -243,7 +253,7 @@ async function submitComment(socket) {
 
         if (response.ok) {
             console.log("Comentario creado con éxito");
-            document.getElementById("partial-container").innerHTML = "";
+            document.getElementById("partial-container").value = "";
             await renderComments();
             await sendMessageSocket(socket, postId,authorPost, namePost, inputComment)
         } else {

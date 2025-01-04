@@ -41,12 +41,32 @@ export const getComments = async(req, res)=>{
             
             const commentsAll= await modelComment.find({ post_id: id, idmessageparent: idcommentparent })
             visibleComments = propietario ? commentsAll : commentsAll.filter(comment => comment.visible)
+
+            res.render("partials/partial-request-comments", 
+                {
+                    //se pasa el filtrado de comments
+                    commentariosPrincipales:visibleComments,
+                    propietario,
+                    username,
+                    author,
+                    layout:false
+                })
             // console.log("Dwdsawdw", visibleComments)
        }else{
             const commentsAll = await modelComment.find({ post_id: id })
     
             const commentariosPrincipales = commentsAll.filter(comment=> comment.idmessageparent == "" || comment.idmessageparent == null)
             visibleComments = propietario ? commentariosPrincipales : commentariosPrincipales.filter(comment => comment.visible)
+
+            res.render("partials/partial-comments", 
+                {
+                    //se pasa el filtrado de comments
+                    commentariosPrincipales:visibleComments,
+                    propietario,
+                    username,
+                    author,
+                    layout:false
+                })
             // console.log("Dwdsa", visibleComments)
         }
 

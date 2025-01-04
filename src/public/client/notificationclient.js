@@ -183,7 +183,9 @@ function ShowCommentNotification(domElements){
             console.log("Notifications item: ", notifItem)
             const toCommentbtn = event.target.closest(".action-btn.tocomment")
             if(toCommentbtn){
-                window.location.href= `/post/${postId}#comment-${commentId}`;
+                console.log("vamos al mensaje")
+                // window.location.href= `/post/${postId}#comment-${commentId}`;
+                
             }
         }
     })

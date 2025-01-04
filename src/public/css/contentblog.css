@@ -92,8 +92,8 @@ h1, h2 {
     flex-direction: row;
     justify-content: space-between;
     margin-top: 20px;
-    border: #282828;
-    border-style: solid;
+    /* border: #282828;
+    border-style: solid; */
     padding: 5px;
     margin-bottom: 5px;
 }
@@ -122,8 +122,8 @@ button:hover {
     background-color: var(--light-border);
 }
 .reply-btn{
-    background-color: var(--gruvbox-purple);
-    color: var(--gruvbox-bg);
+    background-color: #3C3836;
+    color: #EBDBB2
     
 }
 
@@ -154,8 +154,8 @@ button:hover {
 }
 
 .delete-btn{
-    background-color: var(--gruvbox-red);
-    color: var(--gruvbox-bg);
+    background-color: #3C3836;
+    color: #EBDBB2
 }
 
 .light-mode .comment-form textarea {
@@ -204,7 +204,7 @@ button:hover {
 
 
 
-/*PARTE DE COMMENTS*/
+/* PARTE DE COMMENTS */
 
 
 .light-mode .comment-form textarea {
@@ -219,12 +219,28 @@ button:hover {
 }
 
 .comment {
-    background-color: var(--dark-bg-muted);
-    border: 1px solid var(--dark-border);
-    border-radius: 3px;
-    padding: 10px;
-    margin-bottom: 10px;
+    background-color: var(--bg1);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    
 }
+#comment-request{
+    background-color: #32302F;
+}
+
+.author-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: var(--purple);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: var(--bg);
+}
+
 
 .light-mode .comment {
     background-color: var(--light-bg-muted);
@@ -234,12 +250,21 @@ button:hover {
 .comment-header {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 10px;
+    align-items: center;
+    margin-bottom: 0.5rem;
 }
-
+.author-elements{
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
 .comment-author {
-    font-weight: bold;
-    color: var(--dark-primary);
+    font-weight: 600;
+    color: var(--aqua);
+}
+.comment-content{
+    line-height: 1.5;
+    margin-bottom: 0.5rem;
 }
 
 .light-mode .comment-author {
@@ -247,8 +272,8 @@ button:hover {
 }
 
 .comment-date {
-    color: var(--dark-secondary);
-    font-size: 0.9em;
+    font-size: 0.875rem;
+    color: var(--fg-dim);
 }
 
 .light-mode .comment-date {
@@ -303,6 +328,27 @@ button:hover {
     gap: 5px;
 }
 
+.main-comment{
+    margin-top: 1rem;
+    background-color: #32302F;
+    height: 200px;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+}
+.replies {
+    margin-left: 2rem;
+    padding-left: 1rem;
+    border-left: 2px solid var(--bg2);
+
+}
+
+.reply {
+    margin-top: 1rem;
+    background-color: #32302F;
+    height: 200px;
+}
+
 /*MODAL DE REGISTRO DE USUARIO EN COMENTARIOS*/
 .modal {
     display: none; /* Ocultar el modal por defecto */
@@ -344,9 +390,15 @@ button:hover {
 
 .headers-content{
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
 }
 .container-headers{
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
 }
 .comment-field {
     background-color: var(--dark-bg-soft);

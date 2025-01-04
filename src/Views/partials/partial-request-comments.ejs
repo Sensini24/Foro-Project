@@ -1,116 +1,134 @@
-<div class="comments-section">
-    
-    <div id="comment-container">
-        <% commentariosPrincipales.forEach(comm =>{%>
-            <div class="comment" id="commentsTotales">
-                <%if(author == comm.user_name){%>
-                    <div class="comment-author" id="comment-user-name">
-                        <% const usernameauthor = comm.user_name == comm.requestname ? comm.user_name + "(author)" : comm.user_name%>
-                        <% const userrequestname = comm.user_name == comm.requestname ? comm.requestname+ "(author)" : comm.requestname%>
-                        <%= usernameauthor%>
-                    </div>
-                    <div>
-                        <%= " >> " + userrequestname%>
-                    </div>
-                <%}else{%>
-                    <div class="comment-author" ><%= comm.user_name " >> " +  comm.requestname%></div>
-                    <div> <%= " >> " +  comm.requestname%> </div>
-                <%}%>
-                
 
-                <div class="comment-date"><%= comm.date %></div>
-                <div class="comment-text">
-                        <%= comm.comment  %>
-                </div>
-                <div class="comment-id sr-only" id="id-comment">
-                        <%= comm._id %>
-                </div>
-                <div class="messageparent-id" id="id-messageparent">
-                    <%= comm.idmessageparent  + "HOLA"%>
-                </div>
-                <div class="postid-id sr-only" id="id-postid">
-                        <%= comm.post_id %>
-                </div>
-                <div class="comment-status sr-only" id="id-status">
-                    <%= comm.visible %>
-                </div>
-                <div class="comment-ocultar-delete">
-                    <%if(comm.idmessageparent == null){%>
-                    <div class="btn-container" id="btn-morecomments">
-                        <span style="font-size: 15px;" id="Cargar">Cargar Comentarios</span>
-                        <i class="material-icons add-comment" id="arrow-requests"> arrow_drop_down</i>
-                    </div>
-                    <%}%>
+        
+                <% commentariosPrincipales.forEach(comm => { %>
+                    <div class="replies">
+                        <article class="comment reply">
+                    <div class="comment" id="comment-request" style="height: 180px;overflow-y:scroll;">
+                        <div class="container-headers">
+                            <div class="author-elements">
+                                <div class="author-avatar">JP</div>
+                            <% if (author === comm.user_name) { %>
+                                <div class="headers-content">
+                                    <div class="comment-author" id="comment-user-name">
+                                        <%= comm.user_name %>
+                                    </div>
+                                    <div class="comment-author-tag" style="color: #FCD639;">
+                                        <%= "(author)" %>
+                                    </div>
+                                </div>
+                            <% } else { %>
+                                <div class="comment-author" id="comment-user-name">
+                                    <%= comm.user_name %>
+                                </div>
+                            <% } %>
 
-                    <div class="btn-container" id="btn-container-request">
-                        <button id="button-request" class="btn-comments">
-                            Comentar
-                        </button>
-                    </div>
-                    <div class="btn-container" id="btn-container-hide">
-                        <% if(propietario){ %>
-                            <button id="button-hide" class="btn-comments">
-                                <%= comm.visible ? "Ocultar" : "Mostrar" %>
-                            </button>
-                            <span id="status-comment-user">
-                                <%= comm.visible ? "" : "Este comentario solo es visible para tí" %>
-                            </span>
-                        
-                        <% }else{%>
-                            <%= console.log("Sin boton de ocultar")%>
-                        <%} %>
-                    </div>
-                    <div class="btn-container" id="btn-container-delete">
-                        
-                        <!--Si el usuario actual es el propietario del post o si es author del comentario-->
-                        <% if(username == comm.user_name || propietario){ %>
-                            <%= console.log("Hay boton")%>
-                                <button id="button-delete" class="btn-comments">
-                                    Eliminar
-                                </button>
-                        <% }else{%>
-                            <%= console.log("No eres")%>
-                        <%} %>
-                    </div>
-                    
-                    
-                </div>
-                <!--LA PARTE DE CARGA DEL FORM DE LAS RESPUESTAS A COMENTARIOS.-->
-                <div class="container-form-commentrequest">
-                    <!-- Header con nombre al que se responde -->
-                    <div id="request-name-header">
-                        <p class="reply-to">@<span id="request-name"></span></p>
-                    </div>
-                
-                    <!-- Formulario para agregar comentarios -->
-                    <form id="formCommentRequest" style="display: flex; flex-direction: column; margin-top: 5px;" class="comment-field v3">
-                        <!-- Campo de texto para la respuesta -->
-                        <textarea 
-                            placeholder="Escribe tu respuesta aquí..." 
-                            id="comment-content-request" 
-                            name="comment"
-                            style="resize: none;">
-                        </textarea>
-                        
-                        <!-- Acciones de enviar y cancelar -->
-                        <div class="actions" style="display: flex; gap: 10px; justify-content: flex-end;">
-                            <!-- Botón de cancelar -->
-                            <button id="button-cancel" class="btn-comments btn-cancel" title="Cancelar">
-                                ×
-                            </button>
-                
-                            <!-- Botón de enviar -->
-                            <button id="btn-comment-request-child" class="btn-submit" title="Enviar">
-                                ↵
-                            </button>
+                            <% if (comm.requestname) { %>
+                                <div id="receptor-message" class="headers-content" style="color: #68985A;">
+                                    >> <%= comm.requestname %>
+                                    <% if (comm.requestname === author) { %>
+                                        <div id="receptor-message" style="color: #FCD639;">
+                                            (author)
+                                        </div>
+                                    <% } %>
+                                </div>
+                            <% } %>
+                            </div>
+                            <span class="comment-date"><%= comm.date %></span>
                         </div>
-                    </form>
-                
-                    <!-- Aviso para el estado del comentario -->
-                    <span id="aviso-comment" style="color: red; margin-top: 5px;"></span>
+                        
+                        <p class="comment-content">
+                            <%= comm.comment %>
+                        </p>
+
+                        <div class="comment-id sr-only" id="id-comment"><%= comm._id %></div>
+                        <div class="messageparent-id sr-only" id="id-messageparent"><%= comm.idmessageparent %></div>
+                        <div class="postid-id sr-only" id="id-postid"><%= comm.post_id %></div>
+                        <div class="comment-status sr-only" id="id-status"><%= comm.visible %></div>
+
+                        <div class="comment-actions">
+                            <div class="likes-dislikes">
+                                <button class="like-btn" aria-label="Like comment">
+                                    <span class="like-count">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6" width="25" height="25">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.633 10.25c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 0 1 2.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 0 0 .322-1.672V2.75a.75.75 0 0 1 .75-.75 2.25 2.25 0 0 1 2.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282m0 0h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 0 1-2.649 7.521c-.388.482-.987.729-1.605.729H13.48c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 0 0-1.423-.23H5.904m10.598-9.75H14.25M5.904 18.5c.083.205.173.405.27.602.197.4-.078.898-.523.898h-.908c-.889 0-1.713-.518-1.972-1.368a12 12 0 0 1-.521-3.507c0-1.553.295-3.036.831-4.398C3.387 9.953 4.167 9.5 5 9.5h1.053c.472 0 .745.556.5.96a8.958 8.958 0 0 0-1.302 4.665c0 1.194.232 2.333.654 3.375Z" />
+                                        </svg>
+                                    </span>
+                                </button>
+
+                                <button class="dislike-btn" aria-label="Dislike comment">
+                                    <span class="dislike-count">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" width="25" height="25">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M7.498 15.25H4.372c-1.026 0-1.945-.694-2.054-1.715a12.137 12.137 0 0 1-.068-1.285c0-2.848.992-5.464 2.649-7.521C5.287 4.247 5.886 4 6.504 4h4.016a4.5 4.5 0 0 1 1.423.23l3.114 1.04a4.5 4.5 0 0 0 1.423.23h1.294M7.498 15.25c.618 0 .991.724.725 1.282A7.471 7.471 0 0 0 7.5 19.75 2.25 2.25 0 0 0 9.75 22a.75.75 0 0 0 .75-.75v-.633c0-.573.11-1.14.322-1.672.304-.76.93-1.33 1.653-1.715a9.04 9.04 0 0 0 2.86-2.4c.498-.634 1.226-1.08 2.032-1.08h.384m-10.253 1.5H9.7m8.075-9.75c.01.05.027.1.05.148.593 1.2.925 2.55.925 3.977 0 1.487-.36 2.89-.999 4.125m.023-8.25c-.076-.365.183-.75.575-.75h.908c.889 0 1.713.518 1.972 1.368.339 1.11.521 2.287.521 3.507 0 1.553-.295 3.036-.831 4.398-.306.774-1.086 1.227-1.918 1.227h-1.053c-.472 0-.745-.556-.5-.96a8.95 8.95 0 0 0 .303-.54" />
+                                        </svg>
+                                        
+                                    </span>
+                                </button>
+                            </div>
+                            <div class="btns-actions-comments">
+                                <button class="reply-btn btn-comments" id="button-request">Responder</button>
+                                <% if (propietario) { %>
+                                    <button class="hide-btn btn-comments" id="button-hide">
+                                        <svg clip-rule="evenodd" width="15" height="15" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m17.069 6.546 2.684-2.359c.143-.125.32-.187.497-.187.418 0 .75.34.75.75 0 .207-.086.414-.254.562l-16.5 14.501c-.142.126-.319.187-.496.187-.415 0-.75-.334-.75-.75 0-.207.086-.414.253-.562l2.438-2.143c-1.414-1.132-2.627-2.552-3.547-4.028-.096-.159-.144-.338-.144-.517s.049-.358.145-.517c2.111-3.39 5.775-6.483 9.853-6.483 1.815 0 3.536.593 5.071 1.546zm2.319 1.83c.966.943 1.803 2.014 2.474 3.117.092.156.138.332.138.507s-.046.351-.138.507c-2.068 3.403-5.721 6.493-9.864 6.493-1.297 0-2.553-.313-3.729-.849l1.247-1.096c.795.285 1.626.445 2.482.445 3.516 0 6.576-2.622 8.413-5.5-.595-.932-1.318-1.838-2.145-2.637zm-3.434 3.019c.03.197.046.399.046.605 0 2.208-1.792 4-4 4-.384 0-.756-.054-1.107-.156l1.58-1.389c.895-.171 1.621-.821 1.901-1.671zm-.058-3.818c-1.197-.67-2.512-1.077-3.898-1.077-3.465 0-6.533 2.632-8.404 5.5.853 1.308 1.955 2.567 3.231 3.549l1.728-1.519c-.351-.595-.553-1.289-.553-2.03 0-2.208 1.792-4 4-4 .925 0 1.777.315 2.455.843zm-2.6 2.285c-.378-.23-.822-.362-1.296-.362-1.38 0-2.5 1.12-2.5 2.5 0 .36.076.701.213 1.011z" fill-rule="nonzero"/></svg>
+                                        <%= comm.visible ? "Ocultar" : "Mostrar" %>
+                                    </button>
+                                    <span id="status-comment-user">
+                                        <%= comm.visible ? "" : "Este comentario solo es visible para ti" %>
+                                    </span>
+                                <% } %>
+
+                                <% if (username === comm.user_name || propietario) { %>
+                                    <button class="delete-btn btn-comments" id="button-delete">
+                                        Eliminar
+                                    </button>
+                                <% } %>
+                            </div>
+                        </div>
+
+                        <% if (comm.idmessageparent === "") { %>
+                            <div class="btn-container" id="btn-morecomments">
+                                <span style="font-size: 15px;" id="Cargar">Cargar Comentarios</span>
+                                <i class="material-icons add-comment" id="arrow-requests">arrow_drop_down</i>
+                            </div>
+                        <% } %>
+
+
+                        
+                        <!-- A PARTIR DE AQUI SE MUESTRA EL MODAL DE RESPUESTA -->
+                        <div id="partial-request-cont"></div>
+                            <div class="container-form-commentrequest">
+                                <!-- Header con nombre al que se responde -->
+                                <div id="request-name-header">
+                                    <p class="reply-to">@<span id="request-name"></span></p>
+                                </div>
+                            
+                                <!-- Formulario para agregar comentarios -->
+                                <form id="formCommentRequest" class="comment-field v3">
+                                    <textarea 
+                                        placeholder="Escribe tu respuesta aquí..." 
+                                        id="comment-content-request" 
+                                        name="comment"
+                                        style="resize: none;">
+                                    </textarea>
+                                    
+                                    <!-- Acciones de enviar y cancelar -->
+                                    <div class="actions" style="display: flex; gap: 10px; justify-content: flex-end;">
+                                        <!-- Botón de cancelar -->
+                                        <button id="button-cancel" class="btn-comments btn-cancel" title="Cancelar">
+                                            Cancelar
+                                        </button>
+                            
+                                        <!-- Botón de enviar -->
+                                        <button id="btn-comment-request" class="btn-submit" title="Enviar">
+                                            Enviar
+                                        </button>
+                                    </div>
+                                </form>
+                            
+                                <!-- Aviso para el estado del comentario -->
+                                <span id="aviso-comment" style="color: red; margin-top: 5px;"></span>
+                            </div>
+                        </div>
+                    </article>
                 </div>
-                
-            </div>
-        <%}) %>
-    </div>
-</div>
+                <% }) %>
+    
