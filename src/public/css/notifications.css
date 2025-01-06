@@ -498,3 +498,7 @@ body {
     background: var(--bg2);
     border-radius: 4px;
 }
+
+#btn-allread{
+    display: "none";
+}

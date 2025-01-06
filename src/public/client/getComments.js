@@ -28,15 +28,15 @@ function chargeHash(){
             console.log("No se encontro el elemento")
         }
         
-        // const targetComment = document.querySelector("#id-comment"); // Busca el elemento específico
+        
+    });
+    // const targetComment = document.querySelector("#id-comment"); // Busca el elemento específico
         // if (targetComment) {
         //     console.log("Elemento encontrado:", targetComment.textContent);
         //     targetComment.scrollIntoView({ behavior: 'smooth', block: 'center' });
         //     targetComment.classList.add('highlight-comment');
         //     observer.disconnect(); // Detén la observación
         // }
-    });
-    
     observer.observe(document.body, { childList: true, subtree: true });
     
     // window.onload = () => {

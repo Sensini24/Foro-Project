@@ -1,14 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../css/postList.css">
-    <title>Lista de Posts</title>
+    <title>Lista de Post</title>
+    <style>
+       
+    </style>
 </head>
 <body>
-    <% posts.forEach(post => { %>
     <div class="post-list">
+        <% posts.forEach(post => { %>
         <article class="post-item">
             <a href="/post/<%= post.id %>" class="post-link">
                 <header class="post-header">
@@ -48,9 +50,7 @@
                 </footer>
             </a>
         </article>
-        
+        <% }) %>
     </div>
-    <% }) %>
 </body>
-
 </html>

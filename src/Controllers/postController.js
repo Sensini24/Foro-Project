@@ -3,7 +3,7 @@ import { Post } from "../Models/Post.js";
 import { limitarTexto } from "./utils.js";
 import { getInteractionsPost, getInteractionsUserPost } from "../Repositories/PostInteractionsRepository.js";
 
-const model = Post;
+const modelPost = Post;
 
 export const getPost = async(req, res)=>{
     
@@ -15,7 +15,7 @@ export const getPost = async(req, res)=>{
         return res.status(400).json({message:"El id no existe o es incorrecto"})
     }
 
-    const post = await model.findById(id)
+    const post = await modelPost.findById(id).populate("author_id", "user_name email profilePic")
     if (!post) {
         return res.status(404).json({ message: 'Post not found' });
     }
@@ -43,33 +43,33 @@ export const getPost = async(req, res)=>{
     
 }
 
-export const getAllPost = async (req, res)=>{
+// export const getAllPost = async (req, res)=>{
     
-    try{
+//     try{
 
-         //* obtener los datos de payload que se envia desde el middleware de verificar token
-        const datapayload = req.usuariodatospayload || null;
-        // console.log("payload en list post:", datapayload);
+//          //* obtener los datos de payload que se envia desde el middleware de verificar token
+//         const datapayload = req.usuariodatospayload || null;
+//         // console.log("payload en list post:", datapayload);
 
-        //* Obtener posts completos
-        let posts = await model.find({});
+//         //* Obtener posts completos
+//         let posts = await modelPost.find({});
 
-        posts.forEach(element => {
-            // const postisodate = element.date
-            element.content = limitarTexto(element.content) + ".... (Haz click en 'Leer más' para seguir leyendo)"
-            // console.log(postisodate)
-            // console.log(postisodate.toLocaleDateString() + " " + postisodate.toLocaleTimeString())
+//         posts.forEach(element => {
+//             // const postisodate = element.date
+//             element.content = limitarTexto(element.content) + ".... (Haz click en 'Leer más' para seguir leyendo)"
+//             // console.log(postisodate)
+//             // console.log(postisodate.toLocaleDateString() + " " + postisodate.toLocaleTimeString())
             
-        });
+//         });
 
-        return res.render("postList", {posts, layout:false})
+//         return res.render("postList", {posts, layout:false})
        
-        // res.status(200).json(blogs); // Responder con los blogs obtenidos
-    }catch(error){
-        console.error('Error al obtener los posts:', error);
-        return res.status(500).json({ message: 'Error al obtener los posts' });
-    }
-}
+//         // res.status(200).json(blogs); // Responder con los blogs obtenidos
+//     }catch(error){
+//         console.error('Error al obtener los posts:', error);
+//         return res.status(500).json({ message: 'Error al obtener los posts' });
+//     }
+// }
 
 export const getAllPartialPost = async (req, res)=>{
     
@@ -80,7 +80,7 @@ export const getAllPartialPost = async (req, res)=>{
         // console.log("payload en list post:", datapayload);
 
         //* Obtener posts completos
-        let posts = await model.find({});
+        let posts = await modelPost.find({}).populate("author_id", "user_name email profilePic");
 
         posts.forEach(element => {
             // const postisodate = element.date
@@ -107,11 +107,11 @@ export const userPosts = async(req, res)=>{
     }
     console.log("Payload para user posts: ", datapayload)
 
-    const username = datapayload.user_name
-    console.log("Username actual: ", username)
+    const userId = datapayload._id
+    console.log("userId actual: ", userId)
 
     
-    let userposts = await model.find({author: username})
+    let userposts = await modelPost.find({author_id: userId}).populate("author_id", "user_name email profilePic");
 
     let textocompleto = userposts.content
     userposts.forEach(texto =>{
@@ -120,11 +120,11 @@ export const userPosts = async(req, res)=>{
         console.log("Post por autor: ", texto.title)
     })
     
-    // console.log("Post por autor: ", userposts)
+    console.log("Post por autor: ", userposts)
     const isAuthenticated = req.usuariodatospayload != null ? true : false; 
     
     // console.log("esta autneticado: ", isAuthenticated)
-    res.render("partials/partial-userPosts", {userposts, username, layout:true})
+    res.render("partials/partial-userPosts", {userposts, layout:true})
     // res.render("userposts", {userposts, username})
 }
 
@@ -157,10 +157,10 @@ export const addPost = async(req, res)=>{
 
     const arrayTags = tags.split(",").map(tag=>tag.trim()).filter(tag=>tag.length >0)
     
-    const nuevoPost = await model({
+    const nuevoPost = await modelPost({
         title:title,
         content:content,
-        author: username,
+        author_id: datapayload._id,
         date: new Date(),
         tags:arrayTags
     })

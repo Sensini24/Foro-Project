@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { addPost, addPostget, getAllPartialPost, getAllPost,getPost, userPosts } from "../Controllers/postController.js";
+import { addPost, addPostget, getAllPartialPost,getPost, userPosts } from "../Controllers/postController.js";
 import { verificarToken, saludo, verificarTokenObligatorio } from "../Controllers/utils.js";
 import { postComments } from "../Controllers/commentsControllers.js";
 import mongoose from "mongoose";
@@ -16,7 +16,7 @@ const validateObjectId = (req, res, next) => {
 };
 
 postRoute.get("/post/addpostget", verificarToken, addPostget);
-postRoute.get("/post/postlist", verificarToken, getAllPost);
+// postRoute.get("/post/postlist", verificarToken, getAllPost);
 postRoute.get("/post/partialAllPost", getAllPartialPost)
 postRoute.post("/post/addpost", verificarToken, addPost);
 

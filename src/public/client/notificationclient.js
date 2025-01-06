@@ -19,6 +19,7 @@ export async function initInteractNotifications(){
     // await convertDate(domElements);
     contactActiveStateColor()
     ShowCommentNotification(domElements)
+    allreadbtn(domElements)
 }
 function cacheDOMElements(){
     return{
@@ -30,8 +31,8 @@ function cacheDOMElements(){
         notifContainerInterfaz: document.querySelector(".notifications-container"),
         MenuButton: document.querySelectorAll(".menu-button"),
         menuNotification: document.querySelectorAll(".menu-notification"),
-        notifListInterfaz: document.querySelector(".notification-list")
-        
+        notifListInterfaz: document.querySelector(".notification-list"),
+        btnAllRead: document.querySelector("#btn-allread")
     }
 }
 
@@ -174,7 +175,7 @@ function contactActiveStateColor(){
 }
 
 
-//? Mostrar el comentario a partir de notificaciones
+//? ENVIARTE HASTA EL POST Y COMENTARIO a partir de UNA notificacioN
 function ShowCommentNotification(domElements){
     const {notifListInterfaz} = domElements;
     notifListInterfaz.addEventListener("click", (event)=>{
@@ -196,4 +197,11 @@ function ShowCommentNotification(domElements){
             }
         }
     })
+}
+
+// //? CARGAR BOTON DE MARCAR TODO COMO LEIDO
+const allreadbtn = (domElements)=>{
+    const {btnAllRead} = domElements;
+    const type = localStorage.getItem("activeContact")
+    const showBtnReadAll = type === "Sin leer" ? btnAllRead.style.display = "flex" : btnAllRead.style.display = "none"
 }

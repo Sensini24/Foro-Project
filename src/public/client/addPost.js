@@ -62,6 +62,7 @@ export function initAddPost(){
             }else{
                 showModal(data.message)
                 // Opcionalmente, redirigir tras un pequeño retraso
+                console.log("POST CREADO CORRECTAMENTE")
                 setTimeout(() => {
                     window.location.href = "/user/posts";
                 }, 2000); // Redirige a los posts después de 2 segundos

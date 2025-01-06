@@ -6,16 +6,14 @@ export function initChat() {
     
     const domElements = cacheDOMElements();
     
-            const socket = initializeSocket();
-            // const usercurrent = getUserCurrent(socket);
-            console.log("si esxite usuario")
-            searchUser(socket, domElements);
-            // showNotifications(socket, domElements);
-            showChatPrivado(socket, domElements);
-            showChatInterfaz(domElements)
-        
-        
-    
+    const socket = initializeSocket();
+    // const usercurrent = getUserCurrent(socket);
+    console.log("si esxite usuario")
+    searchUser(socket, domElements);
+    // showNotifications(socket, domElements);
+    showChatPrivado(socket, domElements);
+    showChatInterfaz(domElements)
+    closeChat(domElements)
 }
 
 
@@ -367,5 +365,22 @@ function showChatPrivado(socket, domElements) {
     // function handlerAccept(socket, contactId, senderId){
 
     // }
+
+    
+    
     
 }
+//?CIERRA CHAT AL INTERACTUAR FUERA DE ESTE
+const closeChat=(domElements)=>{
+    const{chatContainer} = domElements
+    document.addEventListener("click", (event)=>{
+        const target = event.target.closest(".chat-container, .chat-icon")
+        if(!target){
+            console.log("NO HAY NADA DE CHAT")
+            chatContainer.style.display = "none"
+        }
+        
+    })
+    
+}
+

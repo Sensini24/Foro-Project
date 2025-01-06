@@ -73,7 +73,14 @@ async function IncreaseNumberNotifications(notifUnreadList, notifNumber, notific
         const {message, type, createdAt, senderId, recipientId, _id, pathsIds} = elem;
         let notifId = _id;
         let messageNotif = await getDateMessage(createdAt);
-        let item = await gethtmlNotifications(type, message, messageNotif, senderId, recipientId, notifId, pathsIds.id_comment, pathsIds.id_post)
+        let item;
+
+        if(pathsIds){
+             item = await gethtmlNotifications(type, message, messageNotif, senderId, recipientId, notifId, pathsIds.id_comment || null, pathsIds.id_post || null)
+        }else{
+             item = await gethtmlNotifications(type, message, messageNotif, senderId, recipientId, notifId)
+        }
+        
         // console.log("Id de notificaciones no leidas: ", elem._id )
         notifUnreadList.innerHTML += item;
     }

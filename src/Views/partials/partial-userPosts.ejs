@@ -7,88 +7,49 @@
     <title>User Posts</title>
 </head>
 <body>
-    <div class="posts-container" id="pposts">
-        <% if(userposts.lenght == null || userposts.lenght == 0){%>
-            <div class="on-air">No tienes posts</div>
-        <% }%>
-
-        <% userposts.forEach(post => { %>
-        <div class="card">
-            <!-- Encabezado del post -->
-            <div class="card-header">
-                <div class="header-left">
-                    <img src="https://via.placeholder.com/40" alt="Host" class="avatar">
-                    <div class="broadcast-info">
-                        <span class="on-air">ON AIR</span>
-                        <span class="broadcast-time">Broadcasting 0:16 min</span>
+    <% userposts.forEach(post => { %>
+    <div class="post-list">
+        <article class="post-item">
+            <a href="/post/<%= post.id %>" class="post-link">
+                <header class="post-header">
+                    <h2 class="post-title"><%= post.title %></h2>
+                    <div class="post-meta">
+                        <div class="post-author">
+                            <div class="author-avatar">JP</div>
+                            <span><%= post.author_id.user_name %></span>
+                        </div>
+                        <time datetime="2023-06-15"><%= post.date %></time>
                     </div>
+                </header>
+                <div class="post-excerpt">
+                    <p><%= post.content %></p>
                 </div>
-                <button class="join-button">Join Meetup</button>
-            </div>
-
-            <!-- Contenido del post -->
-            <div class="card-content">
-                <h2><%= post.title %></h2>
-                <p class="subtitle"><%= post.author %></p>
-                <p class="description"><%= post.content %></p>
-                <a id="verMas" href="/post/<%= post.id %>" class="ver-mas">ver más</a>
-            </div>
-
-            <!-- Footer del post -->
-            <div class="card-footer">
-                <div class="members">
-                    <div class="avatar-group">
-                        <img src="https://via.placeholder.com/24" alt="Member 1" class="avatar small">
-                        <img src="https://via.placeholder.com/24" alt="Member 2" class="avatar small">
-                        <img src="https://via.placeholder.com/24" alt="Member 3" class="avatar small">
-                        <img src="https://via.placeholder.com/24" alt="Member 4" class="avatar small">
-                        <img src="https://via.placeholder.com/24" alt="Member 5" class="avatar small">
+                <footer class="post-footer">
+                    <div class="post-tags">
+                        <%post.tags.forEach(tag=>{%>
+                            <span class="post-tag"><%= tag %></span>
+                        <%})%>
+                        
                     </div>
-                    <span class="member-count">16 Members</span>
-                </div>
-                <div class="post-interactions">
-                    ❤️ 2 🔖
-                </div>
-                <div class="actions">
-                    <button class="action-button">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                        </svg>
-                        89 comments
-                    </button>
-                    <button class="action-button">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="18" cy="5" r="3"></circle>
-                            <circle cx="6" cy="12" r="3"></circle>
-                            <circle cx="18" cy="19" r="3"></circle>
-                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-                        </svg>
-                    </button>
-                    <button class="action-button">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        </div>
-        <% }) %>
+                    <div class="post-stats">
+                        <span class="stat-item">
+                            <span class="stat-icon">👁️</span>
+                            1.2k
+                        </span>
+                        <span class="stat-item">
+                            <span class="stat-icon">💬</span>
+                            23
+                        </span>
+                        <span class="stat-item">
+                            <span class="stat-icon">❤️</span>
+                            89
+                        </span>
+                    </div>
+                </footer>
+            </a>
+        </article>
+        
     </div>
-
-    <div class="container-more" id="menu-post">
-        <div class="more-option" id="delete">
-            <span class="material-icons">
-                delete
-            </span> Eliminar
-        </div>
-        <div class="more-option" id="save">
-            <span class="material-icons">
-                bookmark
-            </span> Guardar
-        </div>
-    </div>
-
-    <!-- <script src="../client/userPost.js"></script> -->
+    <% }) %>
 </body>
 </html>
