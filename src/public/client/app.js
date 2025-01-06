@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", async() => {
         initInteractNotifications();
     }
 
+    
     //Módulos universales
     const {initChat} = await import("./chat.js")
     initChat()

@@ -2,22 +2,25 @@ import { convertDate, getTitleNotif } from "./notificationclient.js";
 
 document.addEventListener("DOMContentLoaded", ()=>{
     console.log("Iniciando modulo de header")
+    const allcookies= document.cookie
+    console.log("cookies: ", allcookies)
 })
 
 export function initHeaderOptions(){
 
-    const socket = initializeSocket();
+    
     const domElements = ChargeDOMElements();
-
-    showNotifications(socket, domElements);
-    showModalNotifications(domElements);
-    getNotifications(socket,domElements);
-    realtimeNotifications(socket,domElements);
-    notifModalFunctionality(domElements);
-    convertDate(domElements);
-    getTitleNotif(domElements);
-    menuButton(domElements)
-    chargeNotifforTypeofLocalStorage(domElements)
+        const socket = initializeSocket();
+        showNotifications(socket, domElements);
+        showModalNotifications(domElements);
+        getNotifications(socket,domElements);
+        realtimeNotifications(socket,domElements);
+        notifModalFunctionality(domElements);
+        convertDate(domElements);
+        getTitleNotif(domElements);
+        menuButton(domElements)
+        chargeNotifforTypeofLocalStorage(domElements)
+    
 }
 
 function initializeSocket() {
@@ -43,6 +46,7 @@ function ChargeDOMElements(){
         time : document.querySelectorAll(".notification-time"),
         notifTitle: document.querySelectorAll(".notification-title"),
         seenotifsButton: document.querySelector("#see-notifs"),
+        chatIcon : document.querySelector(".chat-icon"),
         
     }
 
@@ -65,11 +69,11 @@ async function IncreaseNumberNotifications(notifUnreadList, notifNumber, notific
     notifNumber.innerHTML = noleidos.length;
 
     for (const elem of noleidos) {
-        // console.log("room id de notif: ", elem)
-        const {message, type, createdAt, senderId, recipientId, _id} = elem;
+        console.log("Notificaciones: ", elem)
+        const {message, type, createdAt, senderId, recipientId, _id, pathsIds} = elem;
         let notifId = _id;
         let messageNotif = await getDateMessage(createdAt);
-        let item = await gethtmlNotifications(type, message, messageNotif, senderId, recipientId, notifId)
+        let item = await gethtmlNotifications(type, message, messageNotif, senderId, recipientId, notifId, pathsIds.id_comment, pathsIds.id_post)
         // console.log("Id de notificaciones no leidas: ", elem._id )
         notifUnreadList.innerHTML += item;
     }
@@ -102,25 +106,30 @@ async function getNotifications(socket,domElements){
 //? MUESTA EL MODAL DE NOTIFICACIONES Y LO OCULTA SI SE PRESIONA OTRA VEZ EN LA CAMPANA O SI SE HACE FUERA DE SU RANGO.
 function showModalNotifications(domElements, event){
     const { campanita, notifContainer} = domElements;
-    campanita.addEventListener("click", (event) => {
-        console.log("Notificaciones clicadas");
-        let datos = notifContainer.style.display =="block"
-        datos ? notifContainer.style.display ="none" :
-            notifContainer.style.display ="block"
-        let hideactive = campanita.classList == "isHide" ? campanita.classList = "isActive" : campanita.classList = "isHide"
-        let hover = campanita.classList == "isHide" ? campanita.style.background = "none" : campanita.style.background = "#d7992a"
-    });
+    if(campanita){
+        campanita.addEventListener("click", (event) => {
+            console.log("Notificaciones clicadas");
+            let datos = notifContainer.style.display =="block"
+            datos ? notifContainer.style.display ="none" :
+                notifContainer.style.display ="block"
+            let hideactive = campanita.classList == "isHide" ? campanita.classList = "isActive" : campanita.classList = "isHide"
+            let hover = campanita.classList == "isHide" ? campanita.style.background = "none" : campanita.style.background = "#d7992a"
+        });
+
+        document.addEventListener("click", (event)=>{
+            const isInside = notifContainer.contains(event.target)
+            const isCampana = campanita.contains(event.target)
+            if(!isInside && !isCampana){
+                notifContainer.style.display ="none"
+                campanita.classList = "isHide"
+                campanita.style.background = "none"
+            }
+        })
+    }
+    
 
     
-    document.addEventListener("click", (event)=>{
-        const isInside = notifContainer.contains(event.target)
-        const isCampana = campanita.contains(event.target)
-        if(!isInside && !isCampana){
-            notifContainer.style.display ="none"
-            campanita.classList = "isHide"
-            campanita.style.background = "none"
-        }
-    })
+    
     // notifContainer.addEventListener("click", (event)=>{
 
     //     if(!event.target.closest(".notification-item")){
@@ -174,9 +183,9 @@ export async function getDateMessage(createdAt) {
     }
 }
 
-function gethtmlNotifications(typehtml, message, messageNotif, senderId, recipientId, notifId){
+function gethtmlNotifications(typehtml, message, messageNotif, senderId, recipientId, notifId, commentId, postId){
     const notificationsStyles = {
-        "firstmessage": `<div class="notification-item" id="li-notification" data-sender-id=${senderId} data-recipient-id=${recipientId} data-notif-id=${notifId}>
+        "firstmessage": `<div class="notification-item" id="li-notification" data-sender-id=${senderId} data-post-id=${postId} data-comment-id=${commentId} data-notif-id=${notifId}>
                     <div class="avatar">O</div>
                     <div class="notification-content">
                         <div class="notification-header-modal">
@@ -196,7 +205,7 @@ function gethtmlNotifications(typehtml, message, messageNotif, senderId, recipie
                     </div>
                 </div>`,
 
-             "youlike": `<div class="notification-item" id="li-notification" data-sender-id=${senderId} data-recipient-id=${recipientId} data-notif-id=${notifId}>
+             "youlike": `<div class="notification-item" id="li-notification" data-sender-id=${senderId} data-post-id=${postId} data-comment-id=${commentId} data-notif-id=${notifId}>
                     <div class="avatar">O</div>
                     <div class="notification-content">
                         <div class="notification-header-modal">
@@ -216,7 +225,7 @@ function gethtmlNotifications(typehtml, message, messageNotif, senderId, recipie
                     </div>
                 </div>`,
 
-        "newcontact" : `<div class="notification-item" id="li-notification" data-sender-id=${senderId} data-recipient-id=${recipientId} data-notif-id=${notifId}>
+        "newcontact" : `<div class="notification-item" id="li-notification" data-sender-id=${senderId} data-post-id=${postId} data-comment-id=${commentId} data-notif-id=${notifId}>
                     <div class="avatar">O</div>
                     <div class="notification-content">
                         <div class="notification-header-modal">
@@ -235,7 +244,7 @@ function gethtmlNotifications(typehtml, message, messageNotif, senderId, recipie
                         <div class="changeRead">Marcar leído</div>
                     </div>
                 </div>`,
-        "youcomment" : `<div class="notification-item" id="li-notification" data-sender-id=${senderId} data-recipient-id=${recipientId} data-notif-id=${notifId}>
+        "youcomment" : `<div class="notification-item" id="li-notification" data-sender-id=${senderId} data-post-id=${postId} data-comment-id=${commentId} data-notif-id=${notifId}>
                     <div class="avatar">O</div>
                     <div class="notification-content">
                         <div class="notification-header-modal">
@@ -263,36 +272,39 @@ function gethtmlNotifications(typehtml, message, messageNotif, senderId, recipie
 function notifModalFunctionality(domElements){
     const {notifUnreadList} = domElements
 
-    notifUnreadList.addEventListener("click", async (event)=>{
-        const buttonMenu = event.target.closest("#menu-notification");
-        const notificationItem = event.target.closest(".notification-item");
-        const idNotification = notificationItem.dataset.notifId;
-        if(buttonMenu){
-            console.log("Id notificatrion: ", idNotification)
-            event.preventDefault()
-            await handlerIconRead(idNotification)
-            notificationItem.remove()
-        }else{
-            console.log("No existe bvutton menyu")
-        }
-        
-        // const icon = event.target.closest(".notif-read-icon");
-        // const notification = event.target.closest("li");
-        // const idNotification = notification.dataset.notifId;
-        // console.log("ID DE NOTIFICACION : ", idNotification, notification)
-        // if(icon){
-        //     event.preventDefault()
-        //     await handlerIconRead(idNotification)
-        //     notification.remove()
-        //     return
-        // }
-
-        // if(notification){
-        //     handlerNotificationCard(notification)
-        // }
-
-
-    })
+    if(notifUnreadList){
+        notifUnreadList.addEventListener("click", async (event)=>{
+            const buttonMenu = event.target.closest("#menu-notification");
+            const notificationItem = event.target.closest(".notification-item");
+            const idNotification = notificationItem.dataset.notifId;
+            if(buttonMenu){
+                console.log("Id notificatrion: ", idNotification)
+                event.preventDefault()
+                await handlerIconRead(idNotification)
+                notificationItem.remove()
+            }else{
+                console.log("No existe bvutton menyu")
+            }
+            
+            // const icon = event.target.closest(".notif-read-icon");
+            // const notification = event.target.closest("li");
+            // const idNotification = notification.dataset.notifId;
+            // console.log("ID DE NOTIFICACION : ", idNotification, notification)
+            // if(icon){
+            //     event.preventDefault()
+            //     await handlerIconRead(idNotification)
+            //     notification.remove()
+            //     return
+            // }
+    
+            // if(notification){
+            //     handlerNotificationCard(notification)
+            // }
+    
+    
+        })
+    }
+    
 }
 
 //? Marca como leido al hacer clikc en la opcion leido del modal pequeño
@@ -324,29 +336,32 @@ function handlerNotificationCard(notification){
 //? Muestra el peuqeño modal al clickar los tres puntos, además lo cierra si se presiona otra vez o si se hace fuera del modal.
 const menuButton = (domElements)=>{
     const {notifUnreadList} = domElements;
-    notifUnreadList.addEventListener("click", (event)=>{
-        const menu = event.target.closest(".menu-button")
-        if(menu){
-            const menuContainer = menu.closest(".notification-item")
-            const dato = menuContainer.querySelector("#menu-notification")
-            
-            let datos = dato.style.display =="flex"
-                datos ? dato.style.display ="none" :
-                dato.style.display ="flex"
-        }else{
-
-            const notifCont = document.querySelectorAll(".notification-item")
-            notifCont.forEach((mencont)=>{
-                let dato = mencont.querySelector("#menu-notification")
-                if (dato){
-                    if(dato.style.display === "flex" && !event.target.closest("#menu-notification")){
-                        dato.style.display = "none";
-                    }
-                }
+    if(notifUnreadList){
+        notifUnreadList.addEventListener("click", (event)=>{
+            const menu = event.target.closest(".menu-button")
+            if(menu){
+                const menuContainer = menu.closest(".notification-item")
+                const dato = menuContainer.querySelector("#menu-notification")
                 
-            })
-        }
-    })
+                let datos = dato.style.display =="flex"
+                    datos ? dato.style.display ="none" :
+                    dato.style.display ="flex"
+            }else{
+    
+                const notifCont = document.querySelectorAll(".notification-item")
+                notifCont.forEach((mencont)=>{
+                    let dato = mencont.querySelector("#menu-notification")
+                    if (dato){
+                        if(dato.style.display === "flex" && !event.target.closest("#menu-notification")){
+                            dato.style.display = "none";
+                        }
+                    }
+                    
+                })
+            }
+        })
+    }
+    
 
 }
 

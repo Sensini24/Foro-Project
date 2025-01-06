@@ -45,7 +45,7 @@ export const convertDate =async (domElements)=>{
 
         const result = await getDateMessage(dateconvert);
         
-        console.log("resultado converison tiemop notifiaciones: ", time)
+        // console.log("resultado converison tiemop notifiaciones: ", time)
         if(result){
             time.textContent = result
         }else{
@@ -179,11 +179,18 @@ function ShowCommentNotification(domElements){
     const {notifListInterfaz} = domElements;
     notifListInterfaz.addEventListener("click", (event)=>{
         const notifItem = event.target.closest(".notification-item")
+        console.log("Data idComment: ", notifItem.dataset.commentId)
+        console.log("Data idComment: ", notifItem.dataset.postId)
+        let commentId = notifItem.dataset.commentId;
+        let postId = notifItem.dataset.postId
         if(notifItem){
             console.log("Notifications item: ", notifItem)
             const toCommentbtn = event.target.closest(".action-btn.tocomment")
             if(toCommentbtn){
+                
                 console.log("vamos al mensaje")
+                window.location.href = `/post/${postId}#${commentId}`;
+
                 // window.location.href= `/post/${postId}#comment-${commentId}`;
                 
             }

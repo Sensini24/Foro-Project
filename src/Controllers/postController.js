@@ -62,12 +62,12 @@ export const getAllPost = async (req, res)=>{
             
         });
 
-        res.render("postList", {posts, layout:false})
+        return res.render("postList", {posts, layout:false})
        
         // res.status(200).json(blogs); // Responder con los blogs obtenidos
     }catch(error){
         console.error('Error al obtener los posts:', error);
-        res.status(500).json({ message: 'Error al obtener los posts' });
+        return res.status(500).json({ message: 'Error al obtener los posts' });
     }
 }
 
@@ -91,7 +91,7 @@ export const getAllPartialPost = async (req, res)=>{
         });
 
         console.log("Posts totales: ", posts)
-        res.render("partials/partial-posts", { posts, layout: true });
+        return res.render("partials/partial-posts", { posts, layout: true });
        
         // res.status(200).json(blogs); // Responder con los blogs obtenidos
     }catch(error){

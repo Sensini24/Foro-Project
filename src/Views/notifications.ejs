@@ -44,7 +44,7 @@
                 <h3 style="display: flex; align-items: center; justify-content: center;">No tiene notificaciones</h3>
             <%}else{%>
                 <% notifications.forEach(notif => { %>
-                    <div class="notification-item unread" data-sender-id="<%= notif.senderId %>" data-recipient-id="<%= notif.recipientId%>">
+                    <div class="notification-item unread" data-sender-id="<%= notif.senderId %>" data-recipient-id="<%= notif.recipientId%>" data-post-id="<%= notif.pathsIds.id_post%>" data-comment-id="<%= notif.pathsIds.id_comment%>" data-notif-id="<%= notif._id%>">
                         <div class="avatar">JD</div>
                         <div class="notification-content">
                             <div class="notification-header">

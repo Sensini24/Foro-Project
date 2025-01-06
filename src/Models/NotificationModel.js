@@ -20,6 +20,16 @@ const notificationSchema = new mongoose.Schema({
     enum: ['firstmessage', 'youlike', 'newcontact',  'youshare', 'youmention', 'youcomment', ],
     required: true,
   },
+  pathsIds: {
+    id_comment: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Comment'
+    },
+    id_post: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Post'
+    }
+  },
   roomId: {
     type: String
   },

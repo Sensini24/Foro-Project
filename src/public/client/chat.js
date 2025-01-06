@@ -3,22 +3,36 @@ import { getHtmlAnnounces } from "./html-codes.js";
 export function initChat() {
     console.log("INICIANDO MODULOS DE CHAT");
 
-    const socket = initializeSocket();
+    
     const domElements = cacheDOMElements();
-
-    searchUser(socket, domElements);
-    // showNotifications(socket, domElements);
-    showChatPrivado(socket, domElements);
-    showChatInterfaz(domElements)
+    
+            const socket = initializeSocket();
+            // const usercurrent = getUserCurrent(socket);
+            console.log("si esxite usuario")
+            searchUser(socket, domElements);
+            // showNotifications(socket, domElements);
+            showChatPrivado(socket, domElements);
+            showChatInterfaz(domElements)
+        
+        
+    
 }
 
 
 function initializeSocket() {
+    
     return io({
         auth: {
             serverOffset: 0
         }
     });
+}
+
+function getUserCurrent(socket){
+    socket.on("sendToken", (usuario)=>{
+        console.log("USUARIO CONECTADO: ", usuario)
+        return usuario.socketid;
+    })
 }
 
 
@@ -46,47 +60,55 @@ function cacheDOMElements() {
 
 function showChatInterfaz(domElements){
     const {chatIcon, chatContainer, btnClose } = domElements;
-    chatIcon.addEventListener("click", ()=>{
-        chatContainer.style.display = "flex"
-        console.log("Chat puede verse")
-    })
+    if(chatIcon){
+        chatIcon.addEventListener("click", ()=>{
+            chatContainer.style.display = "flex"
+            console.log("Chat puede verse")
+        })
 
-    btnClose.addEventListener("click", ()=>{
-        chatContainer.style.display = "none"
-        console.log("Chat oculto")
-    })
+        btnClose.addEventListener("click", ()=>{
+            chatContainer.style.display = "none"
+            console.log("Chat oculto")
+        })
+    }
+    
+
+    
 }
 
 // Configuración de la búsqueda de usuarios
 function searchUser(socket, domElements) {
     const { formSearch, inputSearch, suggestionsList } = domElements;
 
-    formSearch.addEventListener("submit", async (event) => {
-        event.preventDefault();
-        const username = inputSearch.value;
-        if (!username) {
-            console.log("Escribe el nombre de un usuario");
-            return;
-        }
-
-        try {
-            const response = await fetch(`/user/findUsers/${username}`);
-            const users = await response.json();
-
-            suggestionsList.innerHTML = "";
-            users.forEach(user => {
-                const li = document.createElement("li");
-                li.textContent = user.user_name;
-                li.dataset.userId = user._id;
-                li.classList.add("new-contact");
-                suggestionsList.appendChild(li);
-            });
-
-            newDataContact(socket);
-        } catch (error) {
-            console.error("Error fetching users:", error);
-        }
-    });
+    if(formSearch){
+        formSearch.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const username = inputSearch.value;
+            if (!username) {
+                console.log("Escribe el nombre de un usuario");
+                return;
+            }
+    
+            try {
+                const response = await fetch(`/user/findUsers/${username}`);
+                const users = await response.json();
+    
+                suggestionsList.innerHTML = "";
+                users.forEach(user => {
+                    const li = document.createElement("li");
+                    li.textContent = user.user_name;
+                    li.dataset.userId = user._id;
+                    li.classList.add("new-contact");
+                    suggestionsList.appendChild(li);
+                });
+    
+                newDataContact(socket);
+            } catch (error) {
+                console.error("Error fetching users:", error);
+            }
+        });
+    }
+    
 }
 
 // Adjuntar eventos a nuevos contactos
@@ -275,7 +297,7 @@ function showChatPrivado(socket, domElements) {
 
 
     socket.on("getPendingContact", (userContacts)=>{
-        console.log("CONTACTOS OBTENIDOS EN TUIEMPO REAL: ", userContacts)
+        // console.log("CONTACTOS OBTENIDOS EN TUIEMPO REAL: ", userContacts)
         const { chatContactsPending } = domElements;
         chatContactsPending.innerHTML = "";
         userContacts.forEach(contact=>{
@@ -288,7 +310,7 @@ function showChatPrivado(socket, domElements) {
     })
 
     socket.on("recover contacts", (userContacts)=>{
-        console.log("CONTACTOS OBTENIDOS: ", userContacts)
+        // console.log("CONTACTOS OBTENIDOS: ", userContacts)
         const { chatContactsPending, chatContactsContacts } = domElements;
         chatContactsPending.innerHTML = "";
         // const contactPendings = userContacts.filter(contact => contact.estado == "pending");

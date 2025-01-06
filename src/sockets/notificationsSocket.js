@@ -45,13 +45,17 @@ export async function recoverContacts(socket, userID){
 }
 
 //Guardado de notifications
-async function saveNotification(senderId, idReceptor, message, type){
+async function saveNotification(senderId, idReceptor, message, type, idPost, idComment){
     try{
         const newNotification = await new modelNotification({
             senderId: senderId,
             recipientId: idReceptor,
             message: message,
             type: type,
+            pathsIds:{
+                id_comment:idComment,
+                id_post:idPost
+            },
             isRead: false,
             createdAt: new Date()
         })
@@ -278,16 +282,20 @@ export const seeCountIds =(messages)=>{
 
 //? DATOS ENVIADOS DESDE GET COMMENTS CON SOCKET
 export const commentNotification =(socket, usuariosConectados, io)=>{
-    socket.on("messageNotification", async(idpost,authorPost,namePost, comment)=>{
+    socket.on("messageNotification", async(idpost,authorPost,namePost, comment, commentId)=>{
         const authorData = await findUser(authorPost);
         const receptorid = authorData[0]._id.toString()
-        console.log("receptor id: ", receptorid)
+        const idPost = idpost;
+        const idComment = commentId;
+
         let receptorSocket = usuariosConectados.get(receptorid) != null || undefined ? usuariosConectados.get(receptorid).socketid : null
         const senderid = socket.user._id
         const message = `El usuario ${socket.user.user_name} comentó en tu post llamado ${namePost}`
-        const notification = await saveNotification(senderid, receptorid, message, "youcomment")
+
+
+        const notification = await saveNotification(senderid, receptorid, message, "youcomment",idPost, idComment )
         const notifSearch = await notificationsDataBase(receptorid);
-        console.log("DATOS DE COMENTARIO: ", idpost,receptorid,namePost, comment)
+        // console.log("DATOS DE COMENTARIO: ", idpost,receptorid,namePost, comment)
 
         console.log("SOCKET ID DE RECEPTO PARA NOTIF DE MENSAJE: ", receptorSocket)
         io.to(receptorSocket).emit("newNotification", notifSearch);

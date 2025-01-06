@@ -1,12 +1,59 @@
-// Importaciones necesarias
 import { convertDate } from "./notificationclient.js";
 
-// Inicialización del sistema
 export async function initCommentsModule() {
-    const socket = initializeSocket();
+    console.log("INICIANDO MODULOS DE COMMENTARIOS")
+    chargeHash()
+    // chargeHash()
     const domElements = getDomElements();
+    
+    const socket = initializeSocket();
+    
     handlerCommentSocket(socket);
     await renderComments(domElements);
+    closeModal()
+    
+    
+}
+function chargeHash(){
+    const observer = new MutationObserver((mutations) => {
+        const commentId = window.location.hash.substring(1)
+        console.log("HASH:", commentId);
+        const targetComment = document.getElementById(commentId); // Busca el elemento específico
+        if (targetComment) {
+            console.log("Elemento encontrado:", targetComment.textContent);
+            targetComment.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            targetComment.classList.add('highlight-comment');
+            observer.disconnect(); // Detén la observación
+        }else{
+            console.log("No se encontro el elemento")
+        }
+        
+        // const targetComment = document.querySelector("#id-comment"); // Busca el elemento específico
+        // if (targetComment) {
+        //     console.log("Elemento encontrado:", targetComment.textContent);
+        //     targetComment.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        //     targetComment.classList.add('highlight-comment');
+        //     observer.disconnect(); // Detén la observación
+        // }
+    });
+    
+    observer.observe(document.body, { childList: true, subtree: true });
+    
+    // window.onload = () => {
+    //     console.log("CARGANDO PÁRA OBTENER EL HASH")
+    //     const commentId = window.location.hash.substring(1); // Obtén el ID del hash
+    //     console.log("hash comment: ", commentId)
+    //     if (commentId) {
+    //         const targetComment = document.querySelector(".comment-id");
+    //         const targetAuthor = document.querySelector(".comment-author");
+    //         console.log("target comment: ", targetComment)
+    //         console.log("target author: ", targetAuthor)
+    //         if (targetComment) {
+    //             targetComment.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    //             targetComment.classList.add('highlight-comment'); // Agrega una clase para resaltar
+    //         }
+    //     }
+    // }
 }
 
 // Configuración del socket
@@ -21,7 +68,8 @@ function getDomElements() {
     return {
         time: document.querySelectorAll(".comment-date"),
         partialContainer: document.getElementById("partial-container"),
-        commentContainer: document.getElementById("comment-container")
+        commentContainer: document.getElementById("comment-container"),
+        chatIcon : document.querySelector(".chat-icon"),
     };
 }
 
@@ -74,6 +122,7 @@ function attachCommentEventListeners() {
                 await changeVisibility(comment);
                 break;
         }
+
     });
 }
 
@@ -88,7 +137,7 @@ function handleReplyRequest(comment) {
     const actionButtons = comment.querySelector(".comment-actions");
     const authorName = comment.querySelector(".comment-author")?.textContent.trim();
 
-    formContainer.style.display = "block";
+    formContainer.style.display = "flex";
     actionButtons.style.display = "none";
     comment.querySelector("#request-name").textContent = authorName;
 }
@@ -250,21 +299,37 @@ async function submitComment(socket) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ comment: inputComment, post_id: postId }),
         });
-
+        
+        const data = await response.json();
+        
         if (response.ok) {
             console.log("Comentario creado con éxito");
-            document.getElementById("partial-container").value = "";
+            console.log("Comment ID:", data.commentId);
+            const commentId = data.commentId
+            document.getElementById("partial-container").innerHTML = "";
             await renderComments();
-            await sendMessageSocket(socket, postId,authorPost, namePost, inputComment)
+
+            //? Se envia informacion del comment a notifiacion socket para su guardado
+            await sendMessageSocket(socket, postId, authorPost, namePost, inputComment,commentId );
         } else {
-            console.error("Error al crear el comentario");
+            console.log("No se guardó el comentario:", data.error);
+            document.querySelector(".modal").style.display = "flex";
         }
+        
     } catch (error) {
         console.error("Error:", error);
     }
 }
 
-async function sendMessageSocket(socket, postId,nameuser, namePost, comment){
-    socket.emit("messageNotification", postId,nameuser, namePost, comment )
+async function sendMessageSocket(socket, postId,nameuser, namePost, comment, commentId){
+    socket.emit("messageNotification", postId,nameuser, namePost, comment, commentId )
 }
+
+function closeModal (){
+    document.querySelector("#close-modal").addEventListener("click", ()=>{
+        document.querySelector(".modal").style.display = "none";
+    })
+    
+}
+
 

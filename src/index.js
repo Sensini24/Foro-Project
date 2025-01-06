@@ -62,7 +62,7 @@ io.use((socket, next) => {
     if (!token) {
         return next(new Error('No autenticado: falta el token en las cookies'));
     }
-    // console.log("token de verdad: ", token)
+    console.log("token de verdad: ", token)
     try {
         // Verificar el token JWT
         const user = jsonwebtoken.verify(token, process.env.JWT_SECRET);
@@ -81,10 +81,12 @@ const socketRooms = new Map();
 
 // 4. Manejar eventos de conexión después de configurar el middleware
 io.on("connection", async (socket)=>{
-    // console.log("Usuario conectado ", socket.user, " con el id: ", socket.id)
-
     
+    // console.log("Usuario conectado ", socket.user, " con el id: ", socket.id)
     usuariosConectados.set(socket.user._id, {socketid:socket.id, nombre: socket.user.user_name  })
+
+    //? ENVIO DE DATOS PARA CONEXION DE CHAT O NOTIFICACIONES EN CASO SOLO DE QUE SE CONECTEN
+    socket.emit("sendToken", usuariosConectados.get(socket.user._id))
     console.log("Usuarios conectados: ", usuariosConectados)
 
     //? Recuperacion de notifications mediante el id del usuario.

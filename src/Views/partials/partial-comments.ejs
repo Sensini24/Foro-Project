@@ -4,7 +4,8 @@
             <div class="comment" id="commentsTotales">
                 
                 <div class="main-comment">
-                    <div class="container-headers" data-idcomment=`<%= comm._id %>`>
+                    <div class="container-headers" id="<%= comm._id %>">
+
                         <div class="author-elements">
                             <div class="author-avatar">JP</div>
                         <% if (author === comm.user_name) { %>
@@ -98,36 +99,39 @@
                 
             
                     <div class="container-form-commentrequest">
-                        <!-- Header con nombre al que se responde -->
-                        <div id="request-name-header">
-                            <p class="reply-to">@<span id="request-name"></span></p>
-                        </div>
-                    
-                        <!-- Formulario para agregar comentarios -->
-                        <form id="formCommentRequest" class="comment-field v3">
-                            <textarea 
-                                placeholder="Escribe tu respuesta aquí..." 
-                                id="comment-content-request" 
-                                name="comment"
-                                style="resize: none;">
-                            </textarea>
-                            
-                            <!-- Acciones de enviar y cancelar -->
-                            <div class="actions" style="display: flex; gap: 10px; justify-content: flex-end;">
-                                <!-- Botón de cancelar -->
-                                <button id="button-cancel" class="btn-comments btn-cancel" title="Cancelar">
-                                    Cancelar
-                                </button>
-                    
-                                <!-- Botón de enviar -->
-                                <button id="btn-comment-request" class="btn-submit" title="Enviar">
-                                    Enviar
-                                </button>
+                        <div class="modal-body-request">
+                            <!-- Header con nombre al que se responde -->
+                            <div id="request-name-header">
+                                <h3>Respuesta a:</h3>
+                                <p class="reply-to">@<span id="request-name"></span></p>
                             </div>
-                        </form>
-                    
-                        <!-- Aviso para el estado del comentario -->
-                        <span id="aviso-comment" style="color: red; margin-top: 5px;"></span>
+                        
+                            <!-- Formulario para agregar comentarios -->
+                            <form id="formCommentRequest" class="comment-field v3">
+                                <textarea 
+                                    placeholder="Escribe tu respuesta aquí..." 
+                                    id="comment-content-request" 
+                                    name="comment"
+                                    style="resize:none;">
+                                </textarea>
+                                
+                                <!-- Acciones de enviar y cancelar -->
+                                <div class="actions" style="display: flex; gap: 10px; justify-content: flex-end;">
+                                    <!-- Botón de cancelar -->
+                                    <button id="button-cancel" class="btn-comments btn-cancel" title="Cancelar">
+                                        Cancelar
+                                    </button>
+                        
+                                    <!-- Botón de enviar -->
+                                    <button id="btn-comment-request" class="btn-submit" title="Enviar">
+                                        Enviar
+                                    </button>
+                                </div>
+                            </form>
+                        
+                            <!-- Aviso para el estado del comentario -->
+                            <span id="aviso-comment" style="color: red; margin-top: 5px;"></span>
+                        </div>
                     </div>
             </div>
             

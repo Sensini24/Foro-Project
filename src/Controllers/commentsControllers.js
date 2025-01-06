@@ -42,7 +42,7 @@ export const getComments = async(req, res)=>{
             const commentsAll= await modelComment.find({ post_id: id, idmessageparent: idcommentparent })
             visibleComments = propietario ? commentsAll : commentsAll.filter(comment => comment.visible)
 
-            res.render("partials/partial-request-comments", 
+             res.render("partials/partial-request-comments", 
                 {
                     //se pasa el filtrado de comments
                     commentariosPrincipales:visibleComments,
@@ -58,7 +58,7 @@ export const getComments = async(req, res)=>{
             const commentariosPrincipales = commentsAll.filter(comment=> comment.idmessageparent == "" || comment.idmessageparent == null)
             visibleComments = propietario ? commentariosPrincipales : commentariosPrincipales.filter(comment => comment.visible)
 
-            res.render("partials/partial-comments", 
+             res.render("partials/partial-comments", 
                 {
                     //se pasa el filtrado de comments
                     commentariosPrincipales:visibleComments,
@@ -70,17 +70,17 @@ export const getComments = async(req, res)=>{
             // console.log("Dwdsa", visibleComments)
         }
 
-        console.log("Propietario: ", propietario)
+        // console.log("Propietario: ", propietario)
         // console.log("DOCUMENTOS CARGADOS POR ID DE POST: ", visibleComments)
-        res.render("partials/partial-comments", 
-            {
-                //se pasa el filtrado de comments
-                commentariosPrincipales:visibleComments,
-                propietario,
-                username,
-                author,
-                layout:false
-            })
+        // res.render("partials/partial-comments", 
+        //     {
+        //         //se pasa el filtrado de comments
+        //         commentariosPrincipales:visibleComments,
+        //         propietario,
+        //         username,
+        //         author,
+        //         layout:false
+        //     })
     }catch(err){
         console.log("No se pudo obtener los comment", err)
         res.status(500).json({message:"No se pudo obtener los comentarios"})
@@ -89,7 +89,6 @@ export const getComments = async(req, res)=>{
 
 export const postComments = async(req, res)=>{
     const datapayload = req.usuariodatospayload
-
 
     //* Status code de falta de autenticacion, se envía al servidor y allá se exige un registro previo para permitir la realización de un comentario.
     if(!datapayload) {
@@ -116,11 +115,13 @@ export const postComments = async(req, res)=>{
         visible:true
     })
 
-    addcomment.save()
-    .then(doc => console.log("Comentario guardado exitosamente", doc))
-    .catch(error=> console.log("Error al guardar el comentario", error))
+    const commentNew = await addcomment.save();
+        console.log("Comentario guardado exitosamente", commentNew);
 
-    res.redirect("/post/postlist")
+    res.status(200).json({
+        success: `Tu respuesta se guardó exitosamente: ${commentNew}`,
+        commentId: commentNew._id // Retornar el ID del comentario recién creado
+    });
 }
 
 export const deleteComments = async(req, res)=>{
@@ -177,6 +178,7 @@ export const requestComment = async (req, res)=>{
         const {post_id,idmessageparent,requestname, comment} = req.body
         console.log("DATOS: ",post_id,idmessageparent,requestname, comment)
         const postid = new mongoose.Types.ObjectId(post_id)
+
         const newComment = new modelComment(
             {
                 "post_id": postid,
@@ -189,11 +191,13 @@ export const requestComment = async (req, res)=>{
             }   
         )
 
-        newComment.save()
-        .then(doc => console.log("Comentario guardado exitosamente", doc))
-        .catch(error=> console.log("Error al guardar el comentario", error))
+        const savedComment = await newComment.save();
+        console.log("Comentario guardado exitosamente", savedComment);
 
-        res.status(200).json({success: `Tu respuesta se guardó exitosamente: ${newComment.comment}`})
+        res.status(200).json({
+            success: `Tu respuesta se guardó exitosamente: ${savedComment.comment}`,
+            commentId: savedComment // Retornar el ID del comentario recién creado
+        });
     }catch(err){
         res.status(500).json({error:"No se pudo guardar el comentario"})
     }

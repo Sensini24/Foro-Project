@@ -72,9 +72,12 @@ body {
 .main-layout{
     width: 100%;
     padding-top: 100px;
+    display: flex;
+    justify-content: space-between;
+    align-items: self-start;
 }
 .contenido {
-  width: 60%;
+  width: 50%;
 }
 
 .navbar {
@@ -170,7 +173,11 @@ body {
 .logout-button:hover {
   background-color: var(--gruvbox-orange);
 }
-
+ 
+#form-chat{
+  display: flex;
+  width: 100%;
+}
 @media (max-width: 768px) {
   .navbar {
     flex-wrap: wrap;
@@ -213,11 +220,12 @@ body {
 .left-sidebar {
   border-right: 1px solid var(--dark-bg-muted);
   height: fit-content;
-  position: sticky; /* Activa el comportamiento sticky */
-  top: 80px; /* Fija el elemento a la parte superior cuando empiezas a desplazarte */
+  position: sticky;
+  width: 25%;
+  top: 80px;
   border-radius: 10px;
-  background-color: var(--sidebar-bg); /* Opcional para darle un fondo fijo */
-  padding: 10px; /* Opcional para un mejor diseño */
+  background-color: var(--sidebar-bg);
+  padding: 10px;
   overflow-y: auto;
   overflow-x: auto;
   scroll-behavior: smooth;
