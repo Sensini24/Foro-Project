@@ -1,0 +1,310 @@
+/* Variables Gruvbox Dark */
+:root {
+    --bg: #282828;
+    --bg0: #1d2021;
+    --bg1: #3c3836;
+    --bg2: #504945;
+    --fg: #ebdbb2;
+    --fg-dim: #a89984;
+    --red: #cc241d;
+    --green: #98971a;
+    --yellow: #d79921;
+    --blue: #458588;
+    --purple: #b16286;
+    --aqua: #689d6a;
+    --gray: #928374;
+    --orange: #d65d0e;
+}
+
+/* .withoutComment {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+} */
+
+.modal-confirm {
+    display: flex;
+    position: relative;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 30%;
+    height: 30;
+    overflow: auto;
+    background-color: #282828;
+    flex-direction: column;
+}
+
+@keyframes modalAppear {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-header {
+    padding: 1rem;
+    border-bottom: 1px solid var(--bg2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-title {
+    font-size: 1.25rem;
+    color: var(--yellow);
+    font-weight: 600;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: var(--fg-dim);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.modal-close:hover {
+    color: var(--fg);
+}
+
+.modal-body {
+    padding: 1rem;
+}
+
+.modal-footer {
+    padding: 1rem;
+    border-top: 1px solid var(--bg2);
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.btn {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.btn-primary {
+    background-color: var(--blue);
+    color: var(--bg);
+}
+
+.btn-primary:hover {
+    background-color: var(--aqua);
+}
+
+.btn-secondary {
+    background-color: var(--bg2);
+    color: var(--fg);
+}
+
+.btn-secondary:hover {
+    background-color: var(--bg1);
+}
+
+/* Estilos para modal de imagen */
+.modal-image {
+    width: auto;
+    max-width: 90vw;
+    max-height: 90vh;
+}
+
+.modal-image img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+/* Estilos para modal de formulario */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--fg-dim);
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 4px;
+    border: 1px solid var(--bg2);
+    background-color: var(--bg1);
+    color: var(--fg);
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--blue);
+}
+
+/* Estilos para modal de carga */
+.loading-spinner {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    border: 3px solid var(--bg2);
+    border-radius: 50%;
+    border-top-color: var(--blue);
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Estilos para modal de video */
+.modal-video {
+    width: 640px;
+    max-width: 90vw;
+}
+
+.modal-video video {
+    width: 100%;
+    border-radius: 8px;
+}
+
+/* Estilos para modal de pasos */
+.steps {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.step {
+    flex: 1;
+    text-align: center;
+    padding: 0.5rem;
+    background-color: var(--bg1);
+    color: var(--fg-dim);
+    position: relative;
+}
+
+.step.active {
+    background-color: var(--bg2);
+    color: var(--yellow);
+}
+
+.step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    right: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-left: 10px solid var(--bg1);
+    z-index: 1;
+}
+
+.step.active:not(:last-child)::after {
+    border-left-color: var(--bg2);
+}
+
+/* Estilos para notificación tipo toast */
+.toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: var(--bg);
+    color: var(--fg);
+    padding: 1rem;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    animation: toastAppear 0.3s ease-out;
+}
+
+@keyframes toastAppear {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.toast-icon {
+    font-size: 1.5rem;
+}
+
+.toast-message {
+    flex: 1;
+}
+
+.toast-close {
+    background: none;
+    border: none;
+    color: var(--fg-dim);
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+/* Estilos para modal de confirmación con icono */
+.modal-icon {
+    font-size: 3rem;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+/* Estilos para modal de selección */
+.selection-list {
+    list-style: none;
+}
+
+.selection-item {
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    background-color: var(--bg1);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.selection-item:hover {
+    background-color: var(--bg2);
+}
+
+.selection-item.selected {
+    background-color: var(--blue);
+    color: var(--bg);
+}
+
+/* Estilos para los botones de demostración */
+.demo-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.demo-button {
+    background-color: var(--bg1);
+    color: var(--fg);
+    border: none;
+    padding: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.demo-button:hover {
+    background-color: var(--bg2);
+}

@@ -5,8 +5,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         time: document.querySelectorAll(".notificationInterfaz-time") 
     };
 
+    
+    const {time} = domElements
     //! TUVE QUE AGREGAR ESTA FUNCION AQUI POR QUE NECESARIAMENTE ME PIDE QUE SE CARGUE ELL DOM PRIMERO
-    await convertDate(domElements);
+    await convertDate(time);
 });
 
 export async function initInteractNotifications(){
@@ -38,13 +40,14 @@ function cacheDOMElements(){
 
 
 //? CONVIERTE LOS DATOS DE TIEMPO EN DATOS MAS EXACTOS
-export const convertDate =async (domElements)=>{
-    const {time} = domElements;
-    time.forEach(async time=>{
+export const convertDate =async (time)=>{
+    Array.from(time).forEach(async time=>{
+        
         let date = time.textContent
         let dateconvert = new Date(date)
 
         const result = await getDateMessage(dateconvert);
+        
         
         // console.log("resultado converison tiemop notifiaciones: ", time)
         if(result){
@@ -55,6 +58,23 @@ export const convertDate =async (domElements)=>{
         
     })
 }
+// export const convertDate =async (domElements)=>{
+//     const {time} = domElements;
+//     time.forEach(async time=>{
+//         let date = time.textContent
+//         let dateconvert = new Date(date)
+
+//         const result = await getDateMessage(dateconvert);
+        
+//         // console.log("resultado converison tiemop notifiaciones: ", time)
+//         if(result){
+//             time.textContent = result
+//         }else{
+//             time.textContent = "no hay"
+//         }
+        
+//     })
+// }
 
 //? TRADUCE LOS TIPOS DE NOTIFICACIONES A TITULOS LEGIBLES Y ENTENDIBLES
 export const getTitleNotif = async (domElements)=>{

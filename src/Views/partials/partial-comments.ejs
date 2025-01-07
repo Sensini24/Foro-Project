@@ -1,4 +1,5 @@
 <div class="comments-section">
+    <div class="modal-without-comment"></div>
     <div id="comment-container">
         <% commentariosPrincipales.forEach(comm => { %>
             <div class="comment" id="commentsTotales">
@@ -34,7 +35,7 @@
                             </div>
                         <% } %>
                         </div>
-                        <span class="comment-date"><%= comm.date %></span>
+                        <span class="comment-date-parent"><%= comm.date %></span>
                     </div>
                     
                     <p class="comment-content">

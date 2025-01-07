@@ -446,7 +446,28 @@ body {
 }
 
 .salutStart{
+    display: flex;
     padding: 0px;
     margin-right: 8rem;
 }
 
+
+
+.btn-start-chat{
+    background-color: var(--gruvbox-purple);
+    color: var(--gruvbox-bg);
+    font-family: 'Times New Roman', serif;
+    font-size: 16px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 9px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    outline: none;
+    width: 100%;
+    
+}
+.btn-start-chat:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}

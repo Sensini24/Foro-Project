@@ -69,7 +69,7 @@ async function IncreaseNumberNotifications(notifUnreadList, notifNumber, notific
     notifNumber.innerHTML = noleidos.length;
 
     for (const elem of noleidos) {
-        console.log("Notificaciones: ", elem)
+        // console.log("Notificaciones: ", elem)
         const {message, type, createdAt, senderId, recipientId, _id, pathsIds} = elem;
         let notifId = _id;
         let messageNotif = await getDateMessage(createdAt);

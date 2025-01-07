@@ -220,6 +220,21 @@ button:hover {
 
 /* PARTE DE COMMENTS */
 
+.modal-overlay{
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+
+}
+.modal-overlay.visible {
+    display: flex;
+}
 
 .light-mode .comment-form textarea {
     background-color: var(--light-bg);
@@ -285,12 +300,13 @@ button:hover {
     color: var(--light-primary);
 }
 
-.comment-date {
+.comment-date-parent  .comment-date-childe{
     font-size: 0.875rem;
     color: var(--fg-dim);
 }
 
-.light-mode .comment-date {
+
+.light-mode .comment-date-parent .comment-date-childe {
     color: var(--light-secondary);
 }
 
@@ -360,6 +376,7 @@ button:hover {
     padding: 1rem;
     margin-bottom: 0.5rem;
 }
+
 .replies {
     margin-left: 2rem;
     padding-left: 1rem;
@@ -589,24 +606,3 @@ button {
     color: #FCD639;
 }
 
-/* #add-like:hover, #add-dislike:hover, #add-share:hover {
-    background-color: #1A365D;
-}
-
-#add-like:hover .add-like,
-#add-dislike:hover .add-dislike,
-#add-share:hover .add-share{
-    color: #FCD639;
-}
-
-#add-like:hover #like-count,
-#add-dislike:hover #dislike-count,
-#add-share:hover #share-count{
-    color: #FCD639;
-} */
-
-
-/* #add-like{
-    background-color: gray;
-    border-radius: 9px;
-} */

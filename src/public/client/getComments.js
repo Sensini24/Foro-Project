@@ -1,8 +1,9 @@
+import { getModalInfo, getToastSuccessfull } from "./modales.js";
 import { convertDate } from "./notificationclient.js";
 
 export async function initCommentsModule() {
     console.log("INICIANDO MODULOS DE COMMENTARIOS")
-    chargeHash()
+    
     // chargeHash()
     const domElements = getDomElements();
     
@@ -11,50 +12,45 @@ export async function initCommentsModule() {
     handlerCommentSocket(socket);
     await renderComments(domElements);
     closeModal()
-    
+    SearhCommentNotification()
     
 }
-function chargeHash(){
+
+
+//? BUSCA EL COMENTARIO A TRAVES DEL ID SEGUIDO DEL HASH Y SI NO EXISTE ENVIA UN MODAL DE AVISO.
+function SearhCommentNotification() {
     const observer = new MutationObserver((mutations) => {
-        const commentId = window.location.hash.substring(1)
-        console.log("HASH:", commentId);
-        const targetComment = document.getElementById(commentId); // Busca el elemento específico
-        if (targetComment) {
-            console.log("Elemento encontrado:", targetComment.textContent);
-            targetComment.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            targetComment.classList.add('highlight-comment');
-            observer.disconnect(); // Detén la observación
-        }else{
-            console.log("No se encontro el elemento")
+        // console.log("DOM cambió:", mutations);
+        const commentId = window.location.hash.substring(1);
+        // console.log("HASH:", commentId);
+        if(commentId){
+            const targetComment = document.getElementById(commentId);
+
+            if (targetComment) {
+                const header = targetComment.closest(".main-comment");
+                console.log("Elemento encontrado:", targetComment.textContent);
+                targetComment.scrollIntoView({ behavior: "smooth", block: "center" });
+                header.style.backgroundColor = "#D79921";
+                observer.disconnect(); // Detén la observación
+            } else {
+                const modalWithoutComment = document.querySelector(".modal-without-comment");
+                if (modalWithoutComment) {
+
+                    //? Mostrar modal de aceptacion si no hay comentario
+                    getModalInfo(modalWithoutComment,"No se encontró el comentario. Probablemente fue eliminado.")
+                    observer.disconnect(); // Detén la observación
+                    
+                } else {
+                    console.log("El modal no está en el DOM todavía, seguimos observando...");
+                }
+            }
         }
         
-        
     });
-    // const targetComment = document.querySelector("#id-comment"); // Busca el elemento específico
-        // if (targetComment) {
-        //     console.log("Elemento encontrado:", targetComment.textContent);
-        //     targetComment.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        //     targetComment.classList.add('highlight-comment');
-        //     observer.disconnect(); // Detén la observación
-        // }
+
     observer.observe(document.body, { childList: true, subtree: true });
-    
-    // window.onload = () => {
-    //     console.log("CARGANDO PÁRA OBTENER EL HASH")
-    //     const commentId = window.location.hash.substring(1); // Obtén el ID del hash
-    //     console.log("hash comment: ", commentId)
-    //     if (commentId) {
-    //         const targetComment = document.querySelector(".comment-id");
-    //         const targetAuthor = document.querySelector(".comment-author");
-    //         console.log("target comment: ", targetComment)
-    //         console.log("target author: ", targetAuthor)
-    //         if (targetComment) {
-    //             targetComment.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    //             targetComment.classList.add('highlight-comment'); // Agrega una clase para resaltar
-    //         }
-    //     }
-    // }
 }
+
 
 // Configuración del socket
 function initializeSocket() {
@@ -75,7 +71,7 @@ function getDomElements() {
 
 // Renderizar comentarios en la interfaz
 async function renderComments(domElements) {
-    // const {partialContainer} = domElements;
+    
     const postId = getPostId();
     const partialContainer = document.getElementById("partial-container");
 
@@ -83,9 +79,19 @@ async function renderComments(domElements) {
         const response = await fetch(`/comments/request/${postId}`);
         const commentsHtml = await response.text();
         partialContainer.innerHTML = commentsHtml;
+        
+        const time = document.querySelectorAll(".comment-date-parent")
+        console.log("time: ", time)
 
+        
+        if(time){
+            await convertDate(time);
+            console.log("type of time en get comments: ", typeof time)
+        }else{
+            console.log("No se encontro time")
+        }
         attachCommentEventListeners();
-        convertDate(getDomElements());
+        
     } catch (error) {
         console.error("Error al cargar los comentarios: ", error);
     }
@@ -134,11 +140,13 @@ function getPostId() {
 // Mostrar formulario para responder un comentario
 function handleReplyRequest(comment) {
     const formContainer = comment.querySelector(".container-form-commentrequest");
+    const textarea = comment.querySelector("#comment-content-request")
     const actionButtons = comment.querySelector(".comment-actions");
     const authorName = comment.querySelector(".comment-author")?.textContent.trim();
 
+    textarea.value = textarea.value.trim()
     formContainer.style.display = "flex";
-    actionButtons.style.display = "none";
+    // actionButtons.style.display = "none";
     comment.querySelector("#request-name").textContent = authorName;
 }
 
@@ -204,7 +212,8 @@ async function toggleCommentReplies(comment) {
             const response = await fetch(`/comments/request/${postId}/${parentId}`);
             const repliesHtml = await response.text();
             replyContainer.innerHTML = repliesHtml;
-            convertDate(getDomElements());
+            const time = document.querySelectorAll(".comment-date-childe")
+            convertDate(time);
         } catch (error) {
             console.error("Error al cargar las respuestas: ", error);
         }
@@ -308,9 +317,15 @@ async function submitComment(socket) {
             const commentId = data.commentId
             document.getElementById("partial-container").innerHTML = "";
             await renderComments();
+            
+            const elem = document.querySelector("#modal-success")
+            const messageModalSuccess = "Comentario creado exitosamente"
+            
+            showModalSucces(elem, messageModalSuccess)//Mostrar modal
 
             //? Se envia informacion del comment a notifiacion socket para su guardado
             await sendMessageSocket(socket, postId, authorPost, namePost, inputComment,commentId );
+
         } else {
             console.log("No se guardó el comentario:", data.error);
             document.querySelector(".modal").style.display = "flex";
@@ -323,6 +338,13 @@ async function submitComment(socket) {
 
 async function sendMessageSocket(socket, postId,nameuser, namePost, comment, commentId){
     socket.emit("messageNotification", postId,nameuser, namePost, comment, commentId )
+}
+
+function showModalSucces(elem, messageModalSuccess){
+    // setTimeout(getToastSuccessfull(elem, messageModalSuccess), 3000)
+    // elem.innerHTML=""
+
+    getToastSuccessfull(elem, messageModalSuccess)
 }
 
 function closeModal (){

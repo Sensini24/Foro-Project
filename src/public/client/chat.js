@@ -14,6 +14,7 @@ export function initChat() {
     showChatPrivado(socket, domElements);
     showChatInterfaz(domElements)
     closeChat(domElements)
+    showStartChat(domElements)
 }
 
 
@@ -51,7 +52,7 @@ function cacheDOMElements() {
         chatContactsPending: document.querySelector(".chat-contacts-pending"),
         chatConfirmation: document.querySelector(".chat-confirmation"),
         chatContactsContacts: document.querySelector(".chat-contacts-contacts"),
-       
+        btnStartChat: document.querySelector(".btn-start-chat")
 
     };
 }
@@ -184,6 +185,9 @@ function showChatPrivado(socket, domElements) {
                 socket.emit("privateMessage", { roomName: data.room, message: chatInput.value, nameContact: data.contactname, sendername: data.username, idContact: data.idContact });
                 chatInput.value = "";
                 console.log("DESDE FORM ENVIO DE MENSAJE: ", { roomName: data.room, message: chatInput.value, nameContact: data.contactname, sendername: data.username, idContact: data.idContact });
+            }else{
+                console.log("Escribe un mensaje")
+                return console.log("Escribe un mensaje")
             }
         }
 
@@ -384,3 +388,17 @@ const closeChat=(domElements)=>{
     
 }
 
+// //?Mostrar la pantalla de iniciar chat
+// const showStartChat = (domElements)=>{
+//     const {btnStartChat, chatMessages} = domElements;
+//     btnStartChat.addEventListener("click", async()=>{
+//         chatMessages.innerHTML = ""; // Limpia el contenido actual
+//         try {
+//             const response = await fetch('./partial/partial-menuChat');
+//             const partialHtml = await response.text(); // Obtiene el HTML como texto
+//             chatMessages.innerHTML = partialHtml; // Inserta el HTML en el DOM
+//         } catch (error) {
+//             console.error('Error cargando el parcial:', error);
+//         }
+//     })
+// }
