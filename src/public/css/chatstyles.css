@@ -519,7 +519,7 @@ body {
 
 .search-input-chat {
     width: 100%;
-    padding: 1rem 1rem 1rem 3rem;
+    padding: 1rem 1rem 1rem 1rem;
     background-color: var(--bg1);
     border: 2px solid var(--bg2);
     border-radius: 8px;
@@ -607,6 +607,22 @@ body {
     display: flex;
 }
 
+.btn-search-user-chat{
+    color: #ebdbb2;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-color: var(--bg1);
+}
+
+.btn-search-user-chat:hover{
+    background-color: #504945;
+    color: var(--dark-fg);
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
 .status-indicator {
     width: 8px;
     height: 8px;

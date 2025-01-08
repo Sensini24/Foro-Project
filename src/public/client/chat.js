@@ -83,57 +83,9 @@ function showChatInterfaz(domElements){
     
 }
 
-// // Configuración de la búsqueda de usuarios
-// function searchUser(socket, domElements) {
-//     const { formSearch, inputSearch, suggestionsList } = domElements;
-
-//     if(formSearch){
-//         formSearch.addEventListener("submit", async (event) => {
-//             event.preventDefault();
-//             const username = inputSearch.value;
-//             if (!username) {
-//                 console.log("Escribe el nombre de un usuario");
-//                 return;
-//             }
-    
-//             try {
-//                 const response = await fetch(`/user/findUsers/${username}`);
-//                 const users = await response.json();
-    
-//                 suggestionsList.innerHTML = "";
-//                 users.forEach(user => {
-//                     const li = document.createElement("li");
-//                     li.textContent = user.user_name;
-//                     li.dataset.userId = user._id;
-//                     li.classList.add("new-contact");
-//                     suggestionsList.appendChild(li);
-//                 });
-    
-//                 newDataContact(socket);
-//             } catch (error) {
-//                 console.error("Error fetching users:", error);
-//             }
-//         });
-//     }
-    
-// }
 
 
 
-// Adjuntar eventos a nuevos contactos
-function newDataContact(socket) {
-    const newContacts = document.querySelectorAll("li.new-contact");
-    newContacts.forEach(contact => {
-        contact.addEventListener("click", () => {
-            const idContact = contact.dataset.userId;
-            const usernameContact = contact.textContent.trim();
-            console.log("DESDE STARCHAT NEWCONTACT: ", idContact, usernameContact);
-
-            //? ESTE EVENTO SE RECICLA PARA ENVIA INFO AL SERVIDOR Y CREAR UN ROOM E INICIAR UN CHAT PRIVADO.
-            socket.emit("startchat newcontact", idContact, usernameContact);
-        });
-    });
-}
 
 // Configuración de notificaciones
 // function showNotifications(socket, domElements) {
@@ -438,58 +390,110 @@ const showSearchUser = (socket, domElements)=>{
     })
 }
 
+//? Obtener dato de dataset de usuario buscado para enviarlo a servidor
+function newDataContact(socket,domElements) {
+    const {chatMessages, chatContainer} = domElements;
+    chatContainer.addEventListener("click", async(event)=>{
+        const chatItemUser = event.target.closest(".user-item-chat")
+        const chatButton = event.target.closest(".chat-button")
+        if(chatButton){
+            const username = chatItemUser.querySelector(".user-name-chat").textContent
+            const userId = chatItemUser.dataset.idUser;
+            //? ESTE EVENTO SE RECICLA PARA ENVIA INFO AL SERVIDOR Y CREAR UN ROOM E INICIAR UN CHAT PRIVADO.
+            socket.emit("startchat newcontact", userId, username);
+            return
+        }
+    })
+}
+
 // Configuración de la búsqueda de usuarios en chat
 function searchUser(socket, domElements) {
     // const { formSearchChat, searchInputChat, searchResults } = domElements;
     const searchInputChat =  document.querySelector(".search-input-chat")
-    const formSearchChat = document.querySelector(".form-search-user-chat")
+    // const formSearchChat = document.querySelector(".form-search-user-chat")
     const searchResults =  document.querySelector(".search-results")
-    // console.log("form searc: ", formSearchChat)
-    // console.log("search input: ", searchInputChat)
-    // console.log("search results: ", searchResults)
 
-    if(formSearchChat){
-        formSearchChat.addEventListener("submit", async (event) => {
-            event.preventDefault();
-            const username = searchInputChat.value;
-            if (!username) {
-                console.log("Escribe el nombre de un usuario");
-                return;
-            }
-    
-            try {
-                const response = await fetch(`/user/findUsers/${username}`);
-                const users = await response.json();
-    
-                if(users){
-                    let user_name = users.user_name;
-                    let profilePic = users.profilePic
-                    searchResults.innerHTML = ""
-                    users.forEach(user => {
-                        // const li = document.createElement("li");
-                        let userFind = `<div class="user-item-chat">
-                                            <div class="user-avatar-chat">JP</div>
-                                            <div class="user-info-chat">
-                                                <div class="user-name-chat">${user.user_name}</div>
-                                                <div class="user-status-chat">
-                                                    <span class="status-indicator status-online"></span>
-                                                    En línea
-                                                </div>
-                                            </div>
-                                            <button class="chat-button">Iniciar chat</button>
-                                        </div>`
-                        // searchResults.appendChild(userFind);
-                        searchResults.innerHTML += userFind
-                    });
+    if(searchInputChat){
+        searchInputChat.addEventListener('input', async(event) => {
+            // formSearchChat.addEventListener("submit", async (event) => {
+                event.preventDefault();
+                const username = searchInputChat.value;
+                if (!username) {
+                    console.log("Escribe el nombre de un usuario");
+                    return;
                 }
-                // searchResults.innerHTML = "";
-                
-    
-                newDataContact(socket);
-            } catch (error) {
-                console.error("Error fetching users:", error);
-            }
-        });
+        
+                try {
+                    const response = await fetch(`/user/findUsers/${username}`);
+                    const users = await response.json();
+        
+                    if(users){
+                        //? Funcion para crear elementos donde se muestren los usuario encontrado
+                        showUsersFound(users,searchResults)
+                    }
+                    
+        
+                    newDataContact(socket,domElements);
+                } catch (error) {
+                    console.error("Error fetching users:", error);
+                }
+            // });
+        })
     }
-    
+}
+
+const showUsersFound =(users,searchResults) =>{
+    let currentUser = users.currentUser
+    searchResults.innerHTML = ""
+    if(users.usersFound.length == 0){
+        const notfound = document.createElement("div")
+        notfound.classList.add("search-placeholder-chat")
+        notfound.textContent = "No se halló ningún usuario. Intenta con otro nombre"
+        searchResults.appendChild(notfound)
+        return
+    }
+    // const usersLength = users.usersFound.length == 0 ?  r : console.log("hya mas")
+    users.usersFound.forEach(user => {
+        let user_id = user._id;
+        let user_name = user.user_name;
+        let profilePic = user.profilePic
+                        
+        let contenthtml;
+                        
+        const isUserEqual = currentUser.user_name == user_name ? true : false
+        if(isUserEqual == true){
+            let userFind = document.createElement("div");
+            userFind.classList.add("user-item-chat")
+            contenthtml = `
+                        <div class="user-avatar-chat">NTY</div>
+                        <div class="user-info-chat">
+                            <div class="user-name-chat">${user_name}</div>
+                            <div class="user-status-chat">
+                                <span class="status-indicator status-online"></span>
+                                Obviamente estás en línea.
+                            </div>
+                        </div>
+                        `
+            userFind.innerHTML = contenthtml
+            searchResults.appendChild(userFind)
+            userFind.dataset.idUser = user_id
+        }else{
+            let userFind = document.createElement("div");
+            userFind.classList.add("user-item-chat")
+            contenthtml = `
+                            <div class="user-avatar-chat">MGP</div>
+                            <div class="user-info-chat">
+                                <div class="user-name-chat">${user_name}</div>
+                                <div class="user-status-chat">
+                                    <span class="status-indicator status-online"></span>
+                                    En línea
+                                </div>
+                            </div>
+                            <button class="chat-button">Iniciar chat</button>
+                            `
+            userFind.innerHTML = contenthtml
+            searchResults.appendChild(userFind)
+            userFind.dataset.idUser = user_id
+        }
+    });
 }

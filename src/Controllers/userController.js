@@ -4,6 +4,7 @@ const model = User;
 
 export const findUser = async (req, res)=>{
     try{
+        const datapayload = req.usuariodatospayload
         const username = req.params.username
         console.log("Username pasado: ", username)
         if(!username){
@@ -13,7 +14,7 @@ export const findUser = async (req, res)=>{
             user_name: { $regex: username, $options: 'i' }
         }).limit(5);
         console.log("Usuarios Encontrados: ", users)
-        return res.status(200).json(users)
+        return res.status(200).json({usersFound:users, currentUser: req.usuariodatospayload})
     }catch(err){
         res.status(500).json({err:err.message})
     }
