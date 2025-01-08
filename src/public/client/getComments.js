@@ -78,6 +78,7 @@ async function renderComments(domElements) {
     try {
         const response = await fetch(`/comments/request/${postId}`);
         const commentsHtml = await response.text();
+        partialContainer.innerHTML = ""
         partialContainer.innerHTML = commentsHtml;
         
         const time = document.querySelectorAll(".comment-date-parent")
@@ -90,6 +91,7 @@ async function renderComments(domElements) {
         }else{
             console.log("No se encontro time")
         }
+        //? CARGA LOS MANEJADORES DE INTERACCIONES COMO RESPONDER, ELIMINAR, CANCELAR, ETC
         attachCommentEventListeners();
         
     } catch (error) {
@@ -315,7 +317,7 @@ async function submitComment(socket) {
             console.log("Comentario creado con éxito");
             console.log("Comment ID:", data.commentId);
             const commentId = data.commentId
-            document.getElementById("partial-container").innerHTML = "";
+            // document.getElementById("partial-container").innerHTML = "";
             await renderComments();
             
             const elem = document.querySelector("#modal-success")
@@ -340,10 +342,8 @@ async function sendMessageSocket(socket, postId,nameuser, namePost, comment, com
     socket.emit("messageNotification", postId,nameuser, namePost, comment, commentId )
 }
 
+//? Modal de confirmacion
 function showModalSucces(elem, messageModalSuccess){
-    // setTimeout(getToastSuccessfull(elem, messageModalSuccess), 3000)
-    // elem.innerHTML=""
-
     getToastSuccessfull(elem, messageModalSuccess)
 }
 

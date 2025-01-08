@@ -19,12 +19,14 @@ import routheTags from './Routes/tagsRoutes.js';
 import routePostInteractions from './Routes/posinteractionRoutes.js';
 import userRouter from './Routes/userRoutes.js';
 import { layoutRoute } from './Routes/layoutRoutes.js';
+import modalsRoute from './Routes/modalsRoutes.js';
 import { Message } from './Models/MessageModel.js';
 import { Socket } from 'dgram';
 import { log } from 'console';
 import { SendPrivateMessage, StarChatNewContact, StartPrivateChat } from './sockets/chatSocket.js';
 import { acceptContact, commentNotification, newInteractionNotification, recoverContacts, recoverNotification, seeCountIds } from './sockets/notificationsSocket.js';
 import { Contact } from './Models/ContactModel.js';
+
 
 const __dirname =dirname(fileURLToPath(import.meta.url));
 
@@ -245,6 +247,9 @@ app.get('', (req, res)=>{
     res.send("Hola, perra")
 })
 
+
+
+
 app.use(postRoute);
 app.use(commentRouter);
 app.use(routheTags)
@@ -253,6 +258,7 @@ app.use(layoutRoute)
 app.use(chatRoute);
 app.use(userRouter);
 app.use(notifRoute)
+app.use(modalsRoute)
 
 
 const PORT = process.env.PORT

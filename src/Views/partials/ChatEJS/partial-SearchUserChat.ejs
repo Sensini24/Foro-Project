@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Búsqueda de Usuarios</title>
+</head>
+<body>
+    <div class="search-container-chat">
+        <div class="search-header-chat">
+            <h2 class="search-title-chat">Buscar usuarios</h2>
+            <div class="search-input-wrapper">
+                <form class="form-search-user-chat">
+                    <span class="search-icon-chat">🔍</span>
+                    <input type="text" class="search-input-chat" placeholder="Buscar por nombre o @usuario...">
+                    <button type="submit">Buscar</button>
+                </form>
+                
+            </div>
+        </div>
+
+        <div class="search-results">
+            <!-- Estado inicial -->
+            <div class="search-placeholder-chat">
+                Comienza a escribir para buscar usuarios
+            </div>
+
+            <!-- Usuario encontrado (ejemplo) -->
+            <div class="user-item-chat">
+                <div class="user-avatar-chat">JP</div>
+                <div class="user-info-chat">
+                    <div class="user-name-chat">Juan Pérez</div>
+                    <div class="user-status-chat">
+                        <span class="status-indicator status-online"></span>
+                        En línea
+                    </div>
+                </div>
+                <button class="chat-button">Iniciar chat</button>
+            </div>
+
+            <!-- Otro usuario encontrado
+            <div class="user-item">
+                <div class="user-avatar">MA</div>
+                <div class="user-info">
+                    <div class="user-name">María Álvarez</div>
+                    <div class="user-status">
+                        <span class="status-indicator status-offline"></span>
+                        Hace 5 minutos
+                    </div>
+                </div>
+                <button class="chat-button">Iniciar chat</button>
+            </div> -->
+
+            <!-- Estado sin resultados -->
+            <div class="no-results" style="display: none;">
+                No se encontraron usuarios con ese nombre
+            </div>
+        </div>
+    </div>
+</body>
+</html>

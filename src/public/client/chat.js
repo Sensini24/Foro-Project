@@ -9,12 +9,15 @@ export function initChat() {
     const socket = initializeSocket();
     // const usercurrent = getUserCurrent(socket);
     console.log("si esxite usuario")
-    searchUser(socket, domElements);
+    // searchUser(socket, domElements);
     // showNotifications(socket, domElements);
     showChatPrivado(socket, domElements);
     showChatInterfaz(domElements)
     closeChat(domElements)
+
+    //? Elementos dentro del chat
     showStartChat(domElements)
+    showSearchUser(socket, domElements)
 }
 
 
@@ -52,7 +55,12 @@ function cacheDOMElements() {
         chatContactsPending: document.querySelector(".chat-contacts-pending"),
         chatConfirmation: document.querySelector(".chat-confirmation"),
         chatContactsContacts: document.querySelector(".chat-contacts-contacts"),
-        btnStartChat: document.querySelector(".btn-start-chat")
+        btnStartChat: document.querySelector(".btn-start-chat"),
+        startChatBtn: document.querySelector(".start-chat-btn"),
+
+        searchInputChat: document.querySelector(".search-input-chat"),
+        formSearchChat: document.querySelector(".form-search-user-chat"),
+        searchResults: document.querySelector(".search-results")
 
     };
 }
@@ -75,40 +83,42 @@ function showChatInterfaz(domElements){
     
 }
 
-// Configuración de la búsqueda de usuarios
-function searchUser(socket, domElements) {
-    const { formSearch, inputSearch, suggestionsList } = domElements;
+// // Configuración de la búsqueda de usuarios
+// function searchUser(socket, domElements) {
+//     const { formSearch, inputSearch, suggestionsList } = domElements;
 
-    if(formSearch){
-        formSearch.addEventListener("submit", async (event) => {
-            event.preventDefault();
-            const username = inputSearch.value;
-            if (!username) {
-                console.log("Escribe el nombre de un usuario");
-                return;
-            }
+//     if(formSearch){
+//         formSearch.addEventListener("submit", async (event) => {
+//             event.preventDefault();
+//             const username = inputSearch.value;
+//             if (!username) {
+//                 console.log("Escribe el nombre de un usuario");
+//                 return;
+//             }
     
-            try {
-                const response = await fetch(`/user/findUsers/${username}`);
-                const users = await response.json();
+//             try {
+//                 const response = await fetch(`/user/findUsers/${username}`);
+//                 const users = await response.json();
     
-                suggestionsList.innerHTML = "";
-                users.forEach(user => {
-                    const li = document.createElement("li");
-                    li.textContent = user.user_name;
-                    li.dataset.userId = user._id;
-                    li.classList.add("new-contact");
-                    suggestionsList.appendChild(li);
-                });
+//                 suggestionsList.innerHTML = "";
+//                 users.forEach(user => {
+//                     const li = document.createElement("li");
+//                     li.textContent = user.user_name;
+//                     li.dataset.userId = user._id;
+//                     li.classList.add("new-contact");
+//                     suggestionsList.appendChild(li);
+//                 });
     
-                newDataContact(socket);
-            } catch (error) {
-                console.error("Error fetching users:", error);
-            }
-        });
-    }
+//                 newDataContact(socket);
+//             } catch (error) {
+//                 console.error("Error fetching users:", error);
+//             }
+//         });
+//     }
     
-}
+// }
+
+
 
 // Adjuntar eventos a nuevos contactos
 function newDataContact(socket) {
@@ -378,7 +388,7 @@ function showChatPrivado(socket, domElements) {
 const closeChat=(domElements)=>{
     const{chatContainer} = domElements
     document.addEventListener("click", (event)=>{
-        const target = event.target.closest(".chat-container, .chat-icon")
+        const target = event.target.closest(".chat-container, .chat-icon, .start-chat-btn")
         if(!target){
             console.log("NO HAY NADA DE CHAT")
             chatContainer.style.display = "none"
@@ -388,17 +398,98 @@ const closeChat=(domElements)=>{
     
 }
 
-// //?Mostrar la pantalla de iniciar chat
-// const showStartChat = (domElements)=>{
-//     const {btnStartChat, chatMessages} = domElements;
-//     btnStartChat.addEventListener("click", async()=>{
-//         chatMessages.innerHTML = ""; // Limpia el contenido actual
-//         try {
-//             const response = await fetch('./partial/partial-menuChat');
-//             const partialHtml = await response.text(); // Obtiene el HTML como texto
-//             chatMessages.innerHTML = partialHtml; // Inserta el HTML en el DOM
-//         } catch (error) {
-//             console.error('Error cargando el parcial:', error);
-//         }
-//     })
-// }
+//?Mostrar la pantalla de iniciar chat
+const showStartChat = (domElements)=>{
+    const {btnStartChat, chatMessages} = domElements;
+    btnStartChat.addEventListener("click", async()=>{
+        chatMessages.innerHTML = "";
+        try {
+            const response = await fetch('/partial-menuChat');
+            const partialHtml = await response.text(); 
+            chatMessages.innerHTML = ""
+            chatMessages.innerHTML = partialHtml; 
+        } catch (error) {
+            console.error('Error cargando el parcial:', error);
+        }
+    })
+}
+
+//?Mostrar la pantalla de iniciar chat
+const showSearchUser = (socket, domElements)=>{
+    const {chatMessages, chatContainer} = domElements;
+
+    chatContainer.addEventListener("click", async(event)=>{
+        const startChatBtn = event.target.closest(".start-chat-btn")
+        if(startChatBtn){
+            chatMessages.innerHTML = "";
+            try {
+                const response = await fetch('/partial-SearchUserChat');
+                const partialHtml = await response.text();
+                chatMessages.innerHTML = ""
+                chatMessages.innerHTML = partialHtml; 
+
+                searchUser(socket, domElements)
+            } catch (error) {
+                console.error('Error cargando el parcial:', error);
+            }
+        }
+
+        
+    })
+}
+
+// Configuración de la búsqueda de usuarios en chat
+function searchUser(socket, domElements) {
+    // const { formSearchChat, searchInputChat, searchResults } = domElements;
+    const searchInputChat =  document.querySelector(".search-input-chat")
+    const formSearchChat = document.querySelector(".form-search-user-chat")
+    const searchResults =  document.querySelector(".search-results")
+    // console.log("form searc: ", formSearchChat)
+    // console.log("search input: ", searchInputChat)
+    // console.log("search results: ", searchResults)
+
+    if(formSearchChat){
+        formSearchChat.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const username = searchInputChat.value;
+            if (!username) {
+                console.log("Escribe el nombre de un usuario");
+                return;
+            }
+    
+            try {
+                const response = await fetch(`/user/findUsers/${username}`);
+                const users = await response.json();
+    
+                if(users){
+                    let user_name = users.user_name;
+                    let profilePic = users.profilePic
+                    searchResults.innerHTML = ""
+                    users.forEach(user => {
+                        // const li = document.createElement("li");
+                        let userFind = `<div class="user-item-chat">
+                                            <div class="user-avatar-chat">JP</div>
+                                            <div class="user-info-chat">
+                                                <div class="user-name-chat">${user.user_name}</div>
+                                                <div class="user-status-chat">
+                                                    <span class="status-indicator status-online"></span>
+                                                    En línea
+                                                </div>
+                                            </div>
+                                            <button class="chat-button">Iniciar chat</button>
+                                        </div>`
+                        // searchResults.appendChild(userFind);
+                        searchResults.innerHTML += userFind
+                    });
+                }
+                // searchResults.innerHTML = "";
+                
+    
+                newDataContact(socket);
+            } catch (error) {
+                console.error("Error fetching users:", error);
+            }
+        });
+    }
+    
+}

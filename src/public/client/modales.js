@@ -27,7 +27,7 @@ export function getToastSuccessfull(elem, message){
         `
     setTimeout(()=>{
         elem.innerHTML = ""
-    }, 3000)
+    }, 5000)
     
     //  closesetTime(elem)
     // closeModal(elem, ".toast-close")
