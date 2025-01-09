@@ -197,9 +197,9 @@ async function handleCountInteractions(id){
         const data = await response.json();
     
         if (data) {
-            console.log("Se obtuviero las interacciones: ", 
-                "Cantidad de interacciones total: ", data.interactionsCount, 
-                "Cantidad de interacciones por usuario: ", data.interactionsUser);
+            // console.log("Se obtuviero las interacciones: ", 
+            //     "Cantidad de interacciones total: ", data.interactionsCount, 
+            //     "Cantidad de interacciones por usuario: ", data.interactionsUser);
             return data
         } else {
             console.log("No se obtuvieron las interacciones: ", data.interactionsCount);

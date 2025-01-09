@@ -36,11 +36,12 @@ export async function recoverNotification(socket,userID){
 }
 
 //? Obtener contactos de usuario
-export async function recoverContacts(socket, userID){
+export async function recoverContacts(socket, userID, usuariosConectados,io){
     const userContacts = await modelContact.find({owner_id: userID}).
     populate("contact_id", "user_name email profilePic");
     if(userContacts){
-        socket.emit("recover contacts", userContacts) 
+        socket.emit("recover contacts", userContacts)
+        io.emit("users connected", Array.from(usuariosConectados));
     }
 }
 

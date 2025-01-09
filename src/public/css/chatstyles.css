@@ -75,7 +75,7 @@ body {
 }
 
 .contacts-list {
-    width: 13rem;
+    width: 15rem;
     background-color: rgba(60, 56, 54, 0.8);
     padding: 10px;
     overflow-y: auto;
@@ -104,6 +104,9 @@ body {
     background-color: var(--gruvbox-bg);
 }
 
+.contacto{
+    display: flex;
+}
 .chat-window {
     flex: 1;
     display: flex;

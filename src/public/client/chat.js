@@ -18,6 +18,7 @@ export function initChat() {
     //? Elementos dentro del chat
     showStartChat(domElements)
     showSearchUser(socket, domElements)
+    // UpdateStatusContact(socket, domElements)
 }
 
 
@@ -60,7 +61,8 @@ function cacheDOMElements() {
 
         searchInputChat: document.querySelector(".search-input-chat"),
         formSearchChat: document.querySelector(".form-search-user-chat"),
-        searchResults: document.querySelector(".search-results")
+        searchResults: document.querySelector(".search-results"),
+        contactsListChat : document.querySelector(".contacts-list")
 
     };
 }
@@ -83,28 +85,6 @@ function showChatInterfaz(domElements){
     
 }
 
-
-
-
-
-// Configuración de notificaciones
-// function showNotifications(socket, domElements) {
-//     const { notifContainer } = domElements;
-
-//     socket.on("connect", () => {
-//         console.log("Conectado al servidor");
-//         socket.emit("recover notifications");
-//     });
-
-//     socket.on("show notifications", (notifications) => {
-//         console.log("Notificaciones: ", notifications);
-//     });
-
-//     notifContainer.addEventListener("click", () => {
-//         console.log("Notificaciones clicadas");
-//     });
-// }
-
 // Configuración del chat privado
 function showChatPrivado(socket, domElements) {
     const { formChat, chatInput, chatMessages, chatContacts, chatConfirmation } = domElements;
@@ -125,6 +105,7 @@ function showChatPrivado(socket, domElements) {
             });
 
             chatContacts.appendChild(userItem);
+            
         });
     });
 
@@ -260,47 +241,67 @@ function showChatPrivado(socket, domElements) {
     
 
 
+    //? OBTIENE LOS CONTACTOS PENDIENTES EN TIEMPO REAL Y LOS AGREGA AL DOM
     socket.on("getPendingContact", (userContacts)=>{
         // console.log("CONTACTOS OBTENIDOS EN TUIEMPO REAL: ", userContacts)
         const { chatContactsPending } = domElements;
         chatContactsPending.innerHTML = "";
         userContacts.forEach(contact=>{
-            console.log("Nombre de contacto: ", contact.contact_id.user_name)
+            // console.log("Nombre de contacto: ", contact.contact_id.user_name)
             const contactName = contact.contact_id.user_name;
             const contactId = contact.contact_id._id;
 
+            //?AGREGA LOS CONTACTOS COMO ITEMS AL CONTENEDOR PENDING
             addAndStarChat(chatContactsPending, contactName, contactId)
         })
     })
 
+    //? RECOBRA TODOS LOS CONTACTOS AL REINICIAR EL SERVIDOR O AL CONECTARSE UN USUARIO
     socket.on("recover contacts", (userContacts)=>{
         // console.log("CONTACTOS OBTENIDOS: ", userContacts)
         const { chatContactsPending, chatContactsContacts } = domElements;
-        chatContactsPending.innerHTML = "";
+        chatContactsContacts.innerHTML = "";
+        chatContactsPending.innerHTML = ""
         // const contactPendings = userContacts.filter(contact => contact.estado == "pending");
         userContacts.forEach(contact=>{
-            console.log("Nombre de contacto: ", contact.contact_id.user_name)
+            // console.log("Nombre de contacto: ", contact.contact_id.user_name)
 
             const contactName = contact.contact_id.user_name;
             const contactId = contact.contact_id._id;
             const contactEstado = contact.estado;
 
+            //?AGREGA LOS CONTACTOS COMO ITEMS AL CONTENEDOR QUE LES CORRESPONDE
             if(contactEstado == "pending"){
+                
                 addAndStarChat(chatContactsPending,contactName, contactId)
             }else if(contactEstado == "accepted"){
                 addAndStarChat(chatContactsContacts,contactName, contactId)
             }
+
+            //?SIRVE PARA ACTUALIZAR EL ESTADO DE LOS CONTACTOS
+            
             
         })
+
+        //? CUANDO SE RECOBRA LOS CONTACTOS SE ACTUALIZA SU ESTATUS
+        UpdateStatusContact(socket,domElements)
     })
 
-    function addAndStarChat(arrayContactStado, contactName, contactId){
+    function addAndStarChat(chatContactsContacts, contactName, contactId){
         const userItem = document.createElement("li");
         userItem.classList.add("contacto");
-        userItem.textContent = contactName;
+        // userItem.textContent = contactName;
+        userItem.innerHTML = `<div class="user-avatar-chat">NTY</div>
+                        <div class="user-info-chat">
+                            <div class="user-name-chat">${contactName}</div>
+                            <div class="user-status-chat">
+                                <span class="status-indicator"></span>
+                                <span class="status-indicator-message"></span>
+                            </div>
+                        </div>`
         userItem.dataset.userId = contactId;
-        arrayContactStado.appendChild(userItem);
-        console.log("Contacto agregado a panel de chat: ", contactName)
+        chatContactsContacts.appendChild(userItem);
+        // console.log("Contacto agregado a panel de chat: ", contactName)
 
         
         userItem.addEventListener("click", () => {
@@ -326,14 +327,7 @@ function showChatPrivado(socket, domElements) {
             
         }
     })
-    
-    //? HANDLERS DE BOTONES DE CONFIRMACION
-    // function handlerAccept(socket, contactId, senderId){
 
-    // }
-
-    
-    
     
 }
 //?CIERRA CHAT AL INTERACTUAR FUERA DE ESTE
@@ -496,4 +490,51 @@ const showUsersFound =(users,searchResults) =>{
             userFind.dataset.idUser = user_id
         }
     });
+}
+
+function UpdateStatusContact(socket,domElements){
+    socket.on("users connected", (usuariosConectados)=>{
+        const {contactsListChat, chatContactsContacts} = domElements
+        const contactos = chatContactsContacts.querySelectorAll(".contacto")
+        console.log("Usuairos conectados: ", usuariosConectados)
+        
+        // console.log("FILTRADO: ", usuarioConnected)
+        contactos.forEach(contacto => {
+            const contactoName  = contacto.querySelector(".user-name-chat").textContent.trim()
+            const statusChat = contacto.querySelector(".user-status-chat")
+            const statusUser = contacto.querySelector(".status-indicator")
+            const message = contacto.querySelector(".status-indicator-message")
+            const usuarioConnected = usuariosConectados.some(u =>u[1].nombre ===contactoName)
+            if(usuarioConnected){
+                console.log("El usuario si esta conectado: ", contactoName)
+                // userStatusChat.textContent = 'El usuario está en línea.';
+                // userStatusChat.insertBefore(statusUser, statusChat.firstChild);
+                statusUser.classList.remove("status-offline");
+                statusUser.classList.add("status-online");
+                message.textContent = "Conectado"
+                // statusChat.textContent = "En línea"
+            }else{
+                console.log("El usuario no esta conectado: ", contactoName)
+                statusUser.classList.remove("status-online");
+                statusUser.classList.add("status-offline")
+                message.textContent = "Desconectado"
+                // Cambiar el texto sin eliminar el span
+                // userStatusChat.textContent = 'El usuario está desconectado.';
+                // userStatusChat.insertBefore(statusUser, statusChat.firstChild);
+            }
+            // console.log("STATUS DE USER: ", statusUser)
+            // usuariosConectados.forEach(con=>{
+            //     console.log("NOMBRE DE USUARIO: ", con[1].nombre)
+            //     if(con[1].nombre === contactoName){
+            //         console.log("El usuario si esta conectado1: ", contactoName)
+            //         console.log("El usuario si esta conectado2: ", con[1].nombre)
+            //         statusUser.classList.add("status-online");
+            //     }else{
+            //         console.log("El usuario no esta conectado: ", contactoName)
+            //         statusUser.classList.add("status-offline")
+            //         // statuschat.classList.add("status-offline")
+            //     }
+            // })
+        });
+    })
 }

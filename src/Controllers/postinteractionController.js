@@ -71,9 +71,9 @@ export const getInteractionPost = async(req, res)=>{
         // console.log("payload en post:", datapayload);
         const user_id = datapayload._id
         const interactionsCount = await getInteractionsPost(id)
-        console.log("Cantidad de interacciones: ", interactionsCount)
+        // console.log("Cantidad de interacciones: ", interactionsCount)
         const interactionsUser = await getInteractionsUserPost (id, user_id)
-        console.log("Cantidad de interacciones por Usuario: ", interactionsUser)
+        // console.log("Cantidad de interacciones por Usuario: ", interactionsUser)
         return res.status(200).json({interactionsCount,interactionsUser})
     }catch(error){
         res.status(500).json({error:"No se pudo obtener los datos de las interacciones"})

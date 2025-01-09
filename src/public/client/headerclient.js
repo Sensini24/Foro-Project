@@ -104,7 +104,7 @@ async function getNotifications(socket,domElements){
     socket.on("show notifications", async (notifications)=>{
         const {notifNumber, notifUnreadList} = domElements;
 
-        console.log("Notificaciones recuperadas: ", notifications);
+        // console.log("Notificaciones recuperadas: ", notifications);
         await IncreaseNumberNotifications(notifUnreadList, notifNumber, notifications)
     })
 }
