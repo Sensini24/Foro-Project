@@ -35,7 +35,13 @@
                             </div>
                         <% } %>
                         </div>
-                        <span class="comment-date-parent"><%= comm.date %></span>
+                        <div class="menu-date" style="display: flex; align-items: center; justify-content: space-between; width:8rem">
+                            <span class="comment-date-parent"><%= comm.date %></span>
+                            <div class="menu-button-comments">⋮</div>
+                            <div id="menu-notification" class="menu-container-comment">
+                                <div class="changeRead">Editar</div>
+                            </div>
+                        </div>
                     </div>
                     
                     <p class="comment-content">

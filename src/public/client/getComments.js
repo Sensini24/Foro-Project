@@ -2,19 +2,18 @@ import { getModalInfo, getToastSuccessfull } from "./modales.js";
 import { convertDate } from "./notificationclient.js";
 
 export async function initCommentsModule() {
-    console.log("INICIANDO MODULOS DE COMMENTARIOS")
-    
-    // chargeHash()
+    console.log("INICIANDO MODULOS DE COMENTARIOS");
+
     const domElements = getDomElements();
-    
     const socket = initializeSocket();
-    
+
     handlerCommentSocket(socket);
     await renderComments(domElements);
-    closeModal()
-    SearhCommentNotification()
-    
+    closeModal();
+    SearhCommentNotification();
+    showMenuAllComments();
 }
+
 
 
 //? BUSCA EL COMENTARIO A TRAVES DEL ID SEGUIDO DEL HASH Y SI NO EXISTE ENVIA UN MODAL DE AVISO.
@@ -66,6 +65,7 @@ function getDomElements() {
         partialContainer: document.getElementById("partial-container"),
         commentContainer: document.getElementById("comment-container"),
         chatIcon : document.querySelector(".chat-icon"),
+        // menuButton : document.que
     };
 }
 
@@ -354,4 +354,41 @@ function closeModal (){
     
 }
 
+function showMenuAllComments(){
+    const commentContainer = document.getElementById("comment-container")
+    const commentContainerRequest = document.getElementById("partial-request-cont")
+    showMenuComments(commentContainer || commentContainerRequest)
+    // showMenuComments2(commentContainerRequest)
+}
+//?Mostrar modal de comments: edita, etc.
+function showMenuComments(container) {
+    container.addEventListener("click", (event) => {
+        const puntos = event.target.closest(".menu-button-comments");
+
+        if (puntos) {
+            console.log("Si hay punto: ", puntos);
+            const commentContainer = puntos.closest(".main-comment") || puntos.closest(".replies");
+
+            if (commentContainer) {
+                const modal = commentContainer.querySelector(".menu-container-comment");
+                if (modal) {
+                    console.log("MODAL: ", modal);
+                    console.log("Display actual: ", modal.style.display);
+                    modal.style.display = modal.style.display === "flex" ? "none" : "flex";
+                    console.log("Display nuevo: ", modal.style.display);
+                }
+            }
+        } else {
+            const commentContainers = document.querySelectorAll(".main-comment, .replies");
+            commentContainers.forEach(item => {
+                const modal = item.querySelector(".menu-container-comment");
+                if (modal && modal.style.display === "flex") {
+                    modal.style.display = "none";
+                } else {
+                    console.log("no hay modal");
+                }
+            });
+        }
+    });
+}
 

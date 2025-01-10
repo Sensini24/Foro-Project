@@ -4,37 +4,42 @@
                     <div class="replies">
                         <article class="comment reply">
                     <div class="comment" id="comment-request" style="height: 180px;overflow-y:scroll;">
-                        <div class="container-headers" data-idcomment=`<%= comm._id %>`>
-                            <div class="author-elements">
-                                <div class="author-avatar">JP</div>
-                            <% if (author === comm.user_name) { %>
-                                <div class="headers-content">
+                            <div class="container-headers" data-idcomment=`<%= comm._id %>`>
+                                <div class="author-elements">
+                                    <div class="author-avatar">JP</div>
+                                <% if (author === comm.user_name) { %>
+                                    <div class="headers-content">
+                                        <div class="comment-author" id="comment-user-name">
+                                            <%= comm.user_name %>
+                                        </div>
+                                        <div class="comment-author-tag" style="color: #FCD639;">
+                                            <%= "(author)" %>
+                                        </div>
+                                    </div>
+                                <% } else { %>
                                     <div class="comment-author" id="comment-user-name">
                                         <%= comm.user_name %>
                                     </div>
-                                    <div class="comment-author-tag" style="color: #FCD639;">
-                                        <%= "(author)" %>
+                                <% } %>
+    
+                                <% if (comm.requestname) { %>
+                                    <div id="receptor-message" class="headers-content" style="color: #68985A;">
+                                        >> <%= comm.requestname %>
+                                        <% if (comm.requestname === author) { %>
+                                            <div id="receptor-message" style="color: #FCD639;">
+                                                (author)
+                                            </div>
+                                        <% } %>
                                     </div>
+                                <% } %>
                                 </div>
-                            <% } else { %>
-                                <div class="comment-author" id="comment-user-name">
-                                    <%= comm.user_name %>
+                                <span class="comment-date-childe"><%= comm.date %></span>
+                                <div class="menu-button-comments">⋮</div>
+                                <div id="menu-notification" class="menu-container-comment">
+                                    <div class="changeRead" id="edit-request">Editar</div>
                                 </div>
-                            <% } %>
-
-                            <% if (comm.requestname) { %>
-                                <div id="receptor-message" class="headers-content" style="color: #68985A;">
-                                    >> <%= comm.requestname %>
-                                    <% if (comm.requestname === author) { %>
-                                        <div id="receptor-message" style="color: #FCD639;">
-                                            (author)
-                                        </div>
-                                    <% } %>
-                                </div>
-                            <% } %>
                             </div>
-                            <span class="comment-date-childe"><%= comm.date %></span>
-                        </div>
+                        
                         
                         <p class="comment-content">
                             <%= comm.comment %>
