@@ -112,6 +112,21 @@ h1, h2 {
     margin-bottom: 5px;
 }
 
+.comment-actions-edit{
+    display: none;
+    flex-direction: row;
+    justify-content: start;
+    margin-top: 20px;
+    /* border: #282828;
+    border-style: solid; */
+    padding: 5px;
+}
+
+.btnEdit{
+    font-size: 1rem;
+    margin-right: 5px;
+}
+
 button {
     background-color: var(--dark-bg-muted);
     color: var(--dark-fg);
@@ -371,7 +386,7 @@ button:hover {
 .main-comment{
     margin-top: 1rem;
     background-color: #32302F;
-    height: 200px;
+    height: fit-content;
     border-radius: 8px;
     padding: 1rem;
     margin-bottom: 0.5rem;
@@ -381,7 +396,7 @@ button:hover {
     margin-left: 2rem;
     padding-left: 1rem;
     border-left: 2px solid var(--bg2);
-
+    
 }
 
 .reply {

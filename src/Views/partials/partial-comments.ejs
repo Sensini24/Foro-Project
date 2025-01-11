@@ -44,15 +44,21 @@
                         </div>
                     </div>
                     
-                    <p class="comment-content">
-                        <%= comm.comment %>
-                    </p>
+                    <div>
+                        <p class="comment-content" >
+                            <%= comm.comment %>
+                        </p>
+                    </div>
     
                     <div class="comment-id sr-only" id="id-comment"><%= comm._id %></div>
                     <div class="messageparent-id sr-only" id="id-messageparent"><%= comm.idmessageparent %></div>
                     <div class="postid-id sr-only" id="id-postid"><%= comm.post_id %></div>
                     <div class="comment-status sr-only" id="id-status"><%= comm.visible %></div>
     
+                    <div class="comment-actions-edit">
+                        <button class="btnEdit" id="btnAccept">Aceptar</button>
+                        <button class="btnEdit" id="btnCancel">Cancelar</button>
+                    </div>
                     <div class="comment-actions">
                         <div class="likes-dislikes">
                             <button class="like-btn" aria-label="Like comment">

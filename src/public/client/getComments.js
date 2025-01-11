@@ -354,15 +354,17 @@ function closeModal (){
     
 }
 
+//?Mostrar modal de comments: edita, etc.======================================
 function showMenuAllComments(){
     const commentContainer = document.getElementById("comment-container")
     const commentContainerRequest = document.getElementById("partial-request-cont")
     showMenuComments(commentContainer || commentContainerRequest)
     // showMenuComments2(commentContainerRequest)
 }
-//?Mostrar modal de comments: edita, etc.
+
 function showMenuComments(container) {
     container.addEventListener("click", (event) => {
+        console.log("Evente", event.target)
         const puntos = event.target.closest(".menu-button-comments");
 
         if (puntos) {
@@ -372,23 +374,82 @@ function showMenuComments(container) {
             if (commentContainer) {
                 const modal = commentContainer.querySelector(".menu-container-comment");
                 if (modal) {
-                    console.log("MODAL: ", modal);
-                    console.log("Display actual: ", modal.style.display);
                     modal.style.display = modal.style.display === "flex" ? "none" : "flex";
-                    console.log("Display nuevo: ", modal.style.display);
+                }else{
+                    console.log("No hay nada modal")
                 }
             }
         } else {
+            //? Cerrar en caso de quedar fuera de rango de item.
             const commentContainers = document.querySelectorAll(".main-comment, .replies");
             commentContainers.forEach(item => {
-                const modal = item.querySelector(".menu-container-comment");
-                if (modal && modal.style.display === "flex") {
-                    modal.style.display = "none";
+                let modal = item.querySelector(".menu-container-comment");
+                if (modal) {
+                    if(modal.style.display == "flex" && !event.target.closest(".menu-container-comment")){
+                        modal.style.display = "none";
+                        // console.log("modal texto: ", modal.textContent)
+                    }else if(modal.style.display == "flex" && event.target.closest(".menu-container-comment")){
+                        //? En caso de que se haga click dentro del item de editar, etc.
+                        console.log("modal texto: ", modal.textContent.trim())
+
+                        //Conseguir el parrafo donde esta le texto a editar
+                        const containerComment = modal.closest(".main-comment") || modal.closest(".replies");
+                        
+                        // console.log("Pargagraph: ", paragraph)
+                        editComment(containerComment)
+                        modal.style.display = "none"
+                    }
                 } else {
                     console.log("no hay modal");
                 }
             });
         }
     });
+}
+//? ========================================================
+
+
+
+function editComment(containerComment){
+    const paragraph = containerComment.querySelector(".comment-content")
+    const commentsActions = containerComment.querySelector(".comment-actions")
+    const commentsActionsEdit = containerComment.querySelector(".comment-actions-edit")
+    const btnAccept = commentsActionsEdit.querySelector("#btnAccept")
+    const btnCancel = commentsActionsEdit.querySelector("#btnCancel")
+    let pCopy = paragraph.textContent.trim()
+
+    // Estilo de enfoque
+    paragraph.setAttribute("contenteditable", "true")
+    paragraph.focus();
+    paragraph.style.backgroundColor = "#D7BA72"
+    paragraph.style.padding = "5px"
+    paragraph.style.borderRadius = "5px"
+    paragraph.style.color = "#32302F"
+    
+
+    commentsActions.style.display = "none"
+    commentsActionsEdit.style.display = "flex"
+
+    // En caso de que esté fuera de foco.
+    paragraph.addEventListener("blur", handlerFocusText(paragraph))
+
+    // Botones de ejecucion
+    btnAccept.addEventListener("click", ()=>{
+        console.log("Btn Accept clicado: ", btnAccept)
+    })
+
+    btnCancel.addEventListener("click", ()=>{
+        paragraph.setAttribute("contenteditable", "false")
+        commentsActions.style.display = "flex"
+        commentsActionsEdit.style.display = "none"
+        console.log("Btn Cancel clicado: ", btnCancel)
+        paragraph.removeEventListener("blur", handlerFocusText)
+    })
+}
+const handlerFocusText =(paragraph)=>{
+    paragraph.style.border = "solid"
+    paragraph.style.borderWidth = "3px"
+    paragraph.style.borderColor = "#CC241D" ;
+    console.log("Input fuera de foco", paragraph)
 }
 

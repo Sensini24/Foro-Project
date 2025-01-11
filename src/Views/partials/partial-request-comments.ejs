@@ -2,8 +2,8 @@
         
                 <% commentariosPrincipales.forEach(comm => { %>
                     <div class="replies">
-                        <article class="comment reply">
-                    <div class="comment" id="comment-request" style="height: 180px;overflow-y:scroll;">
+                        <article class="comment reply" style="height: 220px;">
+                    <div class="comment" id="comment-request" style="height: 195px;overflow-y:scroll;">
                             <div class="container-headers" data-idcomment=`<%= comm._id %>`>
                                 <div class="author-elements">
                                     <div class="author-avatar">JP</div>
@@ -33,23 +33,30 @@
                                     </div>
                                 <% } %>
                                 </div>
-                                <span class="comment-date-childe"><%= comm.date %></span>
-                                <div class="menu-button-comments">⋮</div>
-                                <div id="menu-notification" class="menu-container-comment">
-                                    <div class="changeRead" id="edit-request">Editar</div>
+                                <div class="menu-date" style="display: flex; align-items: center; justify-content: space-between; width:8rem">
+                                    <span class="comment-date-childe"><%= comm.date %></span>
+                                    <div class="menu-button-comments">⋮</div>
+                                    <div id="menu-notification" class="menu-container-comment">
+                                        <div class="changeRead" id="edit-request">Editar</div>
+                                    </div>
                                 </div>
+                                
                             </div>
                         
                         
-                        <p class="comment-content">
+                        <div class="comment-content" >
                             <%= comm.comment %>
-                        </p>
+                        </div>
 
                         <div class="comment-id sr-only" id="id-comment"><%= comm._id %></div>
                         <div class="messageparent-id sr-only" id="id-messageparent"><%= comm.idmessageparent %></div>
                         <div class="postid-id sr-only" id="id-postid"><%= comm.post_id %></div>
                         <div class="comment-status sr-only" id="id-status"><%= comm.visible %></div>
 
+                        <div class="comment-actions-edit">
+                            <button class="btnEdit" id="btnAccept">Aceptar</button>
+                            <button class="btnEdit" id="btnCancel">Cancelar</button>
+                        </div>
                         <div class="comment-actions">
                             <div class="likes-dislikes">
                                 <button class="like-btn" aria-label="Like comment">
