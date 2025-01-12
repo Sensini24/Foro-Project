@@ -203,3 +203,35 @@ export const requestComment = async (req, res)=>{
     }
     
 }
+
+export const editComment = async(req, res)=>{
+    try{
+        const payload = req.usuariodatospayload
+        const {newText, idComment} = req.body
+        console.log("datos para editaR: ", newText, idComment)
+
+        if(!payload){
+            return res.status(401).json({success:false, message:"No estás autorizado para edita este comentario."})
+        }
+
+        if(newText == "" || newText == null){
+            return res.status(400).json({success:false, message:"El texto a editar no debe ser nulo ni vacío"})
+        }
+
+        const newComment = await modelComment.findOneAndUpdate(
+            {_id:idComment}, 
+            {$set:{comment:newText}}
+        )
+
+        if(newComment){
+            console.log("Comentario editado correctamente: ", newComment)
+            return res.status(200).json({success:true, message:"El comentario fue editado correctamente"})
+        }else {
+            return res.status(400).json({success: false,message: "No se pudo editar el comentario. Quizás no existe o no hay cambios."});
+        }
+
+    }catch(err){
+        return res.status(500).json({success:false, message:"Ocurrió un error al editar el comentario"})
+    }
+
+}

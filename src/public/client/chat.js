@@ -336,7 +336,7 @@ const closeChat=(domElements)=>{
     document.addEventListener("click", (event)=>{
         const target = event.target.closest(".chat-container, .chat-icon, .start-chat-btn")
         if(!target){
-            console.log("NO HAY NADA DE CHAT")
+            // console.log("NO HAY NADA DE CHAT")
             chatContainer.style.display = "none"
         }
         

@@ -364,11 +364,11 @@ function showMenuAllComments(){
 
 function showMenuComments(container) {
     container.addEventListener("click", (event) => {
-        console.log("Evente", event.target)
+        // console.log("Evente", event.target)
         const puntos = event.target.closest(".menu-button-comments");
 
         if (puntos) {
-            console.log("Si hay punto: ", puntos);
+            // console.log("Si hay punto: ", puntos);
             const commentContainer = puntos.closest(".main-comment") || puntos.closest(".replies");
 
             if (commentContainer) {
@@ -390,12 +390,14 @@ function showMenuComments(container) {
                         // console.log("modal texto: ", modal.textContent)
                     }else if(modal.style.display == "flex" && event.target.closest(".menu-container-comment")){
                         //? En caso de que se haga click dentro del item de editar, etc.
-                        console.log("modal texto: ", modal.textContent.trim())
+                        // console.log("modal texto: ", modal.textContent.trim())
 
                         //Conseguir el parrafo donde esta le texto a editar
                         const containerComment = modal.closest(".main-comment") || modal.closest(".replies");
                         
                         // console.log("Pargagraph: ", paragraph)
+
+                        //? EDITAR COMENTARIO
                         editComment(containerComment)
                         modal.style.display = "none"
                     }
@@ -406,16 +408,25 @@ function showMenuComments(container) {
         }
     });
 }
-//? ========================================================
+//? EDITAR...========================================================
 
-
-
-function editComment(containerComment){
+function editComment(containerComment, event){
     const paragraph = containerComment.querySelector(".comment-content")
     const commentsActions = containerComment.querySelector(".comment-actions")
     const commentsActionsEdit = containerComment.querySelector(".comment-actions-edit")
     const btnAccept = commentsActionsEdit.querySelector("#btnAccept")
     const btnCancel = commentsActionsEdit.querySelector("#btnCancel")
+
+    btnAccept.style.backgroundColor = "#3C3836"
+    btnAccept.style.color = "#6C6C6C"
+    btnAccept.style.cursor = "default"
+    btnAccept.setAttribute("disabled", "")
+
+    //Obtencion del dataset de comment.
+    const headers = containerComment.querySelector(".container-headers")
+    const idComment =  headers.dataset.idcomment 
+
+    console.log("ID commnet: ", idComment)
     let pCopy = paragraph.textContent.trim()
 
     // Estilo de enfoque
@@ -426,30 +437,69 @@ function editComment(containerComment){
     paragraph.style.borderRadius = "5px"
     paragraph.style.color = "#32302F"
     
+    
+
+    
+    
 
     commentsActions.style.display = "none"
     commentsActionsEdit.style.display = "flex"
 
-    // En caso de que esté fuera de foco.
-    paragraph.addEventListener("blur", handlerFocusText(paragraph))
-
-    // Botones de ejecucion
-    btnAccept.addEventListener("click", ()=>{
-        console.log("Btn Accept clicado: ", btnAccept)
+    btnAccept.addEventListener("click", async()=>{
+        normalModeContent(paragraph,commentsActions,commentsActionsEdit)
+        // console.log("Btn Accept clicado: ", btnAccept)
+        console.log("NUEVO CONTENIDO DE COMENTARIO: ", paragraph.textContent.trim())
+        const newText = paragraph.textContent.trim();
+        await fetchEditComment(newText,idComment)
+        
     })
 
     btnCancel.addEventListener("click", ()=>{
-        paragraph.setAttribute("contenteditable", "false")
-        commentsActions.style.display = "flex"
-        commentsActionsEdit.style.display = "none"
+        normalModeContent(paragraph,commentsActions,commentsActionsEdit)
+        paragraph.textContent = pCopy
         console.log("Btn Cancel clicado: ", btnCancel)
-        paragraph.removeEventListener("blur", handlerFocusText)
+        // paragraph.removeEventListener("blur", handlerFocusText(paragraph))
     })
+
+
+    // Quitar o aumentar restriccion de edicion a un comentario que es igual al anterior
+    paragraph.addEventListener("input", changevalue)
+    function changevalue(event){
+        let textoTarget = event.target.textContent
+        if(textoTarget.trim() !== pCopy){
+            console.log(textoTarget.trim(), pCopy)
+            btnAccept.removeAttribute("disabled", "")
+            btnAccept.style.backgroundColor = "#D7BA72"
+            btnAccept.style.color = "#32302F"
+            
+        }else{
+            btnAccept.setAttribute("disabled", "")
+            console.log(textoTarget.trim(), pCopy)
+            btnAccept.style.backgroundColor = "#3C3836"
+            btnAccept.style.color = "#6C6C6C"
+        }
+    }
 }
-const handlerFocusText =(paragraph)=>{
-    paragraph.style.border = "solid"
-    paragraph.style.borderWidth = "3px"
-    paragraph.style.borderColor = "#CC241D" ;
-    console.log("Input fuera de foco", paragraph)
+const normalModeContent=(paragraph,commentsActions,commentsActionsEdit)=>{
+    paragraph.setAttribute("contenteditable", "false")
+    commentsActions.style.display = "flex"
+    commentsActionsEdit.style.display = "none"
+    paragraph.style.backgroundColor = "#32302F"
+    paragraph.style.color = "#DFDBB2"
 }
 
+const fetchEditComment=async(newText, idComment)=>{
+    console.log("datoa enviados para editar: ", newText, idComment)
+    const response = await fetch("/user/comment/edit",{
+        method:"PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({newText: newText, idComment: idComment}),
+    })
+    const data = await response.json()
+    if(data.success === true){
+        console.log("Exito: ", data.message, response.status)
+    }else{
+        console.log(data.message, response.status)
+    }
+    
+}
